@@ -13,6 +13,6 @@ require 'digest'
 class User < ActiveRecord::Base
   attr_accessible :name
   
-  validates :name,  :presence => true,
-  
+  validates :name,  :presence => true
+#                    :length   => { :minimum => 10 }
 end
