@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-Concert::Application.config.secret_token = '6c0fb6e2db191ec08de967567c8ac013a32c410968ea6ea3b128af60ac75ad4762635d0473f32960ed7b7394481e5e0347c13b6852b6381438d5aba67695ab85'
+SampleApp::Application.config.secret_token = 'e93242fb9a8fce19f2d360a5316c1a4aafce7cdf20537f6b9b7be85445c9f1560c418b11e0ac98db9c2412cdc6ee11ad06704df766df80aa3daace540c130b18'

@@ -1,17 +1,6 @@
 class PagesController < ApplicationController
-  
-  def initialize()
-    @i = 1
-  end
-  
   def home
-    @i = @i + 1
-    @var1 = @i
-    if (1 == 0) then
-      @title = "Home"
-    else
-      @title = "Homey"
-    end
+    @title = "Home"
   end
 
   def contact
@@ -20,6 +9,10 @@ class PagesController < ApplicationController
 
   def about
     @title = "About"
+  end
+  
+  def help
+    @title = "Help"
   end
   
 end

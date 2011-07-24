@@ -1,0 +1,27 @@
+<%= form_for(@user) do |f| %>
+  <%= render 'shared/error_messages' %>
+  <div class="field">
+    <%= f.label :Web_Page %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="actions">
+    <%= f.submit "Submit" %>
+  </div>
+<% end %>
+
+<!--
+<p>
+<% if (1 == 1) then %>
+What
+<% end %>
+</p>
+-->
+
+<!--
+<p>
+  Last Web Page = <%= User.last.name %>
+@var1 =
+<%= @var1 %>
+</p>
+-->
+
