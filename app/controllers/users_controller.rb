@@ -32,7 +32,6 @@ class UsersController < ApplicationController
         i = 0
         tracksString = ""
         doc.css(".event-list-title").each do |concert|
-          puts("check10")
           bandName = concert.text.chomp.gsub(/\r\n/,"")
           #a[i] = bandName
           #flash[:success] = "Bands found: #{a}"
