@@ -322,6 +322,11 @@ class UsersController < ApplicationController
       str2.gsub!(/trio/,"")
       str2.gsub!(/Trio/,"")
       str2.gsub!(/TRIO/,"")
+      #keep only whitespace and alphanumeric characters
+      i = /[^(\w|\s)]/ =~ str2
+      if (i != nil)
+        str2 = str2[0...i]
+      end
       str2 = str2.lstrip.rstrip
       str2.gsub!(" ", "%20")
       val = "http://ws.spotify.com/search/1/artist?q=" + str2
