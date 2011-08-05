@@ -41,7 +41,7 @@ class UsersController < ApplicationController
             i = i + 1
           end
         end
-        puts("#{tracksString}")
+        #puts("#{tracksString}")
         flash[:success] = "#{tracksString}"
 
         if (i == 0)
@@ -49,15 +49,15 @@ class UsersController < ApplicationController
         end
       
       else
-        flash[:success] = "Web site not supported"
+        flash[:error] = "Web site not supported"
       end
     rescue
-      flash[:success] = "Unable to open web site"
+      flash[:error] = "Unable to open web site"
     end
   end
   
   def showNoBands
-    flash[:success] = "No tracks found"
+    flash[:error] = "No tracks found"
   end
 
   def siteSupported(url)  
@@ -107,7 +107,7 @@ class UsersController < ApplicationController
 
     rescue
       #flash[:success] = "Unable to get artist from spotify"
-      puts("could not find artist")    
+      #puts("could not find artist")    
     end
 
     return (val)
@@ -243,7 +243,7 @@ class UsersController < ApplicationController
 
     rescue
       #flash[:success] = "Unable to get artist from spotify"
-      puts("Unable to get artist from Spotify")   
+      #puts("Unable to get artist from Spotify")   
     end
 
     return(val)
@@ -289,7 +289,7 @@ class UsersController < ApplicationController
 
     rescue
       #flash[:success] = "Unable to get artist from spotify"
-      puts("Unable to get artist from Spotify")   
+      #puts("Unable to get artist from Spotify")   
     end
 
     return(val)
@@ -312,7 +312,7 @@ class UsersController < ApplicationController
       str2 = str2.lstrip.rstrip
       str2.gsub!(" ", "%20")
       val = "http://ws.spotify.com/search/1/artist?q=" + str2
-      puts("spotify url = #{val}")
+      #puts("spotify url = #{val}")
     end
 
     return(val)
@@ -336,7 +336,7 @@ class UsersController < ApplicationController
           track = lookupAlbum(url)
           if (track != nil)
             val = "spotify:track:#{track}"
-            puts(val)
+            #puts(val)
           end
         end
       end
