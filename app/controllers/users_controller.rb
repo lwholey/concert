@@ -22,6 +22,8 @@ class UsersController < ApplicationController
 
   # Parses bands from BostonPhoenix.com
   def parseBands
+    maxBands = 25
+    
     begin
       url = @user.name
       logic1 = siteSupported(url)
@@ -32,29 +34,43 @@ class UsersController < ApplicationController
         i = 0
         j = 0
         k = 0
+        m = 0
         tracksString = "Tracks Found (copy-paste to \"Play Queue\" in Spotify):"
         bandsFoundString = "Bands Found in Spotify:"
         bandsNotFoundString = "Bands Not Found in Spotify: "
         doc.css(".event-list-title").each do |concert|
-          bandName = concert.text.chomp.gsub(/\r\n/,"")
-          str1 = findSpotifyTrack(bandName)
-          if (str1 != nil)
-            tracksString += " " + str1
-            if (k == 0)
-              bandsFoundString += " " + bandName
-              k = 1
+          bandNames = concert.text.chomp.gsub(/\r\n/,"")
+          bandNames.split("+").each do |band|
+            m = m + 1
+            puts("m = #{m}, band = #{band}")
+            str1 = findSpotifyTrack(band)
+            if (str1 != nil)
+              tracksString += " " + str1
+              if (k == 0)
+                bandsFoundString += " " + band
+                k = 1
+              else
+                bandsFoundString += ", " + band
+              end
+              i = i + 1
             else
-              bandsFoundString += ", " + bandName
+              if (j == 0)
+                bandsNotFoundString += " " + band
+                j = 1
+              else
+                bandsNotFoundString += ", " + band
+              end
             end
-            i = i + 1
-          else
-            if (j == 0)
-              bandsNotFoundString += " " + bandName
-              j = 1
-            else
-              bandsNotFoundString += ", " + bandName
+            
+            if (m > maxBands)
+              break
             end
           end
+          
+          if (m > maxBands)
+            break
+          end
+          
         end
         #puts("#{tracksString}")
         flash[:success] = "#{tracksString}"
@@ -311,6 +327,13 @@ class UsersController < ApplicationController
   #create the url in Spotify format for the band name 
   def createArtistUrl(str1)
     val = nil
+
+    #TODO: Fix this, if Latin Jazz is sent to Spotify it returns too much,
+    #for now, don't search for Latin Jazz.  Need to fix other problems like this
+    tmp = /Latin Jazz/ =~ str1
+    if (tmp != nil)
+      return (val)
+    end
 
     if (str1 != nil)
       #remove leading and trailing whitespace
