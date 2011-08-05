@@ -30,22 +30,39 @@ class UsersController < ApplicationController
       
         a = Array.new
         i = 0
-        tracksString = ""
+        j = 0
+        k = 0
+        tracksString = "Tracks Found (copy-paste to \"Play Queue\" in Spotify):"
+        bandsFoundString = "Bands Found in Spotify:"
+        bandsNotFoundString = "Bands Not Found in Spotify: "
         doc.css(".event-list-title").each do |concert|
           bandName = concert.text.chomp.gsub(/\r\n/,"")
-          #a[i] = bandName
-          #flash[:success] = "Bands found: #{a}"
           str1 = findSpotifyTrack(bandName)
           if (str1 != nil)
-            tracksString = tracksString + " " + str1
+            tracksString += " " + str1
+            if (k == 0)
+              bandsFoundString += " " + bandName
+              k = 1
+            else
+              bandsFoundString += ", " + bandName
+            end
             i = i + 1
+          else
+            if (j == 0)
+              bandsNotFoundString += " " + bandName
+              j = 1
+            else
+              bandsNotFoundString += ", " + bandName
+            end
           end
         end
         #puts("#{tracksString}")
         flash[:success] = "#{tracksString}"
+        flash[:warning] = "#{bandsFoundString}"
+        flash[:error] = "#{bandsNotFoundString}"
 
         if (i == 0)
-          showNoTracks
+          flash[:error] = "No bands found"
         end
       
       else
@@ -54,10 +71,6 @@ class UsersController < ApplicationController
     rescue
       flash[:error] = "Unable to open web site"
     end
-  end
-  
-  def showNoBands
-    flash[:error] = "No tracks found"
   end
 
   def siteSupported(url)  
