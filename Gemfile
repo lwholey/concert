@@ -1,43 +1,46 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.9'
-gem 'rake', '0.8.7'
+gem 'rails'
+gem 'rake'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'sqlite3', '1.3.3', :group => :development
 gem 'gravatar_image_tag', '1.0.0.pre2'
 
 group :development do
-  gem 'rspec-rails', '2.6.1'
-  gem 'annotate', '2.4.0'
+  gem 'rspec-rails'
+  gem 'annotate'
+  gem 'nifty-generators'
 end
 
 group :test do
-  gem 'rspec-rails', '2.6.1'
-  gem 'webrat', '0.7.1'
-  gem 'autotest', '4.4.6'
-  gem 'autotest-rails-pure', '4.1.2'
-  gem 'autotest-fsevent', '0.2.4'
-  gem 'autotest-growl', '0.2.9'
-  gem 'factory_girl_rails', '1.0'
+  gem 'rspec-rails'
+  gem 'webrat'
+  gem 'autotest'
+  gem 'autotest-rails-pure'
+  gem 'autotest-fsevent'
+  gem 'autotest-growl'
+  gem 'factory_girl_rails'
 end
 
-# Use unicorn as the web server
-# gem 'unicorn'
-
-# Deploy with Capistrano
-# gem 'capistrano'
-
-# To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
-# gem 'ruby-debug'
-# gem 'ruby-debug19', :require => 'ruby-debug'
+gem 'capistrano'
 
 # Bundle the extra gems:
 # gem 'bj'
 gem 'nokogiri'
 gem 'mechanize'
+gem 'mongo_ext'
+gem 'mongoid', :path => '~/Documents/M/mongoid/mongoid'
+gem 'bson_ext', '~> 1.3'
+gem 'devise', '1.3.4' #user authentication
+gem 'oa-oauth', :require => 'omniauth/oauth'
+
+gem 'haml'
+gem 'coffee-script'
+gem 'uglifier'
+gem 'jquery-rails'
+
 # gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'aws-s3', :require => 'aws/s3'
 
