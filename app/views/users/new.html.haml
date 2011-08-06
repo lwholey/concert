@@ -1,0 +1,16 @@
+- form_for(@user) do |f|
+  = render 'shared/error_messages'
+  .field
+    = f.label :Enter_Web_Page
+    %br
+    = f.text_field :name, :size => 129
+  .actions
+    = f.submit "Submit"
+  %p
+    Sites supported :
+    %br
+    http://thephoenix.com/Boston/Concerts/search/
+    %br
+    http://portland.thephoenix.com/Concerts/search/
+    %br
+    http://providence.thephoenix.com/Concerts/search/
