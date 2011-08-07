@@ -37,6 +37,8 @@ class UsersController < ApplicationController
         tracksString = "Tracks Found (copy-paste to \"Play Queue\" in Spotify):"
         bandsFoundString = "Bands Found in Spotify:"
         bandsNotFoundString = "Bands Not Found in Spotify: "
+       
+        # Scrape band names from thePhoenix.com
         doc.css(".event-list-title").each do |concert|
           bandNames = concert.text.chomp.gsub(/\r\n/,"")
           bandNames.split("+").each do |band|
@@ -89,6 +91,7 @@ class UsersController < ApplicationController
     end
   end
 
+# returns 1 if url is supported by lennylonglegs (0 if not)
   def siteSupported(url)  
     a = Array.new
     # !!! all array values should be entered as lowercase
