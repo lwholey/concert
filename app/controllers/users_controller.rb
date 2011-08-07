@@ -29,8 +29,7 @@ class UsersController < ApplicationController
       logic1 = siteSupported(url)
       if (logic1 == 1)
         doc = Nokogiri::HTML(open(url))
-      
-        a = Array.new
+
         i = 0
         j = 0
         k = 0
