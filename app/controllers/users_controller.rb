@@ -329,13 +329,6 @@ class UsersController < ApplicationController
   def createArtistUrl(str1)
     val = nil
 
-    #TODO: Fix this, if Latin Jazz is sent to Spotify it returns too much,
-    #for now, don't search for Latin Jazz.  Need to fix other problems like this
-    tmp = /Latin Jazz/ =~ str1
-    if (tmp != nil)
-      return (val)
-    end
-
     if (str1 != nil)
       #remove leading and trailing whitespace
       str2 = str1.lstrip.rstrip
