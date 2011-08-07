@@ -22,7 +22,7 @@ class UsersController < ApplicationController
 
   # Parses bands from BostonPhoenix.com
   def parseBands
-    maxBands = 25
+    maxBands = 20
     
     begin
       url = @user.name
@@ -76,7 +76,8 @@ class UsersController < ApplicationController
         flash[:success] = "#{tracksString}"
         flash[:warning] = "#{bandsFoundString}"
         flash[:error] = "#{bandsNotFoundString}"
-
+        flash[:message] = "Number of bands searched exceeded 
+                          #{maxBands} - consider focusing search."
         if (i == 0)
           flash[:error] = "No bands found"
         end
