@@ -3,8 +3,17 @@ class UsersController < ApplicationController
   require 'mechanize'
   require 'open-uri'
 
+  # maximum number of bands to find tracks for
+  $maxBands = 20
+
+  $webSitesHash = Hash.new
+  $webSitesHash['thePhoenix'] = 0
+  $webSitesHash['testSite'] = 1 
   $webSitesSupported = Array.new
+  # TODO : Fix so that criteria below are not needed
   # !!! all array values should be entered as lowercase
+  # !!! Order must match 0, 1, ... order above
+  # !!! Sequential values must be used
   $webSitesSupported[0] = /thephoenix/
   $webSitesSupported[1] = /testsite/ #made up value
     
@@ -15,7 +24,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(params[:user])
-    # Get bands from web page
+
     parseBands
     
     if @user.save
@@ -25,90 +34,134 @@ class UsersController < ApplicationController
     end
   end
 
-  # Parses bands from BostonPhoenix.com
+  # Parses bands from web sites and creates playlist for Spotify
   def parseBands
-    maxBands = 20
     
-    begin
-      url = @user.name
-      logic1 = isSiteSupported(url)
-      if (logic1 == 1)
-        doc = Nokogiri::HTML(open(url))
+    url = @user.name
+    webSiteIndex = isSiteSupported(url)
+    if (webSiteIndex != nil)
 
-        i = 0
-        j = 0
-        k = 0
-        m = 0
-        tracksString = "Tracks Found (copy-paste to \"Play Queue\" in Spotify):"
-        bandsFoundString = "Bands Found in Spotify:"
-        bandsNotFoundString = "Bands Not Found in Spotify: "
-       
-        # Scrape band names from thePhoenix.com
-        doc.css(".event-list-title").each do |concert|
-          bandNames = concert.text.chomp.gsub(/\r\n/,"")
-          bandNames.split("+").each do |band|
-            m = m + 1
-            puts("m = #{m}, band = #{band}")
-            str1 = findSpotifyTrack(band)
-            if (str1 != nil)
-              tracksString += " " + str1
-              if (k == 0)
-                bandsFoundString += " " + band
-                k = 1
-              else
-                bandsFoundString += ", " + band
-              end
-              i = i + 1
-            else
-              if (j == 0)
-                bandsNotFoundString += " " + band
-                j = 1
-              else
-                bandsNotFoundString += ", " + band
-              end
-            end
-            
-            if (m > maxBands)
-              break
-            end
-          end
-          
-          if (m > maxBands)
-            break
-          end
-          
-        end
-        #puts("#{tracksString}")
-        flash[:success] = "#{tracksString}"
-        flash[:warning] = "#{bandsFoundString}"
-        flash[:error] = "#{bandsNotFoundString}"
-        flash[:message] = "Number of bands searched exceeded 
-                          #{maxBands} - consider focusing search."
-        if (i == 0)
-          flash[:error] = "No bands found"
-        end
-      
-      else
-        flash[:error] = "Web site not supported"
+      # Scrape band names from webSitesSupported
+      case (webSiteIndex)
+        when $webSitesHash['thePhoenix']
+          bandsArray = scrapeThePhoenix(url)
+        when $webSitesHash['testSite']
+          bandsArray = nil
+          flash[:error] = "This is only a test"
+          return nil
+        else 
+          bandsArray = nil
       end
-    rescue
-      flash[:error] = "Unable to open web site"
+
+      if (bandsArray != nil)
+        createSpotifyPlaylist(bandsArray)
+      else
+        flash[:error] = "No bands found"
+      end
+
+    else
+      flash[:error] = "Web site not supported"
     end
   end
 
-# returns 1 if url is supported by lennylonglegs (0 if not)
+# returns index of webSitesSupported found,
+# otherwise returns nil
   def isSiteSupported(url)  
 
-    val = 0
+    val = nil
+    i = 0
     $webSitesSupported.each do |aStr|
       if (aStr =~ url.downcase)
-        val = 1
+        val = i
         break
       end
+      i += 1
     end
 
     return (val)
   end
+
+  # returns an array of strings of band names (returns nil if no bands found)
+  def scrapeThePhoenix(url)
+
+    begin
+      doc = Nokogiri::HTML(open(url))
+      bandsArray = Array.new
+
+      m = 0
+      tracksString = "Tracks Found (copy-paste to \"Play Queue\" in Spotify):"
+      bandsFoundString = "Bands Found in Spotify:"
+      bandsNotFoundString = "Bands Not Found in Spotify: "
+   
+      doc.css(".event-list-title").each do |concert|
+        bandNames = concert.text.chomp.gsub(/\r|\n/,"")
+        bandNames.split("+").each do |band|
+          bandsArray[m] = band.lstrip.rstrip
+          puts("bandsArray[m] = #{bandsArray[m]}")
+          m = m + 1
+          
+          if (m > $maxBands)
+            break
+          end
+          
+        end
+      
+        if (m > $maxBands)
+          break
+        end
+      
+      end
+    
+      if (m == 0)
+        return(nil)
+      else
+        return(bandsArray)
+      end
+    rescue
+      return(nil)
+    end
+    
+  end
+
+  # Create Spotify playlist to display on web site
+  # uses an array of strings (bandsArray) as input
+  def createSpotifyPlaylist(bandsArray)
+
+    j = 0
+    k = 0
+
+    tracksString = "Tracks Found (copy-paste to \"Play Queue\" in Spotify):"
+    bandsFoundString = "Bands Found in Spotify:"
+    bandsNotFoundString = "Bands Not Found in Spotify: "
+
+    bandsArray.each do |band|
+      str1 = findSpotifyTrack(band)
+      puts("Spotify track = #{str1}")
+      if (str1 != nil)
+        tracksString += " " + str1
+        if (k == 0)
+          bandsFoundString += " " + band
+          k = 1
+        else
+          bandsFoundString += ", " + band
+        end
+      else
+        if (j == 0)
+          bandsNotFoundString += " " + band
+          j = 1
+        else
+          bandsNotFoundString += ", " + band
+        end
+      end
+    end
+
+    flash[:success] = "#{tracksString}"
+    flash[:warning] = "#{bandsFoundString}"
+    flash[:error] = "#{bandsNotFoundString}"
+    flash[:message] = "Number of bands searched exceeded 
+                      #{$maxBands} - consider focusing search."
+  end
+
 
   #returns Spotify's coded value for artist
   #TODO : Handle case where more than one artist is returned
@@ -138,8 +191,7 @@ class UsersController < ApplicationController
       val = str1[i..j]
 
     rescue
-      #flash[:success] = "Unable to get artist from spotify"
-      #puts("could not find artist")    
+
     end
 
     return (val)
@@ -274,8 +326,7 @@ class UsersController < ApplicationController
       end
 
     rescue
-      #flash[:success] = "Unable to get artist from spotify"
-      #puts("Unable to get artist from Spotify")   
+ 
     end
 
     return(val)
@@ -320,8 +371,7 @@ class UsersController < ApplicationController
       end
 
     rescue
-      #flash[:success] = "Unable to get artist from spotify"
-      #puts("Unable to get artist from Spotify")   
+  
     end
 
     return(val)
