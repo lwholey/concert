@@ -2,6 +2,11 @@ class UsersController < ApplicationController
   require 'nokogiri'
   require 'mechanize'
   require 'open-uri'
+
+  $webSitesSupported = Array.new
+  # !!! all array values should be entered as lowercase
+  $webSitesSupported[0] = /thephoenix/
+  $webSitesSupported[1] = /testsite/ #made up value
     
   def new
     @user = User.new
@@ -26,7 +31,7 @@ class UsersController < ApplicationController
     
     begin
       url = @user.name
-      logic1 = siteSupported(url)
+      logic1 = isSiteSupported(url)
       if (logic1 == 1)
         doc = Nokogiri::HTML(open(url))
 
@@ -92,15 +97,10 @@ class UsersController < ApplicationController
   end
 
 # returns 1 if url is supported by lennylonglegs (0 if not)
-  def siteSupported(url)  
-    a = Array.new
-    # !!! all array values should be entered as lowercase
-    a[0] = /thephoenix/
-    a[1] = /testsite/ #made up value
+  def isSiteSupported(url)  
 
     val = 0
-
-    a.each do |aStr|
+    $webSitesSupported.each do |aStr|
       if (aStr =~ url.downcase)
         val = 1
         break
