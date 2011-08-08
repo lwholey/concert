@@ -1,0 +1,15 @@
+= form_for @website do |f|
+  %p
+    = f.label :label
+    %br
+    = f.text_field :label
+  %p
+    = f.label :url
+    %br
+    = f.text_field :url
+  %p
+    = f.label :location
+    %br
+    = f.text_field :location
+  %p
+    = f.submit

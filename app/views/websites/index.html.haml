@@ -1,0 +1,17 @@
+#websites{:style=> "background-color:#d0d0d0; color:darkblue;"}
+  %table
+    %tr
+      %th Label
+      %th Url
+      %th Location
+    - for website in @websites
+      %tr
+        %td= website.label
+        %td= website.url
+        %td= website.location
+        %td= link_to 'Show', website
+        %td= link_to 'Edit', edit_website_path(website)
+        %td= link_to 'Destroy', website, :confirm => 'Are you sure?', :method => :delete
+  
+  %p= link_to "New Website", new_website_path
+  

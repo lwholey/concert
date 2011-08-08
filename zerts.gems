@@ -1,4 +1,4 @@
-# concert.gems generated gem export file. Note that any env variable settings will be missing. Append these after using a ';' field separator
+# zerts.gems generated gem export file. Note that any env variable settings will be missing. Append these after using a ';' field separator
 abstract -v1.0.0
 actionmailer -v3.1.0.rc5
 actionmailer -v3.0.9
@@ -27,8 +27,14 @@ builder -v3.0.0
 builder -v2.1.2
 bundler -v1.0.15
 capistrano -v2.8.0
+capybara -v1.0.0
+childprocess -v0.2.0
 coffee-script -v2.2.0
 coffee-script-source -v1.1.2
+cucumber -v1.0.2
+cucumber-rails -v1.0.2
+database_cleaner -v0.6.7
+devise -v1.4.2
 devise -v1.3.4
 diff-lcs -v1.1.2
 erubis -v2.7.0
@@ -37,6 +43,8 @@ execjs -v1.2.4
 factory_girl -v1.3.3
 factory_girl_rails -v1.0
 faraday -v0.6.1
+ffi -v1.0.9
+gherkin -v2.4.5
 gravatar_image_tag -v1.0.0.pre2
 haml -v3.1.2
 highline -v1.6.2
@@ -45,10 +53,13 @@ hpricot -v0.8.4
 i18n -v0.6.0
 i18n -v0.5.0
 jquery-rails -v1.0.12
+json -v1.5.3
+json_pure -v1.5.3
 mail -v2.3.0
 mail -v2.2.19
 mechanize -v2.0.1
 mime-types -v1.16
+mocha -v0.9.12
 mongo -v1.3.1
 mongo_ext -v0.19.3
 multi_json -v1.0.3
@@ -90,9 +101,12 @@ rspec-expectations -v2.6.0
 rspec-mocks -v2.6.0
 rspec-rails -v2.6.1
 ruby_parser -v2.0.6
+rubyzip -v0.9.4
+selenium-webdriver -v0.2.2
 sexp_processor -v3.0.5
 sprockets -v2.0.0.beta.13
 sys-uname -v0.8.5
+term-ansicolor -v1.0.6
 thor -v0.14.6
 tilt -v1.3.2
 treetop -v1.4.10
@@ -102,4 +116,5 @@ uglifier -v1.0.0
 warden -v1.0.5
 webrat -v0.7.1
 webrobots -v0.0.10
+xpath -v0.1.4
 ZenTest -v4.5.0

@@ -16,7 +16,6 @@
 #   validates :name,  :presence => true
 # #                    :length   => { :minimum => 10 }
 # end
-load "lib/mongoid_profileable.rb"
 
 class User
   include Mongoid::Document

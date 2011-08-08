@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
-gem 'rails'
-gem 'rake'
+gem 'rails', '~> 3.1.0.rc5'
+gem 'rake', '~> 0.9.2'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -12,6 +12,7 @@ group :development do
   gem 'rspec-rails'
   gem 'annotate'
   gem 'nifty-generators'
+  gem 'mocha'
 end
 
 group :test do
@@ -22,6 +23,8 @@ group :test do
   gem 'autotest-fsevent'
   gem 'autotest-growl'
   gem 'factory_girl_rails'
+  gem 'cucumber-rails'
+  gem 'capybara'
 end
 
 gem 'capistrano'
@@ -40,7 +43,7 @@ gem 'haml'
 gem 'coffee-script'
 gem 'uglifier'
 gem 'jquery-rails'
-
+gem 'database_cleaner'
 # gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'aws-s3', :require => 'aws/s3'
 

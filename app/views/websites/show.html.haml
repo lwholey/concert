@@ -1,0 +1,19 @@
+#websites{:style=> "background-color:#d0d0d0; color:darkblue;"}
+  - title "Website"
+  
+  %p
+    %strong Label:
+    = @website.label
+  %p
+    %strong Url:
+    = @website.url
+  %p
+    %strong Location:
+    = @website.location
+  
+  %p
+    = link_to "Edit", edit_website_path(@website)
+    |
+    = link_to "Destroy", @website, :confirm => 'Are you sure?', :method => :delete
+    |
+    = link_to "View All", websites_path

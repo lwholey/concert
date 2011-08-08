@@ -1,0 +1,10 @@
+#websites{:style=> "background-color:#d0d0d0; color:darkblue;"}
+  - title "Edit Website"
+  
+  = render 'form'
+  
+  %p
+    = link_to "Show", @website
+    |
+    = link_to "View All", websites_path
+  
