@@ -8,14 +8,14 @@ class UsersController < ApplicationController
 
   $webSitesHash = Hash.new
   $webSitesHash['thePhoenix'] = 0
-  $webSitesHash['testSite'] = 1 
+  $webSitesHash['newyorker'] = 1 
   $webSitesSupported = Array.new
   # TODO : Fix so that criteria below are not needed
   # !!! all array values should be entered as lowercase
   # !!! Order must match 0, 1, ... order above
   # !!! Sequential values must be used
   $webSitesSupported[0] = /thephoenix/
-  $webSitesSupported[1] = /testsite/ #made up value
+  $webSitesSupported[1] = /newyorker/
     
   def new
     @user = User.new
@@ -45,10 +45,8 @@ class UsersController < ApplicationController
       case (webSiteIndex)
         when $webSitesHash['thePhoenix']
           bandsArray = scrapeThePhoenix(url)
-        when $webSitesHash['testSite']
-          bandsArray = nil
-          flash[:error] = "This is only a test"
-          return nil
+        when $webSitesHash['newyorker']
+          bandsArray = scrapeTheNewYorker(url)
         else 
           bandsArray = nil
       end
@@ -71,6 +69,8 @@ class UsersController < ApplicationController
     val = nil
     i = 0
     $webSitesSupported.each do |aStr|
+      #puts("aStr = #{aStr}")
+      #puts("url.downcase = #{url.downcase}")
       if (aStr =~ url.downcase)
         val = i
         break
@@ -121,6 +121,64 @@ class UsersController < ApplicationController
       return(nil)
     end
     
+  end
+ 
+  # returns an array of strings of band names (returns nil if no bands found)
+  def scrapeTheNewYorker(url)
+    puts("scrapeTheNewYorker")
+    begin
+      doc = Nokogiri::HTML(open(url))
+      bandsArray = Array.new
+
+      m = 0
+      tracksString = "Tracks Found (copy-paste to \"Play Queue\" in Spotify):"
+      bandsFoundString = "Bands Found in Spotify:"
+      bandsNotFoundString = "Bands Not Found in Spotify: "
+
+      doc.css(".v").each do |concert|
+
+        #puts("concert = #{concert}")
+        str = concert.to_s
+        tmp = "</a"
+        tmpRegx = /#{tmp}/
+        i = tmpRegx =~ str
+        n = nil
+
+        for j in (0...str.length)
+
+          if ('>' == str[j].chr)
+            n = j
+            #puts("n = #{n}")
+          end
+
+          if j == i
+            break
+          end
+        end
+
+        if ( (i != nil) && (n != nil) )
+          bandsArray[m] = str[n+1...i].lstrip.rstrip
+          #TODO: Add splitting by "," "and" (others?)
+          puts("bandsArray[m] = #{bandsArray[m]}")
+          m = m + 1
+        end
+        
+        if (m > $maxBands)
+          break
+        end
+        
+      end
+
+      if (m == 0)
+        return(nil)
+      else
+        return(bandsArray)
+      end
+    rescue
+      puts("rescue called")
+      return(nil)
+    end
+
   end
 
   # Create Spotify playlist to display on web site
