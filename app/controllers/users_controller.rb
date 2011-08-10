@@ -157,10 +157,23 @@ class UsersController < ApplicationController
         end
 
         if ( (i != nil) && (n != nil) )
-          bandsArray[m] = str[n+1...i].lstrip.rstrip
-          #TODO: Add splitting by "," "and" (others?)
-          puts("bandsArray[m] = #{bandsArray[m]}")
-          m = m + 1
+          str = str[n+1...i].lstrip.rstrip
+          # E.g. 1 from "this, that, and other" split into 
+          # "this", "that", "other"
+          # E.g. 2 from "this and that" split into
+          # "this", "that"
+          str.split("and").each do |band1|
+            band1.split(",").each do |band2|
+              #only keep bands that have alphanumeric characters
+              i = /\w/ =~ band2
+              if (i != nil)
+                bandsArray[m] = band2.lstrip.rstrip
+                puts("bandsArray[m] = #{bandsArray[m]}")
+                m = m + 1
+              end
+            end
+          end        
+          
         end
         
         if (m > $maxBands)
