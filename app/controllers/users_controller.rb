@@ -171,9 +171,14 @@ class UsersController < ApplicationController
                 puts("bandsArray[m] = #{bandsArray[m]}")
                 m = m + 1
               end
+              if (m > $maxBands)
+                break
+              end
+            end
+            if (m > $maxBands)
+              break
             end
           end        
-          
         end
         
         if (m > $maxBands)
