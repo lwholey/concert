@@ -89,9 +89,6 @@ class UsersController < ApplicationController
       bandsArray = Array.new
 
       m = 0
-      tracksString = "Tracks Found (copy-paste to \"Play Queue\" in Spotify):"
-      bandsFoundString = "Bands Found in Spotify:"
-      bandsNotFoundString = "Bands Not Found in Spotify: "
    
       doc.css(".event-list-title").each do |concert|
         bandNames = concert.text.chomp.gsub(/\r|\n/,"")
@@ -131,9 +128,6 @@ class UsersController < ApplicationController
       bandsArray = Array.new
 
       m = 0
-      tracksString = "Tracks Found (copy-paste to \"Play Queue\" in Spotify):"
-      bandsFoundString = "Bands Found in Spotify:"
-      bandsNotFoundString = "Bands Not Found in Spotify: "
 
       doc.css(".v").each do |concert|
 
