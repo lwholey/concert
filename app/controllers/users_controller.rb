@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   require 'open-uri'
 
   # maximum number of bands to find tracks for
-  $maxBands = 20
+  $maxBands = 15
 
   $webSitesHash = Hash.new
   $webSitesHash['thePhoenix'] = 0
