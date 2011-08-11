@@ -8,7 +8,8 @@ class UsersController < ApplicationController
 
   $webSitesHash = Hash.new
   $webSitesHash['thePhoenix'] = 0
-  $webSitesHash['newyorker'] = 1 
+  $webSitesHash['newyorker'] = 1
+  $webSitesHash['cal.startribune.com'] = 2
   $webSitesSupported = Array.new
   # TODO : Fix so that criteria below are not needed
   # !!! all array values should be entered as lowercase
@@ -16,6 +17,7 @@ class UsersController < ApplicationController
   # !!! Sequential values must be used
   $webSitesSupported[0] = /thephoenix/
   $webSitesSupported[1] = /newyorker/
+  $webSitesSupported[2] = /cal.startribune.com/
     
   def new
     @user = User.new
@@ -47,6 +49,8 @@ class UsersController < ApplicationController
           bandsArray = scrapeThePhoenix(url)
         when $webSitesHash['newyorker']
           bandsArray = scrapeTheNewYorker(url)
+        when $webSitesHash['cal.startribune.com']
+          bandsArray = scrapeTheStarTribune(url)
         else 
           bandsArray = nil
       end
@@ -190,6 +194,107 @@ class UsersController < ApplicationController
       puts("rescue called")
       return(nil)
     end
+
+  end
+
+  def scrapeTheStarTribune(url)
+    puts("scrapeTheStarTribune")
+
+    begin
+      str = Nokogiri::HTML(open(url))
+      str = str.to_s
+
+      # find "div id="p_", 
+      # then find all ">"
+      # then find second "</a"
+      str1 = "div id=\"p_"
+      str2 = ">"
+      str3 = "</a"
+      str4 = "startribune footer"
+
+      bandsArray = Array.new
+
+      j = 0
+      k = 0
+      n = 0
+      m = 0
+      p = 0
+      firstStr3Found = 0
+      strState = 0
+
+      for i in (0...str.length)
+        case(strState)
+          when 0
+            if (str[i] == str1[j])
+              j += 1
+              if (j == str1.length)
+                strState = 1
+                j = 0
+              end
+            else
+              j = 0
+            end
+          when 1
+            if (str[i] == str2[0])
+              k = i
+            end
+
+            if (str[i] == str3[n])
+              n += 1
+              if (n == str3.length)
+                if (firstStr3Found == 0)
+                  firstStr3Found = 1
+                else
+                  strTmp = str[k+1..(i-str3.length)]
+                  strTmp.split("&amp;").each do |band1|
+                    bandsArray[m] = band1
+                    puts("bandsArray[#{m}] = #{bandsArray[m]}")
+                    m += 1
+                    if (m > $maxBands)
+                      break
+                    end
+                  end
+                  if (m > $maxBands)
+                    break
+                  end
+                  strState = 0
+                  firstStr3Found = 0
+                end
+                n = 0
+                k = 0
+              end
+            else
+              n = 0
+            end
+
+          else puts("shouldn't ever reach here")
+        end
+
+        # stop searching once the footer has been reached
+        if (str[i] == str4[p])
+          p += 1
+          if (p == str4.length)
+            p = 0
+            puts("footer reached")
+            break
+          end
+        else
+          p = 0
+        end
+
+      end
+
+    rescue
+      puts("scrapeTheStarTribune Rescue called")
+    end
+
+    if (m == 0)
+      return(nil)
+    else
+      return(bandsArray)
+    end
+
+    puts("scrapeTheStarTribuneDone")
 
   end
 
