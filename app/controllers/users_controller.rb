@@ -19,8 +19,9 @@ class UsersController < ApplicationController
   $webSitesSupported[1] = /newyorker/
   $webSitesSupported[2] = /cal.startribune.com/
     
-  def new
+  def new    
     @user = User.new
+    @user.name = params[:u]
     @title = "Enter Web Page"
   end
 
