@@ -10,6 +10,7 @@ class UsersController < ApplicationController
   $webSitesHash['thePhoenix'] = 0
   $webSitesHash['newyorker'] = 1
   $webSitesHash['cal.startribune.com'] = 2
+  $webSitesHash['sfstation'] = 3
   $webSitesSupported = Array.new
   # TODO : Fix so that criteria below are not needed
   # !!! all array values should be entered as lowercase
@@ -18,7 +19,7 @@ class UsersController < ApplicationController
   $webSitesSupported[0] = /thephoenix/
   $webSitesSupported[1] = /newyorker/
   $webSitesSupported[2] = /cal.startribune.com/
-    
+  $webSitesSupported[3] = /sfstation/
   def new    
     @user = User.new
     @user.name = params[:u]
@@ -52,6 +53,8 @@ class UsersController < ApplicationController
           bandsArray = scrapeTheNewYorker(url)
         when $webSitesHash['cal.startribune.com']
           bandsArray = scrapeTheStarTribune(url)
+        when $webSitesHash['sfstation']
+          bandsArray = scrapeSfStation(url)
         else 
           bandsArray = nil
       end
@@ -70,7 +73,7 @@ class UsersController < ApplicationController
 # returns index of webSitesSupported found,
 # otherwise returns nil
   def isSiteSupported(url)  
-
+    
     val = nil
     i = 0
     $webSitesSupported.each do |aStr|
@@ -82,7 +85,6 @@ class UsersController < ApplicationController
       end
       i += 1
     end
-
     return (val)
   end
 
@@ -298,6 +300,27 @@ class UsersController < ApplicationController
     puts("scrapeTheStarTribuneDone")
 
   end
+
+  # returns an array of strings of band names (returns nil if no bands found)
+  def scrapeSfStation(url)
+    
+    doc = Nokogiri::HTML(open(url))
+    bandsArray = Array.new
+
+    doc.css(".summary").each do |summary|
+      bandsArray << summary.text
+    end
+    
+    puts "Found these bands: #{bandsArray}"
+    
+    if ( bandsArray.empty? )
+      return nil
+    else
+      return(bandsArray)
+    end
+    
+  end
+ 
 
   # Create Spotify playlist to display on web site
   # uses an array of strings (bandsArray) as input
