@@ -311,8 +311,6 @@ class UsersController < ApplicationController
       bandsArray << summary.text
     end
     
-    puts "Found these bands: #{bandsArray}"
-    
     if ( bandsArray.empty? )
       return nil
     else
