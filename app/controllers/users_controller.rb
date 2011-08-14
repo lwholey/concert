@@ -599,6 +599,10 @@ class UsersController < ApplicationController
       str2.gsub!(/trio/,"")
       str2.gsub!(/Trio/,"")
       str2.gsub!(/TRIO/,"")
+      #remove tribute (may want to include actual bands who are playing the tribute as well)
+      str2.gsub!(/tribute/,"")
+      str2.gsub!(/Tribute/,"")
+      str2.gsub!(/TRIBUTE/,'')
       #keep only whitespace and alphanumeric characters
       i = /[^(\w|\s)]/ =~ str2
       if (i != nil)
