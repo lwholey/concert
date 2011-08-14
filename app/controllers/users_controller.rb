@@ -1,6 +1,5 @@
 class UsersController < ApplicationController
   require 'nokogiri'
-  require 'mechanize'
   require 'open-uri'
 
   # maximum number of bands to find tracks for

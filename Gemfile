@@ -37,7 +37,6 @@ end
 # Bundle the extra gems:
 # gem 'bj'
 gem 'nokogiri'
-gem 'mechanize'
 # gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'aws-s3', :require => 'aws/s3'
 
