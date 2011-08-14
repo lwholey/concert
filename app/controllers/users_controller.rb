@@ -330,37 +330,43 @@ class UsersController < ApplicationController
   # uses an array of strings (bandsArray) as input
   def createSpotifyPlaylist(bandsArray)
 
-    j = 0
-    k = 0
-
-    tracksString = "Tracks Found (copy-paste to \"Play Queue\" in Spotify):"
-    bandsFoundString = "Bands Found in Spotify:"
-    bandsNotFoundString = "Bands Not Found in Spotify: "
+    tracksString = ""
+    bandsFoundString = ""
+    bandsNotFoundString = ""
 
     bandsArray.each do |band|
       str1 = findSpotifyTrack(band)
       puts("Spotify track = #{str1}")
       if (str1 != nil)
-        tracksString += " " + str1
-        if (k == 0)
-          bandsFoundString += " " + band
-          k = 1
+        if (tracksString == "")
+          tracksString = "Tracks Found (copy-paste to \"Play Queue\" in Spotify): " + str1
+        else
+          tracksString += " " + str1
+        end
+        
+        if (bandsFoundString == "")
+          bandsFoundString = "Bands Found in Spotify: " + band
         else
           bandsFoundString += ", " + band
         end
       else
-        if (j == 0)
-          bandsNotFoundString += " " + band
-          j = 1
+        if (bandsNotFoundString == "")
+          bandsNotFoundString = "Bands Not Found in Spotify: " + band
         else
           bandsNotFoundString += ", " + band
         end
       end
     end
 
-    flash[:success] = "#{tracksString}"
-    flash[:warning] = "#{bandsFoundString}"
-    flash[:error] = "#{bandsNotFoundString}"
+    if (tracksString != "")
+      flash[:success] = "#{tracksString}"
+    end
+    if (bandsFoundString != "")
+      flash[:warning] = "#{bandsFoundString}"
+    end
+    if (bandsNotFoundString != "")
+      flash[:error] = "#{bandsNotFoundString}"
+    end
 
   end
 
