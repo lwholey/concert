@@ -12,7 +12,7 @@
 require 'digest'
 class User < ActiveRecord::Base
   attr_accessible :name
-  
+  attr_accessible :maxNumberOfBands
   validates :name,  :presence => true
 #                    :length   => { :minimum => 10 }
 end

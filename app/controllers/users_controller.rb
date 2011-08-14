@@ -29,8 +29,14 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
 
+    # only set $maxBands if input is a digit (\D is a non-digit character)
+    i = /\D/ =~ @user.maxNumberOfBands
+    if (i == nil)
+      $maxBands = @user.maxNumberOfBands.to_i
+    end
+
     parseBands
-    
+
     if @user.save
       redirect_to "/entry"
     else
@@ -100,17 +106,16 @@ class UsersController < ApplicationController
       doc.css(".event-list-title").each do |concert|
         bandNames = concert.text.chomp.gsub(/\r|\n/,"")
         bandNames.split("+").each do |band|
+          if (m >= $maxBands)
+             break
+          end
           bandsArray[m] = band.lstrip.rstrip
           puts("bandsArray[m] = #{bandsArray[m]}")
           m = m + 1
           
-          if (m > $maxBands)
-            break
-          end
-          
         end
       
-        if (m > $maxBands)
+        if (m >= $maxBands)
           break
         end
       
@@ -168,21 +173,22 @@ class UsersController < ApplicationController
               #only keep bands that have alphanumeric characters
               i = /\w/ =~ band2
               if (i != nil)
+                if (m >= $maxBands)
+                  break
+                end
                 bandsArray[m] = band2.lstrip.rstrip
                 puts("bandsArray[m] = #{bandsArray[m]}")
                 m = m + 1
               end
-              if (m > $maxBands)
-                break
-              end
+
             end
-            if (m > $maxBands)
+            if (m >= $maxBands)
               break
             end
           end        
         end
         
-        if (m > $maxBands)
+        if (m >= $maxBands)
           break
         end
         
@@ -250,14 +256,14 @@ class UsersController < ApplicationController
                 else
                   strTmp = str[k+1..(i-str3.length)]
                   strTmp.split("&amp;").each do |band1|
+                    if (m >= $maxBands)
+                      break
+                    end
                     bandsArray[m] = band1
                     puts("bandsArray[#{m}] = #{bandsArray[m]}")
                     m += 1
-                    if (m > $maxBands)
-                      break
-                    end
                   end
-                  if (m > $maxBands)
+                  if (m >= $maxBands)
                     break
                   end
                   strState = 0
@@ -355,8 +361,7 @@ class UsersController < ApplicationController
     flash[:success] = "#{tracksString}"
     flash[:warning] = "#{bandsFoundString}"
     flash[:error] = "#{bandsNotFoundString}"
-    flash[:message] = "Number of bands searched exceeded 
-                      #{$maxBands} - consider focusing search."
+
   end
 
 
