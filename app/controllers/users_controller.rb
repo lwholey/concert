@@ -662,7 +662,7 @@ class UsersController < ApplicationController
       str2.gsub!(" ", "%20")
       str2.gsub!("&", "%26")
       val = "http://ws.spotify.com/search/1/artist?q=" + str2
-      puts("spotify url = #{val}")
+      #puts("spotify url = #{val}")
     end
 
     return(val)
