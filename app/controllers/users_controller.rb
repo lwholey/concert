@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   require 'open-uri'
 
   # maximum number of bands to find tracks for
-  $maxBands = 15
+  $defaultMaxBands = 15
 
   $webSitesHash = Hash.new
   $webSitesHash['thePhoenix'] = 0
@@ -34,8 +34,17 @@ class UsersController < ApplicationController
 
     # only set $maxBands if input is a digit (\D is a non-digit character)
     i = /\D/ =~ @user.maxNumberOfBands
-    if (i == nil)
+    if (i == nil) # no non-digit chars were found so use input
       $maxBands = @user.maxNumberOfBands.to_i
+    else
+      $maxBands = $defaultMaxBands
+    end
+    
+    # If form is blank the regexp returns nil and "".to_i returns 0, but 
+    # really want the default.
+    # TODO: Use form validation instead?
+    if ($maxBands == 0)
+      $maxBands = $defaultMaxBands
     end
 
     parseBands
