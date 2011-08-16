@@ -11,6 +11,7 @@ class UsersController < ApplicationController
   $webSitesHash['cal.startribune.com'] = 2
   $webSitesHash['sfstation'] = 3
   $webSitesHash['calendar.triblive.com'] = 4
+  $webSitesHash['calendar.denverpost.com'] = 5
   $webSitesSupported = Array.new
   # TODO : Fix so that criteria below are not needed
   # !!! all array values should be entered as lowercase
@@ -21,6 +22,7 @@ class UsersController < ApplicationController
   $webSitesSupported[2] = /cal.startribune.com/
   $webSitesSupported[3] = /sfstation/
   $webSitesSupported[4] = /calendar.triblive.com/
+  $webSitesSupported[5] = /calendar.denverpost.com/
   def new    
     @user = User.new
     @user.name = params[:u]
@@ -62,7 +64,8 @@ class UsersController < ApplicationController
           bandsArray = scrapeTheStarTribune(url)
         when $webSitesHash['sfstation']
           bandsArray = scrapeSfStation(url)
-        when $webSitesHash['calendar.triblive.com']
+        when $webSitesHash['calendar.triblive.com'], 
+             $webSitesHash['calendar.denverpost.com']
           bandsArray = scrapeTheTribune(url)
         else 
           bandsArray = nil
