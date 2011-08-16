@@ -10,6 +10,7 @@ class UsersController < ApplicationController
   $webSitesHash['newyorker'] = 1
   $webSitesHash['cal.startribune.com'] = 2
   $webSitesHash['sfstation'] = 3
+  $webSitesHash['calendar.triblive.com'] = 4
   $webSitesSupported = Array.new
   # TODO : Fix so that criteria below are not needed
   # !!! all array values should be entered as lowercase
@@ -19,6 +20,7 @@ class UsersController < ApplicationController
   $webSitesSupported[1] = /newyorker/
   $webSitesSupported[2] = /cal.startribune.com/
   $webSitesSupported[3] = /sfstation/
+  $webSitesSupported[4] = /calendar.triblive.com/
   def new    
     @user = User.new
     @user.name = params[:u]
@@ -60,6 +62,8 @@ class UsersController < ApplicationController
           bandsArray = scrapeTheStarTribune(url)
         when $webSitesHash['sfstation']
           bandsArray = scrapeSfStation(url)
+        when $webSitesHash['calendar.triblive.com']
+          bandsArray = scrapeTheTribune(url)
         else 
           bandsArray = nil
       end
@@ -323,7 +327,55 @@ class UsersController < ApplicationController
     end
     
   end
- 
+
+  def scrapeTheTribune(url)
+    puts("scrapeTheTribune")
+
+    begin
+      doc = Nokogiri::HTML(open(url))
+      bandsArray = Array.new
+
+      m = 0
+
+      doc.css(".meta_content").each do |featuring|
+        if (m >= $maxBands)
+          break
+        end
+
+        str = featuring.text
+        tmp = "Featuring:"
+        i = /#{tmp}/ =~ str
+        if (i != nil)
+          str = str[(i+tmp.length)..-1]
+          str.lstrip!.rstrip!.gsub!(/\r|\n/,"")
+          str.split(",").each do |band|
+          if (m >= $maxBands)
+            break
+          end
+          bandsArray << band
+          m += 1
+          end
+        end
+      end
+
+      bandsArray.each do |band|
+        puts("band = #{band}")
+      end
+
+    rescue
+      puts("scrapeTheTribune Rescue called")
+      return(nil)
+    end
+
+    if (m == 0)
+      return(nil)
+    else
+      puts("scrapeTheTribuneDone")
+      return(bandsArray)
+    end
+
+  end
+
 
   # Create Spotify playlist to display on web site
   # uses an array of strings (bandsArray) as input
@@ -587,7 +639,6 @@ class UsersController < ApplicationController
   #create the url in Spotify format for the band name 
   def createArtistUrl(str1)
     val = nil
-
     if (str1 != nil)
       #remove leading and trailing whitespace
       str2 = str1.lstrip.rstrip
@@ -602,15 +653,16 @@ class UsersController < ApplicationController
       str2.gsub!(/tribute/,"")
       str2.gsub!(/Tribute/,"")
       str2.gsub!(/TRIBUTE/,'')
-      #keep only whitespace and alphanumeric characters
-      i = /[^(\w|\s)]/ =~ str2
+      #keep only whitespace, alphanumeric characters, and ampersand
+      i = /[^(\w|\s|&)]/ =~ str2
       if (i != nil)
         str2 = str2[0...i]
       end
       str2 = str2.lstrip.rstrip
       str2.gsub!(" ", "%20")
+      str2.gsub!("&", "%26")
       val = "http://ws.spotify.com/search/1/artist?q=" + str2
-      #puts("spotify url = #{val}")
+      puts("spotify url = #{val}")
     end
 
     return(val)
