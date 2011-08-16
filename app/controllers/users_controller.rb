@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   $webSitesHash['thePhoenix'] = 0
   $webSitesHash['newyorker'] = 1
   $webSitesHash['cal.startribune.com'] = 2
-  $webSitesHash['sfstation'] = 3
+  $webSitesHash['events.sfgate.com'] = 3
   $webSitesHash['calendar.triblive.com'] = 4
   $webSitesHash['calendar.denverpost.com'] = 5
   $webSitesSupported = Array.new
@@ -20,7 +20,7 @@ class UsersController < ApplicationController
   $webSitesSupported[0] = /thephoenix/
   $webSitesSupported[1] = /newyorker/
   $webSitesSupported[2] = /cal.startribune.com/
-  $webSitesSupported[3] = /sfstation/
+  $webSitesSupported[3] = /events.sfgate.com/
   $webSitesSupported[4] = /calendar.triblive.com/
   $webSitesSupported[5] = /calendar.denverpost.com/
   def new    
@@ -62,10 +62,9 @@ class UsersController < ApplicationController
           bandsArray = scrapeTheNewYorker(url)
         when $webSitesHash['cal.startribune.com']
           bandsArray = scrapeTheStarTribune(url)
-        when $webSitesHash['sfstation']
-          bandsArray = scrapeSfStation(url)
         when $webSitesHash['calendar.triblive.com'], 
-             $webSitesHash['calendar.denverpost.com']
+             $webSitesHash['calendar.denverpost.com'],
+             $webSitesHash['events.sfgate.com']
           bandsArray = scrapeTheTribune(url)
         else 
           bandsArray = nil
@@ -313,24 +312,6 @@ class UsersController < ApplicationController
 
   end
 
-  # returns an array of strings of band names (returns nil if no bands found)
-  def scrapeSfStation(url)
-    
-    doc = Nokogiri::HTML(open(url))
-    bandsArray = Array.new
-
-    doc.css(".summary").each do |summary|
-      bandsArray << summary.text
-    end
-    
-    if ( bandsArray.empty? )
-      return nil
-    else
-      return(bandsArray)
-    end
-    
-  end
-
   def scrapeTheTribune(url)
     puts("scrapeTheTribune")
 
@@ -340,7 +321,7 @@ class UsersController < ApplicationController
 
       m = 0
 
-      doc.css(".meta_content").each do |featuring|
+      doc.css("event_detail_link").each do |featuring|
         if (m >= $maxBands)
           break
         end
