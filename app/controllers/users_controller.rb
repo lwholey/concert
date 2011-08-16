@@ -322,31 +322,42 @@ class UsersController < ApplicationController
   end
 
   def scrapeTheTribune(url)
-    puts("scrapeTheTribune")
-
+    site = "TheTribune"
+    puts("Scraping #{site}")
     begin
       doc = Nokogiri::HTML(open(url))
       bandsArray = Array.new
 
       m = 0
 
-      doc.css("event_detail_link").each do |featuring|
+      doc.css(".meta_content").each do |featuring|
         if (m >= $maxBands)
           break
         end
 
+        # We are expecting comma-separated band names following the
+        # the word "Featuring":
+        #
+        # For example:
+        #   "Featuring: Neil Young, Crazy Horse" 
+        # 
+        # returns:
+        #   [ "Neil Young", "Crazy Horse" ]
+        #
         str = featuring.text
         tmp = "Featuring:"
-        i = /#{tmp}/ =~ str
+        re = /(i?)#{tmp}/ # (i?) makes the pattern case-insensitive
+        i = re =~ str
+
         if (i != nil)
           str = str[(i+tmp.length)..-1]
           str.lstrip!.rstrip!.gsub!(/\r|\n/,"")
           str.split(",").each do |band|
-          if (m >= $maxBands)
-            break
-          end
-          bandsArray << band
-          m += 1
+            if (m >= $maxBands)
+              break
+            end
+            bandsArray << band
+              m += 1
           end
         end
       end
@@ -356,19 +367,18 @@ class UsersController < ApplicationController
       end
 
     rescue
-      puts("scrapeTheTribune Rescue called")
+      puts("scrape #{site} Rescue called")
+      puts( $! ); # print the exception
       return(nil)
     end
 
     if (m == 0)
       return(nil)
     else
-      puts("scrapeTheTribuneDone")
+      puts("scrape #{site} done")
       return(bandsArray)
     end
-
   end
-
 
   # Create Spotify playlist to display on web site
   # uses an array of strings (bandsArray) as input
