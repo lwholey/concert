@@ -346,7 +346,7 @@ class UsersController < ApplicationController
         #
         str = featuring.text
         tmp = "Featuring:"
-        re = /(i?)#{tmp}/ # (i?) makes the pattern case-insensitive
+        re = /#{tmp}/i # make the pattern case-insensitive
         i = re =~ str
 
         if (i != nil)
