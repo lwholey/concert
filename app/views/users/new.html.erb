@@ -5,9 +5,9 @@
     <%= f.text_field :name, :size => 70 %>
   </div>
   <div class="field">
-    <% str = 'Max # of bands for playlist (optional, default is 15)'%>
+    <% str = 'Max # of bands for playlist (optional)'%>
     <%= f.label str %><br />
-    <%= f.text_field :maxNumberOfBands %>
+    <%= f.text_field :maxNumberOfBands, :value => "#{$defaultMaxBands}" %>
   </div>
   <div class="actions">
     <%= f.submit "Create Playlist" %>

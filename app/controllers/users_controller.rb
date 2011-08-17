@@ -646,16 +646,10 @@ class UsersController < ApplicationController
       #remove leading and trailing whitespace
       str2 = str1.lstrip.rstrip
       #remove quartet, trio (makes it easier for Spotify to search)
-      str2.gsub!(/quartet/,"")
-      str2.gsub!(/Quartet/,"")
-      str2.gsub!(/QUARTET/,"")
-      str2.gsub!(/trio/,"")
-      str2.gsub!(/Trio/,"")
-      str2.gsub!(/TRIO/,"")
+      str2.gsub!(/quartet/i,"")
+      str2.gsub!(/trio/i,"")
       #remove tribute (may want to include actual bands who are playing the tribute as well)
-      str2.gsub!(/tribute/,"")
-      str2.gsub!(/Tribute/,"")
-      str2.gsub!(/TRIBUTE/,'')
+      str2.gsub!(/tribute/i,"")
       #keep only whitespace, alphanumeric characters, and ampersand
       i = /[^(\w|\s|&)]/ =~ str2
       if (i != nil)
