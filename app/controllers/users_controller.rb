@@ -12,6 +12,7 @@ class UsersController < ApplicationController
   $webSitesHash['events.sfgate.com'] = 3
   $webSitesHash['calendar.triblive.com'] = 4
   $webSitesHash['calendar.denverpost.com'] = 5
+  $webSitesHash['getshowtix.com'] = 6
   $webSitesSupported = Array.new
   # TODO : Fix so that criteria below are not needed
   # !!! all array values should be entered as lowercase
@@ -23,6 +24,7 @@ class UsersController < ApplicationController
   $webSitesSupported[3] = /events.sfgate.com/
   $webSitesSupported[4] = /calendar.triblive.com/
   $webSitesSupported[5] = /calendar.denverpost.com/
+  $webSitesSupported[6] = /getshowtix.com/
   def new    
     @user = User.new
     @user.name = params[:u]
@@ -75,6 +77,8 @@ class UsersController < ApplicationController
              $webSitesHash['calendar.denverpost.com'],
              $webSitesHash['events.sfgate.com']
           bandsArray = scrapeTheTribune(url)
+        when $webSitesHash['getshowtix.com']
+          bandsArray = scrapeTheRegattaBar(url)
         else 
           bandsArray = nil
       end
@@ -378,6 +382,87 @@ class UsersController < ApplicationController
       puts("scrape #{site} done")
       return(bandsArray)
     end
+  end
+
+  def scrapeTheRegattaBar(url)
+
+    site = "TheRegattaBar"
+    puts("Scraping #{site}")
+
+    begin
+      doc = Nokogiri::HTML(open(url))
+      bandsArray = Array.new
+
+      m = 0
+
+      doc.css(".show").each do |show|
+        if (m >= $maxBands)
+          break
+        end
+
+        str = show.text
+        #puts("str = #{str}")
+
+        # items to remove
+        # Empty string (done)
+        # time - e.g. 7:30PM (implement by removing numbers and :, keep PM for later) (done)
+        # CLOSED FOR PRIVATE EVENT (done)
+        # Repeated name - e.g. The Bad Plus, The Bad Plus (done)
+        # -CD Release (done)
+        # Berklee at the Regattabar - (done)
+
+        i = /\w/ =~ str
+        if (i != nil)
+          # TODO: fix if band name has a number
+          str.gsub!(/\d/,"")
+          str.gsub!(/:/,"")
+          str.gsub!(/Berklee at the Regattabar -/,"")        
+          j = /CLOSED/i =~ str
+          if (j != nil)
+            next
+          end
+          str.gsub!(/-CD release/i,"")
+
+          # split bands along "and", "&", "PM" (done)
+          str.split(/pm/i).each do |band0|
+            band0.split("&").each do |band1|
+              band1.split(" and ").each do |band2|
+                if (m >= $maxBands)
+                  break
+                end
+                tmp = band2.gsub(/pm/i,"")
+                tmp = tmp.lstrip.rstrip
+                band3 = Array.new
+                band3 << tmp
+                if ((bandsArray & band3).empty? == true )
+                  #puts("bandsArray = #{bandsArray}")
+                  #puts("tmp = #{tmp}")
+                  bandsArray << tmp
+                  m += 1
+                end
+              end
+            end  
+          end
+        end
+      end
+
+      bandsArray.each do |band|
+        puts("band = #{band}")
+      end
+
+    rescue
+      puts("scrape #{site} Rescue called")
+      puts( $! ); # print the exception
+      return(nil)
+    end
+
+    if (m == 0)
+      return(nil)
+    else
+      puts("scrape #{site} done")
+      return(bandsArray)
+    end
+
   end
 
   # Create Spotify playlist to display on web site
