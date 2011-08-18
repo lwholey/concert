@@ -818,7 +818,8 @@ class UsersController < ApplicationController
     if (str1 != nil)
       #remove leading and trailing whitespace
       str2 = str1.lstrip.rstrip
-      #remove quartet, trio (makes it easier for Spotify to search)
+      #remove quintet, quartet, trio (makes it easier for Spotify to search)
+      str2.gsub!(/quintet/i,"")
       str2.gsub!(/quartet/i,"")
       str2.gsub!(/trio/i,"")
       #remove tribute (may want to include actual bands who are playing the tribute as well)
