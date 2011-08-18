@@ -13,6 +13,7 @@ class UsersController < ApplicationController
   $webSitesHash['calendar.triblive.com'] = 4
   $webSitesHash['calendar.denverpost.com'] = 5
   $webSitesHash['getshowtix.com'] = 6
+  $webSitesHash['findlocal.latimes.com'] = 7
   $webSitesSupported = Array.new
   # TODO : Fix so that criteria below are not needed
   # !!! all array values should be entered as lowercase
@@ -25,6 +26,7 @@ class UsersController < ApplicationController
   $webSitesSupported[4] = /calendar.triblive.com/
   $webSitesSupported[5] = /calendar.denverpost.com/
   $webSitesSupported[6] = /getshowtix.com/
+  $webSitesSupported[7] = /findlocal.latimes.com/
   def new    
     @user = User.new
     @user.name = params[:u]
@@ -79,6 +81,8 @@ class UsersController < ApplicationController
           bandsArray = scrapeTheTribune(url)
         when $webSitesHash['getshowtix.com']
           bandsArray = scrapeTheRegattaBar(url)
+        when $webSitesHash['findlocal.latimes.com']
+          bandsArray = scrapeTheLATimes(url)
         else 
           bandsArray = nil
       end
@@ -465,6 +469,90 @@ class UsersController < ApplicationController
 
   end
 
+  def scrapeTheLATimes(url)
+
+    site = "TheLATimes"
+    puts("Scraping #{site}")
+
+    begin
+      doc = Nokogiri::HTML(open(url))
+      bandsArray = Array.new
+
+      m = 0
+
+      doc.css(".listing_item").each do |show|
+        if (m >= $maxBands)
+          break
+        end
+
+        str = show.text
+        # Parse "Candy Claws, Races, Moses Campbell, Masxs" from a string like
+        # 2.
+        #
+        #         Candy Claws, Races, Moses Campbell, Masxs
+        #
+        #			 Top Pick
+
+        #puts("str = #{str}")
+
+        i = /[.]/ =~ str
+        if (i == nil)
+          next
+        end
+        j = /\w/ =~ str[i+1..-1]
+        if (j == nil)
+          next
+        end
+        j += (i+1)
+        k = /[(\r|\n)]/ =~ str[j+1..-1]
+        if (k == nil)
+          next
+        end
+        k += (j+1)
+        str2 = str[j-1..k]
+
+        # items to remove
+        # Anything before ":", i.e. "Joni's Jazz: Herbie Hancock, Aimee Mann, Chaka Khan, Kurt Elling" (done)
+        # Repeated name - e.g. The Bad Plus, The Bad Plus (done)
+        i = /:/ =~ str2
+        if (i != nil)
+          str2 = str2[i+1..-1]
+        end
+
+        # split bands along ","
+        str2.split(",").each do |band0|
+          if (m >= $maxBands)
+            break
+          end
+          tmp = band0.lstrip.rstrip
+          band3 = Array.new
+          band3 << tmp
+          if ((bandsArray & band3).empty? == true )
+            bandsArray << tmp
+            m += 1
+          end
+        end
+      end
+
+      bandsArray.each do |band|
+        puts("band = #{band}")
+      end
+
+    rescue
+      puts("scrape #{site} Rescue called")
+      puts( $! ); # print the exception
+      return(nil)
+    end
+
+    if (m == 0)
+      return(nil)
+    else
+      puts("scrape #{site} done")
+      return(bandsArray)
+    end
+
+  end
+
   # Create Spotify playlist to display on web site
   # uses an array of strings (bandsArray) as input
   def createSpotifyPlaylist(bandsArray)
@@ -730,7 +818,8 @@ class UsersController < ApplicationController
     if (str1 != nil)
       #remove leading and trailing whitespace
       str2 = str1.lstrip.rstrip
-      #remove quartet, trio (makes it easier for Spotify to search)
+      #remove quintet, quartet, trio (makes it easier for Spotify to search)
+      str2.gsub!(/quintet/i,"")
       str2.gsub!(/quartet/i,"")
       str2.gsub!(/trio/i,"")
       #remove tribute (may want to include actual bands who are playing the tribute as well)
