@@ -1,50 +1,50 @@
 <pitivi formatter="etree" version="0.1">
-  <export-settings aencoder="flacenc" audiochannels="2" audiodepth="16" audiorate="44100" muxer="oggmux" render-scale="100" vencoder="theoraenc" videoheight="576" videopar-denom="15" videopar-num="16" videorate-denom="1" videorate-num="25" videowidth="720" />
+  <export-settings aencoder="alawenc" audiochannels="2" audiodepth="16" audiorate="44100" muxer="flvmux" render-scale="100" vencoder="ffenc_flashsv" videoheight="576" videopar-denom="15" videopar-num="16" videorate-denom="1" videorate-num="25" videowidth="720" />
   <factories>
     <sources>
-      <source default_duration="112866666666" duration="112866666666" filename="file:///home/john/software/ruby/rails_projects/concert/video/out.ogv" id="0" type="pitivi.factories.file.FileSourceFactory">
+      <source default_duration="112866666666" duration="112866666666" filename="file:///home/john/software/ruby/rails_projects/concert/public/video/out.ogv" id="0" type="pitivi.factories.file.FileSourceFactory">
         <input-streams />
         <output-streams>
           <stream caps="video/x-raw-yuv, format=(fourcc)I420, framerate=(fraction)15/1, pixel-aspect-ratio=(fraction)1/1, width=(int)1600, height=(int)896, color-matrix=(string)sdtv, chroma-site=(string)jpeg" id="1" name="src0" type="pitivi.stream.VideoStream" />
         </output-streams>
       </source>
-      <source default_duration="5000000000" duration="18446744073709551615" filename="file:///home/john/software/ruby/rails_projects/concert/video/sip.png" id="2" type="pitivi.factories.file.PictureFileSourceFactory">
+      <source default_duration="5000000000" duration="18446744073709551615" filename="file:///home/john/software/ruby/rails_projects/concert/public/video/sip.png" id="2" type="pitivi.factories.file.PictureFileSourceFactory">
         <input-streams />
         <output-streams>
           <stream caps="video/x-raw-rgb, width=(int)1058, height=(int)794, bpp=(int)24, framerate=(fraction)0/1, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255" id="3" name="src0" type="pitivi.stream.VideoStream" />
         </output-streams>
       </source>
-      <source default_duration="5000000000" duration="18446744073709551615" filename="file:///home/john/software/ruby/rails_projects/concert/video/refine.png" id="4" type="pitivi.factories.file.PictureFileSourceFactory">
+      <source default_duration="5000000000" duration="18446744073709551615" filename="file:///home/john/software/ruby/rails_projects/concert/public/video/refine.png" id="4" type="pitivi.factories.file.PictureFileSourceFactory">
         <input-streams />
         <output-streams>
           <stream caps="video/x-raw-rgb, width=(int)1058, height=(int)794, bpp=(int)24, framerate=(fraction)0/1, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255" id="5" name="src0" type="pitivi.stream.VideoStream" />
         </output-streams>
       </source>
-      <source default_duration="5000000000" duration="18446744073709551615" filename="file:///home/john/software/ruby/rails_projects/concert/video/pick-site.png" id="6" type="pitivi.factories.file.PictureFileSourceFactory">
+      <source default_duration="5000000000" duration="18446744073709551615" filename="file:///home/john/software/ruby/rails_projects/concert/public/video/pick-site.png" id="6" type="pitivi.factories.file.PictureFileSourceFactory">
         <input-streams />
         <output-streams>
           <stream caps="video/x-raw-rgb, width=(int)1058, height=(int)794, bpp=(int)24, framerate=(fraction)0/1, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255" id="7" name="src0" type="pitivi.stream.VideoStream" />
         </output-streams>
       </source>
-      <source default_duration="5000000000" duration="18446744073709551615" filename="file:///home/john/software/ruby/rails_projects/concert/video/paste-spotify.png" id="8" type="pitivi.factories.file.PictureFileSourceFactory">
+      <source default_duration="5000000000" duration="18446744073709551615" filename="file:///home/john/software/ruby/rails_projects/concert/public/video/paste-spotify.png" id="8" type="pitivi.factories.file.PictureFileSourceFactory">
         <input-streams />
         <output-streams>
           <stream caps="video/x-raw-rgb, width=(int)1058, height=(int)794, bpp=(int)24, framerate=(fraction)0/1, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255" id="9" name="src0" type="pitivi.stream.VideoStream" />
         </output-streams>
       </source>
-      <source default_duration="5000000000" duration="18446744073709551615" filename="file:///home/john/software/ruby/rails_projects/concert/video/paste.png" id="10" type="pitivi.factories.file.PictureFileSourceFactory">
+      <source default_duration="5000000000" duration="18446744073709551615" filename="file:///home/john/software/ruby/rails_projects/concert/public/video/paste.png" id="10" type="pitivi.factories.file.PictureFileSourceFactory">
         <input-streams />
         <output-streams>
           <stream caps="video/x-raw-rgb, width=(int)1058, height=(int)794, bpp=(int)24, framerate=(fraction)0/1, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255" id="11" name="src0" type="pitivi.stream.VideoStream" />
         </output-streams>
       </source>
-      <source default_duration="5000000000" duration="18446744073709551615" filename="file:///home/john/software/ruby/rails_projects/concert/video/copy-url.png" id="12" type="pitivi.factories.file.PictureFileSourceFactory">
+      <source default_duration="5000000000" duration="18446744073709551615" filename="file:///home/john/software/ruby/rails_projects/concert/public/video/copy-url.png" id="12" type="pitivi.factories.file.PictureFileSourceFactory">
         <input-streams />
         <output-streams>
           <stream caps="video/x-raw-rgb, width=(int)1058, height=(int)794, bpp=(int)24, framerate=(fraction)0/1, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255" id="13" name="src0" type="pitivi.stream.VideoStream" />
         </output-streams>
       </source>
-      <source default_duration="5000000000" duration="18446744073709551615" filename="file:///home/john/software/ruby/rails_projects/concert/video/copy-tracks.png" id="14" type="pitivi.factories.file.PictureFileSourceFactory">
+      <source default_duration="5000000000" duration="18446744073709551615" filename="file:///home/john/software/ruby/rails_projects/concert/public/video/copy-tracks.png" id="14" type="pitivi.factories.file.PictureFileSourceFactory">
         <input-streams />
         <output-streams>
           <stream caps="video/x-raw-rgb, width=(int)1058, height=(int)794, bpp=(int)24, framerate=(fraction)0/1, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255" id="15" name="src0" type="pitivi.stream.VideoStream" />
@@ -55,7 +55,7 @@
   <timeline>
     <tracks>
       <track>
-        <stream caps="video/x-raw-yuv, width=(int)720, height=(int)576, pixel-aspect-ratio=(fraction)16/15, framerate=(fraction)25/1, format=(fourcc){ I420, Y42B, Y444 }" id="16" name="None" type="pitivi.stream.VideoStream" />
+        <stream caps="video/x-raw-rgb, width=(int)720, height=(int)576, pixel-aspect-ratio=(fraction)16/15, framerate=(fraction)25/1; video/x-raw-yuv, width=(int)720, height=(int)576, pixel-aspect-ratio=(fraction)16/15, framerate=(fraction)25/1" id="16" name="None" type="pitivi.stream.VideoStream" />
         <track-objects>
           <track-object active="(bool)True" duration="(gint64)2630748362" id="17" in_point="(gint64)0" media_duration="(gint64)2630748362" priority="(int)0" start="(gint64)0" type="pitivi.timeline.track.SourceTrackObject">
             <factory-ref id="6" />
