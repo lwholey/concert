@@ -26,7 +26,7 @@
 				      <param name="FlashVars" value=<%= valueStr %> />
 				      <param name="bgcolor" value="#ffffff" />
 				      <embed src="clippy.swf"
-				             width="110n"
+				             width="110"
 				             height="14"
 				             name="clippy"
 				             quality="high"
@@ -36,7 +36,7 @@
 				             FlashVars=<%= valueStr %>
 				             bgcolor="#ffffff"
 				      />
-				      <div class="flash success">Tracks Found  (copy-paste to <img src="/images/playQueue.png" alt="\"THisn\"" /> in Spotify): <%= value %> </div>
+				      <div class="flash success">Tracks Found  (copy-paste to <img src="/images/playQueue.png" alt="\"Play Queue\"" /> in Spotify): <%= value %> </div>
 				    </object>
 				  <% else %>
 			      <%= content_tag(:div, value, :class => "flash #{key}") %>
