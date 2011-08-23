@@ -319,12 +319,53 @@ class UsersController < ApplicationController
     return(val)
   end
 
+  def remove_accents(str)
+
+    # Modified code from
+    # RemoveAccents version 1.0.3 (c) 2008-2009 Solutions Informatiques Techniconseils inc.
+    # http://www.techniconseils.ca/en/scripts-remove-accents-ruby.php
+    # The extended characters map used by removeaccents. The accented characters 
+    # are coded here using their numerical equivalent to sidestep encoding issues.
+    # These correspond to ISO-8859-1 encoding.
+    tmp = str
+    accents_mapping = {
+      'E' => [200,201,202,203],
+      'e' => [232,233,234,235],
+      'A' => [192,193,194,195,196,197],
+      'a' => [224,225,226,227,228,229,230],
+      'C' => [199],
+      'c' => [231],
+      'O' => [210,211,212,213,214,216],
+      'o' => [242,243,244,245,246,248],
+      'I' => [204,205,206,207],
+      'i' => [236,237,238,239],
+      'U' => [217,218,219,220],
+      'u' => [249,250,251,252],
+      'N' => [209],
+      'n' => [241],
+      'Y' => [221],
+      'y' => [253,255],
+      'AE' => [306],
+      'ae' => [346],
+      'OE' => [188],
+      'oe' => [189]
+    }
+
+      accents_mapping.each {|letter,accents|
+      packed = accents.pack('U*')
+      rxp = Regexp.new("[#{packed}]")
+      tmp.gsub!(rxp, letter)
+    }
+    return(tmp)
+  end
+
   #create the url in Spotify format for the band name 
   def createArtistUrl(str1)
     val = nil
     if (str1 != nil)
       #remove leading and trailing whitespace
       str2 = str1.lstrip.rstrip
+      str2 = remove_accents(str2)
       #remove quintet, quartet, trio (makes it easier for Spotify to search)
       str2.gsub!(/quintet/i,"")
       str2.gsub!(/quartet/i,"")
