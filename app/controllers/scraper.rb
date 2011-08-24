@@ -146,6 +146,10 @@ class NewYorkerScraper < Scraper
 
     @doc.css(".v").each do |concert|
 
+      if (m >= @maxBands)
+         break
+      end
+
       str = concert.to_s
       tmp = "</a"
       tmpRegx = /#{tmp}/
@@ -166,31 +170,14 @@ class NewYorkerScraper < Scraper
 
       if ( (i != nil) && (n != nil) )
         str = str[n+1...i].lstrip.rstrip
-        # E.g. 1 from "this, that, and other" split into 
-        # "this", "that", "other"
-        # E.g. 2 from "this and that" split into
-        # "this", "that"
-        str.split("and").each do |band1|
-          band1.split(",").each do |band2|
-            #only keep bands that have alphanumeric characters
-            i = /\w/ =~ band2
-            if (i != nil)
-              if (m >= @maxBands)
-                break
-              end
-              @bandsArray[m] = band2.lstrip.rstrip
-              m = m + 1
-            end
 
-          end
-          if (m >= @maxBands)
-            break
-          end
-        end        
-      end
-
-      if (m >= @maxBands)
-        break
+        #only keep bands that have alphanumeric characters
+        i = /\w/ =~ str
+        if (i != nil)
+          @bandsArray[m] = str
+          m = m + 1
+        end
+      
       end
 
     end
@@ -241,15 +228,9 @@ class StarTribuneScraper < Scraper
             if (firstStr3Found == 0)
               firstStr3Found = 1
             else
-              strTmp = str[k+1..(i-str3.length)]
-              strTmp.split("&amp;").each do |band1|
-                if (m >= @maxBands)
-                  break
-                end
-                @bandsArray[m] = band1
-                puts("@bandsArray[#{m}] = #{@bandsArray[m]}")
-                m += 1
-              end
+              @bandsArray[m] = str[k+1..(i-str3.length)]
+              puts("@bandsArray[#{m}] = #{@bandsArray[m]}")
+              m += 1
               if (m >= @maxBands)
                 break
               end
@@ -300,10 +281,6 @@ class TribuneScraper < Scraper
       #
       # For example:
       #   "Featuring: Neil Young, Crazy Horse" 
-      # 
-      # returns:
-      #   [ "Neil Young", "Crazy Horse" ]
-      #
       str = featuring.text
       tmp = "Featuring:"
       re = /#{tmp}/i # make the pattern case-insensitive
@@ -312,13 +289,8 @@ class TribuneScraper < Scraper
       if (i != nil)
         str = str[(i+tmp.length)..-1]
         str.lstrip!.rstrip!.gsub!(/\r|\n/,"")
-        str.split(",").each do |band|
-          if (m >= @maxBands)
-            break
-          end
-          @bandsArray << band
-            m += 1
-        end
+        @bandsArray << str
+        m += 1
       end
     end
   end
@@ -357,25 +329,21 @@ class ShowTixScraper < Scraper
         end
         str.gsub!(/-CD release/i,"")
 
-        # split bands along "and", "&", "PM" (done)
+        # split bands along "PM" (done)
         str.split(/pm/i).each do |band0|
-          band0.split("&").each do |band1|
-            band1.split(" and ").each do |band2|
-              if (m >= @maxBands)
-                break
-              end
-              tmp = band2.gsub(/pm/i,"")
-              tmp = tmp.lstrip.rstrip
-              band3 = Array.new
-              band3 << tmp
-              if ((@bandsArray & band3).empty? == true )
-                #puts("@bandsArray = #{@bandsArray}")
-                #puts("tmp = #{tmp}")
-                @bandsArray << tmp
-                m += 1
-              end
-            end
-          end  
+          if (m >= @maxBands)
+            break
+          end
+          tmp = band0.gsub(/pm/i,"")
+          tmp = tmp.lstrip.rstrip
+          band1 = Array.new
+          band1 << tmp
+          if ((@bandsArray & band1).empty? == true )
+            #puts("@bandsArray = #{@bandsArray}")
+            #puts("tmp = #{tmp}")
+            @bandsArray << tmp
+            m += 1
+          end
         end
       end
     end
@@ -428,18 +396,12 @@ class LaTimesScraper < Scraper
         str2 = str2[i+1..-1]
       end
 
-      # split bands along ","
-      str2.split(",").each do |band0|
-        if (m >= @maxBands)
-          break
-        end
-        tmp = band0.lstrip.rstrip
-        band3 = Array.new
-        band3 << tmp
-        if ((@bandsArray & band3).empty? == true )
-          @bandsArray << tmp
-          m += 1
-        end
+      tmp = str2.lstrip.rstrip
+      band1 = Array.new
+      band1 << tmp
+      if ((@bandsArray & band1).empty? == true )
+        @bandsArray << tmp
+        m += 1
       end
     end
   end

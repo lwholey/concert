@@ -71,27 +71,16 @@ def createSpotifyPlaylist(bandsArray)
 
   bandsArray.each do |band|
     str1 = findSpotifyTrack(band)
-    puts("Spotify track = #{str1}")
-    if (str1 != nil)
-      if (tracksString == "")
-        tracksString = str1
-      else
-        tracksString += " " + str1
-      end
-      
-      if (bandsFoundString == "")
-        bandsFoundString = "Bands Found in Spotify: " + band
-      else
-        bandsFoundString += ", " + band
-      end
+    if (str1 == nil)
+      multiSplit(band).each do |band1|
+        str1 = findSpotifyTrack(band1)
+        tracksString, bandsFoundString, bandsNotFoundString = appendStrings(tracksString, bandsFoundString, bandsNotFoundString, str1, band1)
+      end     
     else
-      if (bandsNotFoundString == "")
-        bandsNotFoundString = "Bands Not Found in Spotify: " + band
-      else
-        bandsNotFoundString += ", " + band
-      end
+      tracksString, bandsFoundString, bandsNotFoundString = appendStrings(tracksString, bandsFoundString, bandsNotFoundString, str1, band)
     end
   end
+
 
   if (tracksString != "")
     flash[:success] = "#{tracksString}"
@@ -103,8 +92,37 @@ def createSpotifyPlaylist(bandsArray)
     flash[:error] = "#{bandsNotFoundString}"
   end
 
+  #puts("tracksString = #{tracksString}")
+  #puts("bandsFoundString = #{bandsFoundString}")
+  #puts("bandsNotFoundString = #{bandsNotFoundString}")
+
 end
 
+def appendStrings(tracksString, bandsFoundString, bandsNotFoundString, str1, band)
+
+  if (str1 != nil)
+    if (tracksString == "")
+      tracksString = str1
+    else
+      tracksString += " " + str1
+    end
+  
+    if (bandsFoundString == "")
+      bandsFoundString = "Bands Found in Spotify: " + band
+    else
+      bandsFoundString += ", " + band
+    end
+  else
+    if (bandsNotFoundString == "")
+      bandsNotFoundString = "Bands Not Found in Spotify: " + band
+    else
+      bandsNotFoundString += ", " + band
+    end
+  end
+
+  return ([tracksString, bandsFoundString, bandsNotFoundString])
+
+end
 
 #returns Spotify's coded value for artist
 #TODO : Handle case where more than one artist is returned
@@ -373,8 +391,8 @@ def createArtistUrl(str1)
     str2.gsub!(/trio/i,"")
     #remove tribute (may want to include actual bands who are playing the tribute as well)
     str2.gsub!(/tribute/i,"")
-    #keep only whitespace, alphanumeric characters, and ampersand
-    i = /[^(\w|\s|&)]/ =~ str2
+    #keep only whitespace, alphanumeric characters, comma, ampersand, and period
+    i = /[^(\w|\s|,|&|.)]/ =~ str2
     if (i != nil)
       str2 = str2[0...i]
     end
@@ -382,7 +400,7 @@ def createArtistUrl(str1)
     str2.gsub!(" ", "%20")
     str2.gsub!("&", "%26")
     val = "http://ws.spotify.com/search/1/artist?q=" + str2
-    #puts("spotify url = #{val}")
+    puts("spotify url = #{val}")
   end
 
   return(val)
@@ -392,6 +410,7 @@ def findSpotifyTrack(bandName)
   val = nil
   
   url = createArtistUrl(bandName)
+  
   if (url != nil)
     artist = searchArtist(url)
 
@@ -415,3 +434,26 @@ def findSpotifyTrack(bandName)
   return (val)
 end
 
+#split a string into an array
+# E.g. "the bad plus, kurt rosenwinkel, and the rolling stones" ->
+# ["the bad plus", "kurt rosenwinkel", "the rolling stones"]
+def multiSplit(str)
+  val = str
+  
+  splitArray = Array.new
+  splitArray[0] = ' and '
+  splitArray[1] = ','
+  splitArray[2] = "&amp;"
+  splitArray[3] = '&'
+  
+  splitArray.each do |tmp|
+    tmp2 = val.split("#{tmp}")
+    val = tmp2.join("-")
+  end
+  val.gsub!("--","-")
+  val = val.split("-")
+
+  #puts("val = #{val}")  
+  return (val)
+  
+end
