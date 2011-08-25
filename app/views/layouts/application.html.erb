@@ -38,10 +38,30 @@
 				      />
 				      <div class="flash success">Tracks Found  (copy-paste to <img src="/images/playQueue.png" alt="\"Play Queue\"" /> in Spotify): <%= value %> </div>
 				    </object>
+				  <% elsif (key == :warning)  %>
+				    <% bandHistory = getBandHistory %>
+	          <% spotifyBandHistory = getSpotifyBandHistory %>
+	          <% trackHistory = getTrackHistory %>
+
+	  			  <table border="1">
+						<%  i = 0 %>
+						  <tr>
+							<td><b>Band (Web Site)</b></td>
+							<td><b>Band (Spotify)</b></td>
+							<td><b>Track (Spotify)</b></td>
+							</tr>
+						<%  bandHistory.each do |band| %>
+							<tr>
+							<td> <%= if (band == nil) then "NA" else band end %></td>
+							<td> <%= if (spotifyBandHistory[i] == nil) then "NA" else spotifyBandHistory[i] end %>
+						  <td> <%= if (trackHistory[i] == nil) then "NA" else trackHistory[i] end %>
+							</tr>
+							<% i += 1 %>
+					  <% end %>
+						</table>
 				  <% else %>
 			      <%= content_tag(:div, value, :class => "flash #{key}") %>
-				  <% end %>
-				  
+				  <% end %> 
 				<% end %>
 				<%= yield %>
 			</section>

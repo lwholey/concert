@@ -77,13 +77,12 @@ class Scraper
   # handling.
   def scrape( maxBands )
     @maxBands = maxBands
-    @doc = Nokogiri::HTML(open(@url))
     @bandsArray = Array.new
 
     puts("Scraping {#@url}")
 
     begin
-
+      @doc = Nokogiri::HTML(open(@url))
       # Call the scraping function, it populates @bandsArray.  
       doScrape
 

@@ -3,6 +3,10 @@ class UsersController < ApplicationController
   require 'open-uri'
   require 'scraper'
 
+  helper_method :getBandHistory
+  helper_method :getSpotifyBandHistory
+  helper_method :getTrackHistory
+
   # maximum number of bands to find tracks for
   $DEFAULT_MAXBANDS = 15
 
@@ -39,6 +43,18 @@ class UsersController < ApplicationController
     end
   end
 
+  def getBandHistory
+    return $bandHistory
+  end
+
+  def getSpotifyBandHistory
+    return $spotifyBandHistory
+  end
+  
+  def getTrackHistory
+    return $trackHistory
+  end
+
   # Parses bands from web sites and creates playlist for Spotify
   def parseBands
     
@@ -59,85 +75,137 @@ class UsersController < ApplicationController
     end
   end
 
-end
+  # Create Spotify playlist to display on web site
+  # uses an array of strings (bandsArray) as input
+  def createSpotifyPlaylist(bandsArray)
 
-# Create Spotify playlist to display on web site
-# uses an array of strings (bandsArray) as input
-def createSpotifyPlaylist(bandsArray)
+    tracksString = ""
+    $bandHistory = Array.new
+    $spotifyBandHistory = Array.new
+    $trackHistory = Array.new
 
-  tracksString = ""
-  bandsFoundString = ""
-  bandsNotFoundString = ""
-
-  bandsArray.each do |band|
-    str1 = findSpotifyTrack(band)
-    if (str1 == nil)
-      multiSplit(band).each do |band1|
-        str1 = findSpotifyTrack(band1)
-        tracksString, bandsFoundString, bandsNotFoundString = appendStrings(tracksString, bandsFoundString, bandsNotFoundString, str1, band1)
-      end     
-    else
-      tracksString, bandsFoundString, bandsNotFoundString = appendStrings(tracksString, bandsFoundString, bandsNotFoundString, str1, band)
+    bandsArray.each do |band|
+      trackCode, trackName, artistName = findSpotifyTrack(band)
+      if (trackCode == nil)
+        multiSplit(band).each do |band1|
+          trackCode, trackName, artistName = findSpotifyTrack(band1)
+          tracksString = appendStrings(tracksString, trackCode)
+          $bandHistory << band1
+          $spotifyBandHistory << artistName
+          $trackHistory << trackName
+        end     
+      else
+        tracksString = appendStrings(tracksString, trackCode)
+        $bandHistory << band
+        $spotifyBandHistory << artistName
+        $trackHistory << trackName
+      end
     end
-  end
 
-
-  if (tracksString != "")
-    flash[:success] = "#{tracksString}"
-  end
-  if (bandsFoundString != "")
-    flash[:warning] = "#{bandsFoundString}"
-  end
-  if (bandsNotFoundString != "")
-    flash[:error] = "#{bandsNotFoundString}"
-  end
-
-  #puts("tracksString = #{tracksString}")
-  #puts("bandsFoundString = #{bandsFoundString}")
-  #puts("bandsNotFoundString = #{bandsNotFoundString}")
-
-end
-
-def appendStrings(tracksString, bandsFoundString, bandsNotFoundString, str1, band)
-
-  if (str1 != nil)
-    if (tracksString == "")
-      tracksString = str1
-    else
-      tracksString += " " + str1
+    if (tracksString != "")
+      flash[:success] = "#{tracksString}"
     end
-  
-    if (bandsFoundString == "")
-      bandsFoundString = "Bands Found in Spotify: " + band
-    else
-      bandsFoundString += ", " + band
+
+    if ($bandHistory.empty? == false)
+      #set to any value
+      flash[:warning] = "a"
     end
-  else
-    if (bandsNotFoundString == "")
-      bandsNotFoundString = "Bands Not Found in Spotify: " + band
-    else
-      bandsNotFoundString += ", " + band
-    end
+
   end
 
-  return ([tracksString, bandsFoundString, bandsNotFoundString])
+  def appendStrings(tracksString, str1)
 
-end
+    if (str1 != nil)
+      if (tracksString == "")
+        tracksString = str1
+      else
+        tracksString += " " + str1
+      end
+    end
 
-#returns Spotify's coded value for artist
-#TODO : Handle case where more than one artist is returned
-def searchArtist(url)
-  val = nil
+    return (tracksString)
 
-  begin
-    tmp = "spotify:artist:"
+  end
+
+  #returns Spotify's coded value for artist
+  #TODO : Handle case where more than one artist is returned
+  def searchArtist(url)
+    val = nil
+
+    begin
+      tmp = "spotify:artist:"
+      regx1 = /#{tmp}/
+      regx2 = /\W/
+
+      doc = Nokogiri::XML(open(url))
+      elements = doc.xpath('//xmlns:artist')
+      titles = elements.map {|e| e.to_s}
+      str1 = titles[0].to_s
+      i = regx1 =~ str1
+      if (i == nil)
+        return(val)
+      end
+
+      i = i+tmp.length
+      j = regx2 =~ str1[i..-1]
+      if (j == nil)
+        return(val)
+      end
+      j = j + i - 1
+      val = str1[i..j]
+
+    rescue
+
+    end
+
+    return (val)
+  end
+
+  #Looks at a string like ...
+  #<availability>
+  #        <territories>AT AU BE CH CN CZ DK EE ES FI FR GB HK HR HU IE IL IN IT LT LV MY NL NO NZ PL PT RU SE SG SK TH TR TW UA ZA</territories>
+  #      </availability>
+  #and returns 1 if US or worldwide otherwise returns nil
+  def availableInUS(str1)
+    val = nil
+
+    tmp = '<territories>'
     regx1 = /#{tmp}/
-    regx2 = /\W/
+    regx2 = /</
 
-    doc = Nokogiri::XML(open(url))
-    elements = doc.xpath('//xmlns:artist')
-    titles = elements.map {|e| e.to_s}
-    str1 = titles[0].to_s
+    a = Array.new
+    a[0] = /US/
+    a[1] = /worldwide/
+
+    i = regx1 =~ str1
+    if (i == nil)
+      return(val)
+    end
+
+    i = i+tmp.length
+    j = regx2 =~ str1[i..-1]
+    j = j + i - 1
+    str2 = str1[i..j]
+
+    a.each do |aStr|
+      if (aStr =~ str2)
+        val = 1
+        break
+      end
+    end
+
+    return(val)
+  end
+
+  #looks at a string like <popularity>0.131271839142</popularity>
+  #and returns the number
+  def trackPopularity(str1)
+    val = nil
+
+    tmp = '<popularity>'
+    regx1 = /#{tmp}/
+    regx2 = /</
+
     i = regx1 =~ str1
     if (i == nil)
       return(val)
@@ -149,311 +217,263 @@ def searchArtist(url)
       return(val)
     end
     j = j + i - 1
-    val = str1[i..j]
+    val = str1[i..j].to_f
 
-  rescue
-
-  end
-
-  return (val)
-end
-
-#Looks at a string like ...
-#<availability>
-#        <territories>AT AU BE CH CN CZ DK EE ES FI FR GB HK HR HU IE IL IN IT LT LV MY NL NO NZ PL PT RU SE SG SK TH TR TW UA ZA</territories>
-#      </availability>
-#and returns 1 if US or worldwide otherwise returns nil
-def availableInUS(str1)
-  val = nil
-
-  tmp = '<territories>'
-  regx1 = /#{tmp}/
-  regx2 = /</
-
-  a = Array.new
-  a[0] = /US/
-  a[1] = /worldwide/
-
-  i = regx1 =~ str1
-  if (i == nil)
     return(val)
+
   end
 
-  i = i+tmp.length
-  j = regx2 =~ str1[i..-1]
-  j = j + i - 1
-  str2 = str1[i..j]
+  #looks at a string like <available>true</available>
+  #and returns true if true (nil otherwise)
+  def availableTrack(str1)
+    val = nil
 
-  a.each do |aStr|
-    if (aStr =~ str2)
+    tmp = '<available>'
+    regx1 = /#{tmp}/
+    regx2 = /</
+    a = /true/
+
+    i = regx1 =~ str1
+    if (i == nil)
+      return(val)
+    end
+
+    i = i+tmp.length
+    j = regx2 =~ str1[i..-1]
+    if (j == nil)
+      return(val)
+    end
+    j = j + i - 1
+    str2 = str1[i..j]
+
+    if (a =~ str2)
       val = 1
-      break
     end
-  end
 
-  return(val)
-end
-
-#looks at a string like <popularity>0.131271839142</popularity>
-#and returns the number
-def trackPopularity(str1)
-  val = nil
-
-  tmp = '<popularity>'
-  regx1 = /#{tmp}/
-  regx2 = /</
-
-  i = regx1 =~ str1
-  if (i == nil)
     return(val)
   end
 
-  i = i+tmp.length
-  j = regx2 =~ str1[i..-1]
-  if (j == nil)
-    return(val)
-  end
-  j = j + i - 1
-  val = str1[i..j].to_f
+  #returns Spotify's coded value for the first
+  #album that is available in the US (look for US or worldwide)
+  def lookupArtist(url)
+    val = nil
 
-  return(val)
+    begin
+      maxAlbums = 100
+      tmp = 'spotify:album:'
+      regx1 = /#{tmp}/
+      regx2 = /\W/
 
-end
+      doc = Nokogiri::XML(open(url))
+      elements = doc.xpath('//xmlns:album')
+      titles = elements.map {|e| e.to_s}
 
-#looks at a string like <available>true</available>
-#and returns true if true (nil otherwise)
-def availableTrack(str1)
-  val = nil
-
-  tmp = '<available>'
-  regx1 = /#{tmp}/
-  regx2 = /</
-  a = /true/
-
-  i = regx1 =~ str1
-  if (i == nil)
-    return(val)
-  end
-
-  i = i+tmp.length
-  j = regx2 =~ str1[i..-1]
-  if (j == nil)
-    return(val)
-  end
-  j = j + i - 1
-  str2 = str1[i..j]
-
-  if (a =~ str2)
-    val = 1
-  end
-
-  return(val)
-end
-
-#returns Spotify's coded value for the first
-#album that is available in the US (look for US or worldwide)
-def lookupArtist(url)
-  val = nil
-
-  begin
-    maxAlbums = 100
-    tmp = 'spotify:album:'
-    regx1 = /#{tmp}/
-    regx2 = /\W/
-
-    doc = Nokogiri::XML(open(url))
-    elements = doc.xpath('//xmlns:album')
-    titles = elements.map {|e| e.to_s}
-
-    k=0
-    titles.each do |str1|
-      i = regx1 =~ str1
-      if ((i == nil) || (k >= maxAlbums))
-        break
+      k=0
+      titles.each do |str1|
+        i = regx1 =~ str1
+        if ((i == nil) || (k >= maxAlbums))
+          break
+        end
+        i = i+tmp.length
+        j = regx2 =~ str1[i..-1]
+        if (j == nil)
+          return(val)
+        end
+        j = j + i - 1
+        logic1 = availableInUS(str1)
+        if (logic1 == 1)
+          val = str1[i..j]
+          break
+        end
+        k = k + 1
       end
-      i = i+tmp.length
-      j = regx2 =~ str1[i..-1]
-      if (j == nil)
-        return(val)
-      end
-      j = j + i - 1
-      #puts("album found = #{str1[i..j]}")
-      logic1 = availableInUS(str1)
-      if (logic1 == 1)
-        val = str1[i..j]
-        break
-      end
-      k = k + 1
+
+    rescue
+
     end
 
-  rescue
-
+    return(val)
   end
 
-  return(val)
-end
+  #returns Spotify's coded value for the first
+  #track that is available
+  #assume min track popularity is 0
+  def lookupAlbum(url)
+    trackCode = nil
+    trackName = nil
+    artistName = nil
 
-#returns Spotify's coded value for the first
-#track that is available
-#assume min track popularity is 0
-def lookupAlbum(url)
-  val = nil
+    begin
+      maxTracks = 100
+      tmp = 'spotify:track:'
+      regx1 = /#{tmp}/
+      regx2 = /\W/
 
-  begin
-    maxTracks = 100
-    tmp = 'spotify:track:'
-    regx1 = /#{tmp}/
-    regx2 = /\W/
+      doc = Nokogiri::XML(open(url))
+      elements = doc.xpath('//xmlns:track')
+      titles = elements.map {|e| e.to_s}
+      #puts(titles)
+      k=0
+      maxPopularity = 0.0
+      titles.each do |str1|
+        if (k >= maxTracks)
+          break
+        end
+      
+        logic1 = availableTrack(str1)
+        popularity = trackPopularity(str1)
+        if ((logic1 == 1) && (popularity >= maxPopularity))
+          maxPopularity = popularity
+          trackCode = betweenTwoStrings(str1,"spotify:track:","\"")
+          trackName = betweenTwoStrings(str1,"<name>","</name>")
+          tmp = betweenTwoStrings(str1,"<artist","</artist>")
+          artistName = betweenTwoStrings(tmp,"<name>","</name>")
+        end
+        k += 1
+      end
 
-    doc = Nokogiri::XML(open(url))
-    elements = doc.xpath('//xmlns:track')
-    titles = elements.map {|e| e.to_s}
-    #puts(titles)
-    k=0
-    maxPopularity = 0.0
-    titles.each do |str1|
-      i = regx1 =~ str1
-      if ((i == nil) || (k >= maxTracks))
-        break
-      end
-      i = i+tmp.length
-      j = regx2 =~ str1[i..-1]
-      if (j == nil)
-        break
-      end
-      j = j + i - 1
-      logic1 = availableTrack(str1)
-      popularity = trackPopularity(str1)
-      if ((logic1 == 1) && (popularity >= maxPopularity))
-        val = str1[i..j]
-        maxPopularity = popularity
-      end
-      k = k + 1
+    rescue
+
     end
 
-  rescue
-
+    return([trackCode,trackName,artistName])
   end
 
-  return(val)
-end
+  def remove_accents(str)
 
-def remove_accents(str)
+    # Modified code from
+    # RemoveAccents version 1.0.3 (c) 2008-2009 Solutions Informatiques Techniconseils inc.
+    # http://www.techniconseils.ca/en/scripts-remove-accents-ruby.php
+    # The extended characters map used by removeaccents. The accented characters 
+    # are coded here using their numerical equivalent to sidestep encoding issues.
+    # These correspond to ISO-8859-1 encoding.
+    tmp = str
+    accents_mapping = {
+      'E' => [200,201,202,203],
+      'e' => [232,233,234,235],
+      'A' => [192,193,194,195,196,197],
+      'a' => [224,225,226,227,228,229,230],
+      'C' => [199],
+      'c' => [231],
+      'O' => [210,211,212,213,214,216],
+      'o' => [242,243,244,245,246,248],
+      'I' => [204,205,206,207],
+      'i' => [236,237,238,239],
+      'U' => [217,218,219,220],
+      'u' => [249,250,251,252],
+      'N' => [209],
+      'n' => [241],
+      'Y' => [221],
+      'y' => [253,255],
+      'AE' => [306],
+      'ae' => [346],
+      'OE' => [188],
+      'oe' => [189]
+    }
 
-  # Modified code from
-  # RemoveAccents version 1.0.3 (c) 2008-2009 Solutions Informatiques Techniconseils inc.
-  # http://www.techniconseils.ca/en/scripts-remove-accents-ruby.php
-  # The extended characters map used by removeaccents. The accented characters 
-  # are coded here using their numerical equivalent to sidestep encoding issues.
-  # These correspond to ISO-8859-1 encoding.
-  tmp = str
-  accents_mapping = {
-    'E' => [200,201,202,203],
-    'e' => [232,233,234,235],
-    'A' => [192,193,194,195,196,197],
-    'a' => [224,225,226,227,228,229,230],
-    'C' => [199],
-    'c' => [231],
-    'O' => [210,211,212,213,214,216],
-    'o' => [242,243,244,245,246,248],
-    'I' => [204,205,206,207],
-    'i' => [236,237,238,239],
-    'U' => [217,218,219,220],
-    'u' => [249,250,251,252],
-    'N' => [209],
-    'n' => [241],
-    'Y' => [221],
-    'y' => [253,255],
-    'AE' => [306],
-    'ae' => [346],
-    'OE' => [188],
-    'oe' => [189]
-  }
+      accents_mapping.each {|letter,accents|
+      packed = accents.pack('U*')
+      rxp = Regexp.new("[#{packed}]")
+      tmp.gsub!(rxp, letter)
+    }
+    return(tmp)
+  end
 
-    accents_mapping.each {|letter,accents|
-    packed = accents.pack('U*')
-    rxp = Regexp.new("[#{packed}]")
-    tmp.gsub!(rxp, letter)
-  }
-  return(tmp)
-end
-
-#create the url in Spotify format for the band name 
-def createArtistUrl(str1)
-  val = nil
-  if (str1 != nil)
-    #remove leading and trailing whitespace
-    str2 = str1.lstrip.rstrip
-    str2 = remove_accents(str2)
-    #remove quintet, quartet, trio (makes it easier for Spotify to search)
-    str2.gsub!(/quintet/i,"")
-    str2.gsub!(/quartet/i,"")
-    str2.gsub!(/trio/i,"")
-    #remove tribute (may want to include actual bands who are playing the tribute as well)
-    str2.gsub!(/tribute/i,"")
-    #keep only whitespace, alphanumeric characters, comma, ampersand, and period
-    i = /[^(\w|\s|,|&|.)]/ =~ str2
-    if (i != nil)
-      str2 = str2[0...i]
+  #create the url in Spotify format for the band name 
+  def createArtistUrl(str1)
+    val = nil
+    if (str1 != nil)
+      #remove leading and trailing whitespace
+      str2 = str1.lstrip.rstrip
+      str2 = remove_accents(str2)
+      #remove quintet, quartet, trio (makes it easier for Spotify to search)
+      str2.gsub!(/quintet/i,"")
+      str2.gsub!(/quartet/i,"")
+      str2.gsub!(/trio/i,"")
+      #remove tribute (may want to include actual bands who are playing the tribute as well)
+      str2.gsub!(/tribute/i,"")
+      #keep only whitespace, alphanumeric characters, comma, ampersand, and period
+      i = /[^(\w|\s|,|&|.)]/ =~ str2
+      if (i != nil)
+        str2 = str2[0...i]
+      end
+      str2 = str2.lstrip.rstrip
+      str2.gsub!(" ", "%20")
+      str2.gsub!("&", "%26")
+      val = "http://ws.spotify.com/search/1/artist?q=" + str2
     end
-    str2 = str2.lstrip.rstrip
-    str2.gsub!(" ", "%20")
-    str2.gsub!("&", "%26")
-    val = "http://ws.spotify.com/search/1/artist?q=" + str2
-    puts("spotify url = #{val}")
+
+    return(val)
   end
 
-  return(val)
-end
-
-def findSpotifyTrack(bandName)
-  val = nil
+  def findSpotifyTrack(bandName)
+    trackCode = nil
+    trackName = nil
+    artistName = nil
   
-  url = createArtistUrl(bandName)
+    url = createArtistUrl(bandName)
   
-  if (url != nil)
-    artist = searchArtist(url)
+    if (url != nil)
+      artist = searchArtist(url)
 
-    if (artist != nil)
-      url = "http://ws.spotify.com/lookup/1/?uri=spotify:artist:" + \
-            "#{artist}" + "&extras=album"
-      album = lookupArtist(url)
+      if (artist != nil)
+        url = "http://ws.spotify.com/lookup/1/?uri=spotify:artist:" + \
+              "#{artist}" + "&extras=album"
+        album = lookupArtist(url)
 
-      if (album != nil)
-        url = "http://ws.spotify.com/lookup/1/?uri=spotify:album:" + \
-              "#{album}" + "&extras=trackdetail"
-        track = lookupAlbum(url)
-        if (track != nil)
-          val = "spotify:track:#{track}"
-          #puts(val)
+        if (album != nil)
+          url = "http://ws.spotify.com/lookup/1/?uri=spotify:album:" + \
+                "#{album}" + "&extras=trackdetail"
+          trackCode, trackName, artistName = lookupAlbum(url)
+          if (trackCode != nil)
+            trackCode = "spotify:track:#{trackCode}"
+            puts("trackCode = #{trackCode}")
+          end
         end
       end
     end
+  
+    return ([trackCode,trackName,artistName])
   end
-  
-  return (val)
-end
 
-#split a string into an array
-# E.g. "the bad plus, kurt rosenwinkel, and the rolling stones" ->
-# ["the bad plus", "kurt rosenwinkel", "the rolling stones"]
-def multiSplit(str)
-  val = str
+  #split a string into an array
+  # E.g. "the bad plus, kurt rosenwinkel, and the rolling stones" ->
+  # ["the bad plus", "kurt rosenwinkel", "the rolling stones"]
+  def multiSplit(str)
+    val = str
   
-  splitArray = Array.new
-  splitArray[0] = ' and '
-  splitArray[1] = ','
-  splitArray[2] = "&amp;"
-  splitArray[3] = '&'
+    splitArray = Array.new
+    splitArray[0] = ' and '
+    splitArray[1] = ','
+    splitArray[2] = "&amp;"
+    splitArray[3] = '&'
   
-  splitArray.each do |tmp|
-    tmp2 = val.split("#{tmp}")
-    val = tmp2.join("-")
+    splitArray.each do |tmp|
+      tmp2 = val.split("#{tmp}")
+      val = tmp2.join("-")
+    end
+    val.gsub!("--","-")
+    val = val.split("-")
+
+    return (val)
+  
   end
-  val.gsub!("--","-")
-  val = val.split("-")
 
-  #puts("val = #{val}")  
-  return (val)
+  # using str1, return what's between str2 and str3
+  def betweenTwoStrings(str1, str2, str3)
+    val = nil
+  
+    i = /#{str2}/ =~ str1
+    if (i == nil)
+      return val
+    end
+    tmp = i+str2.length
+    j = /#{str3}/ =~ str1[(tmp)..-1]
+    if (j == nil)
+      return val
+    end
+    val = str1[(tmp)...(tmp+j)]
+    return val
+  end
   
 end
