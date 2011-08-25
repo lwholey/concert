@@ -52,9 +52,9 @@
 							</tr>
 						<%  bandHistory.each do |band| %>
 							<tr>
-							<td> <%= if (band == nil) then "NA" else band end %></td>
-							<td> <%= if (spotifyBandHistory[i] == nil) then "NA" else spotifyBandHistory[i] end %>
-						  <td> <%= if (trackHistory[i] == nil) then "NA" else trackHistory[i] end %>
+							<td> <%= if (band == nil) then "N/A" else band end %></td>
+							<td> <%= if (spotifyBandHistory[i] == nil) then "N/A" else spotifyBandHistory[i] end %>
+						  <td> <%= if (trackHistory[i] == nil) then "N/A" else trackHistory[i] end %>
 							</tr>
 							<% i += 1 %>
 					  <% end %>
