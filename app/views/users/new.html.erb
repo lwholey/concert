@@ -1,7 +1,8 @@
 <%= form_for(@user) do |f| %>
   <%= render 'shared/error_messages' %>
   <div class="field">
-    <%= f.label :Enter_Web_Page %><br />
+	  <% str = 'Enter Web Page (for example http://www.newyorker.com/arts/events/nightlife/)'%>
+    <%= f.label str %><br />
     <%= f.text_field :name, :size => 70 %>
   </div>
   <div class="field">
