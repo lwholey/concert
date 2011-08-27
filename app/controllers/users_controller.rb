@@ -444,13 +444,16 @@ class UsersController < ApplicationController
                 "#{album}" + "&extras=trackdetail"
           trackCode, trackName, artistName = lookupAlbum(url)
           if (trackCode != nil)
+            if (artistName != nil)
+              artistName.gsub!("&amp;","and")
+            end
             trackCode = "spotify:track:#{trackCode}"
             puts("trackCode = #{trackCode}")
           end
         end
       end
     end
-  
+
     return ([trackCode,trackName,artistName])
   end
 
