@@ -15,7 +15,7 @@
 				  <!-- replace whitespace with %20 because that's the way FlashVars variable below likes it -->
 				  <% valueStr.gsub!(" ", "%20") %>
 			    <% if (key == :success)%>
-					  <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+					  Click <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
 				              width="110"
 				              height="14"
 				              id="clippy_56b4b3e3a30b2685e34a2c9df8adce30ff7bdc6f">
@@ -35,14 +35,21 @@
 				             pluginspage="http://www.macromedia.com/go/getflashplayer"
 				             FlashVars=<%= valueStr %>
 				             bgcolor="#ffffff"
-				      />
-				      <div class="flash success">Tracks Found : copy-paste to Spotify Play Queue <img src="/images/playQueue.png" alt="\"Play Queue\"" /> <%= value %> </div>
-				    </object>
+				      /> </object>
+				    <br> and paste to Spotify Play Queue <img src="/images/playQueue.png" alt="\"Play Queue\"" /> </br>
+			      <font size="6">or ...</font> </br>
+			      Copy the following text and paste to Spotify Play Queue <img src="/images/playQueue.png" alt="\"Play Queue\"" /> 
+						</br>
+						<!-- cols and rows values don't do anything here, need to change screen.css> -->
+					  <%= text_area_tag :reason, value, :cols=>2,:rows=>2 %>
+						</br>
+				    
 				  <% elsif (key == :warning)  %>
 				    <% bandHistory = getBandHistory %>
 	          <% spotifyBandHistory = getSpotifyBandHistory %>
 	          <% trackHistory = getTrackHistory %>
 
+            <font size="6">Bands and Tracks Found</font>
 	  			  <table border="1">
 						<%  i = 0 %>
 						  <tr>
@@ -59,6 +66,7 @@
 							<% i += 1 %>
 					  <% end %>
 						</table>
+						</br>
 				  <% else %>
 			      <%= content_tag(:div, value, :class => "flash #{key}") %>
 				  <% end %> 
