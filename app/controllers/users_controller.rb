@@ -13,7 +13,7 @@ class UsersController < ApplicationController
   def new    
     @user = User.new
     @user.name = params[:u]
-    @title = "Enter Web Page"
+    @title = "Home"
   end
 
   def create
@@ -59,8 +59,8 @@ class UsersController < ApplicationController
   def parseBands
     
     url = @user.name
-    # remove white space at front of url
-    url.lstrip!
+    
+    url = prepareUrl(url)
 
     if Scraper.siteSupported?( url )
       s = Scraper.create(url)
@@ -77,6 +77,20 @@ class UsersController < ApplicationController
     else
       flash[:error] = "Web site not supported"
     end
+  end
+
+  #remove whitespace from the front and prepend http:// if needed
+  def prepareUrl(url)
+
+    tmp = url.lstrip
+    str = 'http://'
+    i = /#{str}/ =~ tmp
+    if (i != 0)
+      tmp = str + "#{tmp}"
+    end
+
+    puts("url in prepareUrl = #{tmp}")
+    return (tmp)
   end
 
   # Create Spotify playlist to display on web site
