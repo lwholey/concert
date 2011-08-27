@@ -1,7 +1,7 @@
 <%= form_for(@user) do |f| %>
   <%= render 'shared/error_messages' %>
   <div class="field">
-	  <% str = 'Enter Web Page (for example http://www.newyorker.com/arts/events/nightlife/)'%>
+	  <% str = 'Enter web site (for example http://www.newyorker.com/arts/events/nightlife/)'%>
     <%= f.label str %><br />
     <%= f.text_field :name, :size => 70 %>
   </div>
@@ -15,7 +15,7 @@
   </div>
 <% end %>
 <p>
-Sites supported : <br />
+Web sites supported : <br />
 <a href="http://thephoenix.com/Boston/Concerts/search/" target="_blank">The Phoenix (Boston, MA)</a><br />
 <a href="http://portland.thephoenix.com/Concerts/search/"target="_blank">The Phoenix (Portland, ME)</a><br />
 <a href="http://providence.thephoenix.com/Concerts/search/"target="_blank">The Phoenix (Providence, RI)</a><br />
