@@ -59,6 +59,8 @@ class UsersController < ApplicationController
   def parseBands
     
     url = @user.name
+    # remove white space at front of url
+    url.lstrip!
 
     if Scraper.siteSupported?( url )
       s = Scraper.create(url)
