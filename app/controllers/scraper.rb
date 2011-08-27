@@ -101,7 +101,8 @@ class Scraper
     rescue
       puts ("Rescue called")
       puts( $! ); # print the exception
-      return nil
+      # assumes that the only reason rescue is called is because Nokogiri could not open web site
+      return "BadWebSite"
     end
   end
 end

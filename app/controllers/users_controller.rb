@@ -66,10 +66,12 @@ class UsersController < ApplicationController
       s = Scraper.create(url)
       bandsArray = s.scrape(@maxBands)
     
-      if (bandsArray != nil)
-        createSpotifyPlaylist(bandsArray)
-      else
+      if (bandsArray == "BadWebSite")
+        flash[:error] = "Could not open web site"  
+      elsif (bandsArray == nil)
         flash[:error] = "No bands found"
+      else
+        createSpotifyPlaylist(bandsArray)
       end
 
     else
