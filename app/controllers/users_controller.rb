@@ -504,7 +504,9 @@ def client_browser_name
   user_agent = request.env['HTTP_USER_AGENT'].downcase 
   if user_agent =~ /mobile/i 
     "mobile" 
-  else 
+  elsif user_agent =~ /android/i
+    "mobile"
+  else
     "notMobile" 
   end 
 end
