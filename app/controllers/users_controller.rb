@@ -6,6 +6,7 @@ class UsersController < ApplicationController
   helper_method :getBandHistory
   helper_method :getSpotifyBandHistory
   helper_method :getTrackHistory
+  helper_method :client_browser_name
 
   # maximum number of bands to find tracks for
   $DEFAULT_MAXBANDS = 15
@@ -497,4 +498,13 @@ class UsersController < ApplicationController
     return val
   end
   
+end
+
+def client_browser_name 
+  user_agent = request.env['HTTP_USER_AGENT'].downcase 
+  if user_agent =~ /mobile/i 
+    "mobile" 
+  else 
+    "notMobile" 
+  end 
 end
