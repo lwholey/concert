@@ -13,7 +13,7 @@ class UsersController < ApplicationController
 
   def new    
     @user = User.new
-    @user.name = params[:u]
+    #@user.name = params[:u]
     @title = "Home"
   end
 
@@ -35,7 +35,7 @@ class UsersController < ApplicationController
       @maxBands = $DEFAULT_MAXBANDS
     end
 
-    parseBands
+#    parseBands
 
     if @user.save
       redirect_to "/entry"
@@ -56,6 +56,7 @@ class UsersController < ApplicationController
     return $trackHistory
   end
 
+=begin
   # Parses bands from web sites and creates playlist for Spotify
   def parseBands
     
@@ -79,6 +80,8 @@ class UsersController < ApplicationController
       flash[:error] = "Web site not supported"
     end
   end
+
+=end
 
   #remove whitespace from the front and prepend http:// if needed
   def prepareUrl(url)
