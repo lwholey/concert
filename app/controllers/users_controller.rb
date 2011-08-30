@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   require 'nokogiri'
   require 'open-uri'
   require 'scraper'
+  require 'eventful/api'
 
   helper_method :getBandHistory
   helper_method :getSpotifyBandHistory
@@ -36,6 +37,29 @@ class UsersController < ApplicationController
     end
 
 #    parseBands
+    begin
+
+       # Start an API session with a username and password
+       eventful = Eventful::API.new 'gr2xkHcHxTF3BQNk',
+                                    :user => 'lwrunner1',
+                                    :password => 'eventfulnerd1'
+
+       # Lookup an event by its unique id
+       event = eventful.call 'events/get',
+                             :id => 'E0-001-001042544-7'
+
+       puts "Event Title: #{event['title']}"
+
+       # Get information about that event's venue
+       venue = eventful.call 'venues/get',
+                             :id => event['venue_id']
+
+       puts "Venue: #{venue['name']}"
+
+    rescue Eventful::APIError => e
+       puts "There was a problem with the API: #{e}"
+    end
+
 
     if @user.save
       redirect_to "/entry"
