@@ -3,7 +3,7 @@
 }
 
 body {
-  background: #003;
+  background: #000;
 }
 
 header {
@@ -134,7 +134,10 @@ td.sidebar {
 div.field, div.actions {
 	margin-bottom: 10px;
 }
+div.field input {
+  background-color: #ff6;
 
+}
 field_with_errors {
   margin-top: 10px;
   padding: 2px;

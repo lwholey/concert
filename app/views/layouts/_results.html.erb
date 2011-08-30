@@ -1,0 +1,57 @@
+<section class="round">
+<% flash.each do |key, value| %>
+  <!-- ><div class="flash <%= key %>"><%= value %></div> -->
+  <% valueStr = "text=" + value %>
+  <!-- replace whitespace with %20 because that's the way FlashVars variable below likes it -->
+  <% valueStr.gsub!(" ", "%20") %>
+  <% if (key == :success)%>
+    <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+      width="110"
+      height="14"
+      id="clippy_56b4b3e3a30b2685e34a2c9df8adce30ff7bdc6f">
+      <param name="movie" value="clippy.swf"/>
+      <param name="allowScriptAccess" value="always" />
+      <param name="quality" value="high" />
+      <param name="scale" value="noscale" />
+      <param name="FlashVars" value=<%= valueStr %> />
+      <param name="bgcolor" value="#ffffff" />
+      <embed src="clippy.swf"
+      width="210"
+      height="28"
+      name="clippy"
+      quality="high"
+      allowScriptAccess="always"
+      type="application/x-shockwave-flash"
+      pluginspage="http://www.macromedia.com/go/getflashplayer"
+      FlashVars=<%= valueStr %>
+    bgcolor="#ffffff"
+    />
+    <div class="flash success">Tracks Found : copy-paste to Spotify Play Queue <img src="/images/playQueue.png" alt="\"Play Queue\"" /> <%= value %> </div>
+  </object>
+<% elsif (key == :warning)  %>
+  <% bandHistory = getBandHistory %>
+  <% spotifyBandHistory = getSpotifyBandHistory %>
+  <% trackHistory = getTrackHistory %>
+
+  <table border="1">
+    <%  i = 0 %>
+    <tr>
+      <td><b>Band (Web Site)</b></td>
+      <td><b>Band (Spotify)</b></td>
+      <td><b>Track (Spotify)</b></td>
+    </tr>
+    <%  bandHistory.each do |band| %>
+      <tr>
+        <td> <%= if (band == nil) then "N/A" else band end %></td>
+          <td> <%= if (spotifyBandHistory[i] == nil) then "N/A" else spotifyBandHistory[i] end %>
+            <td> <%= if (trackHistory[i] == nil) then "N/A" else trackHistory[i] end %>
+            </tr>
+            <% i += 1 %>
+          <% end %>
+        </table>
+      <% else %>
+        <%= content_tag(:div, value, :class => "flash #{key}") %>
+      <% end %> 
+    <% end %>
+    <%= yield %>
+    </section>

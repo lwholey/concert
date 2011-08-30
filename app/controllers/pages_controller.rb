@@ -1,4 +1,8 @@
 class PagesController < ApplicationController
+  def classicsearch
+    @title = "Classic Search"
+  end
+  
   def home
     @title = "Home"
   end

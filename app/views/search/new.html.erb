@@ -1,0 +1,17 @@
+<%= form_for(@search) do |f| %>
+  <%= render 'shared/error_messages', :object => f.object%>
+  <div class="field">
+    <% str = 'Type of music (for example: "jazz")'%>
+    <%= f.label str %><br />
+    <%= f.text_field :form_musiccategory, :size => 70 %>
+  </div>
+  <div class="field">
+    <% str = 'Location'%>
+    <%= f.label str %><br />
+    <%= f.text_field :form_location, :value => "#{$DEFAULT_LOCATION}" %>
+  </div>
+  <div class="actions">
+    <%= f.submit "Create Playlist" %>
+  </div>
+<% end %>
+
