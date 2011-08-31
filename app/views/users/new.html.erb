@@ -1,4 +1,4 @@
-<font size="5">lennylonglegs - create a concert calendar and playlist</font> </br></br>
+<font size="5">lennylonglegs - create concert calendar and playlist</font> </br></br>
 <%= form_for(@user) do |f| %>
   <%= render 'shared/error_messages' %>
   <div class="field">
@@ -17,6 +17,6 @@
     <%= f.text_field :keywords %>
   </div>
   <div class="actions">
-    <%= f.submit "Create Playlist" %>
+    <%= f.submit "Create" %>
   </div>
 <% end %>
