@@ -1,4 +1,4 @@
-<font size="5">lennylonglegs - create your concert playlist</font> </br></br>
+<font size="5">lennylonglegs - create a concert calendar and playlist</font> </br></br>
 <%= form_for(@user) do |f| %>
   <%= render 'shared/error_messages' %>
   <div class="field">
@@ -15,11 +15,6 @@
 	  <% str = 'Keywords'%>
     <%= f.label str %><br />
     <%= f.text_field :keywords %>
-  </div>
-  <div class="field">
-    <% str = 'Max # of bands for playlist, optional'%>
-    <%= f.label str %><br />
-    <%= f.text_field :maxNumberOfBands, :value => "#{$DEFAULT_MAXBANDS}" %>
   </div>
   <div class="actions">
     <%= f.submit "Create Playlist" %>

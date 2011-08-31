@@ -14,7 +14,7 @@ class UsersController < ApplicationController
   helper_method :getDetailsHistory
 
   # maximum number of bands to find tracks for
-  $DEFAULT_MAXBANDS = 15
+  $DEFAULT_MAXBANDS = 10
 
   def new    
     @user = User.new
@@ -27,20 +27,7 @@ class UsersController < ApplicationController
     #puts("@user.city = #{@user.city}")
     #puts("@user.keywords = #{@user.keywords}")
     #puts("@user.dates = #{@user.dates}")
-    # only set $maxBands if input is a digit (\D is a non-digit character)
-    i = /\D/ =~ @user.maxNumberOfBands
-    if (i == nil) # no non-digit chars were found so use input
-      @maxBands = @user.maxNumberOfBands.to_i
-    else
-      @maxBands = $DEFAULT_MAXBANDS
-    end
-    
-    # If form is blank the regexp returns nil and "".to_i returns 0, but 
-    # really want the default.
-    # TODO: Use form validation instead?
-    if (@maxBands == 0)
-      @maxBands = $DEFAULT_MAXBANDS
-    end
+    @maxBands = $DEFAULT_MAXBANDS
 
     parseBands
 
@@ -99,7 +86,8 @@ class UsersController < ApplicationController
                              :location => @user.city,
                              :keywords => @user.keywords,
                              :date => @user.dates
-                             
+                          
+       puts("results = #{results}")   
        #TODO : handle case where performers are not included (use event title instead)
        results['events']['event'].each do |event|
          if (event['performers'] != nil)
