@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   helper_method :getVenueHistory
   helper_method :getDetailsHistory
 
-  # maximum number of bands to find tracks for
+  # maximum number of bands to find tracks for (this variable currently isn't used for anything)
   $DEFAULT_MAXBANDS = 10
 
   def new    
