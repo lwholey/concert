@@ -4,11 +4,16 @@ class SearchController < ApplicationController
 
   def new    
     @search = Search.new
-    @title = "Enter Web Page"
+    @title = "Enter Search Terms"
   end
 
   def create
     @search = Search.new(params[:search])
   end
 
+  def show
+    @search = User.find(params[:id])
+  end
 end
+
+

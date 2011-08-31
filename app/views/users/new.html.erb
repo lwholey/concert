@@ -1,35 +1,47 @@
-<%= form_for(@user) do |f| %>
-  <%= render 'shared/error_messages', :object => f.object  %>
-  <div class="field">
-    <% str = 'Enter web site (for example http://www.newyorker.com/arts/events/nightlife/)'%>
-    <%= f.label str %><br />
-    <%= f.text_field :name, :size => 70 %>
-  </div>
-  <div class="field">
-    <% str = 'Max # of bands for playlist (optional)'%>
-    <%= f.label str %><br />
-    <%= f.text_field :maxNumberOfBands, :value => "#{$DEFAULT_MAXBANDS}" %>
-  </div>
-  <div class="actions">
-    <%= f.submit "Create Playlist" %>
-  </div>
-<% end %>
-<p>
-  Web sites supported : <br />
-  <a href="http://thephoenix.com/Boston/Concerts/search/" target="_blank">The Phoenix (Boston, MA)</a><br />
-  <a href="http://portland.thephoenix.com/Concerts/search/"target="_blank">The Phoenix (Portland, ME)</a><br />
-  <a href="http://providence.thephoenix.com/Concerts/search/"target="_blank">The Phoenix (Providence, RI)</a><br />
-  <a href="http://www.newyorker.com/arts/events/nightlife/" target="_blank">The New Yorker (New York, NY)</a><br />
-  <a href="http://cal.startribune.com/dynamic/calendars/find_event.php?open_tab=event_tab" target="_blank">Star Tribune (Minneapolis, MN)</a><br />
-  <a href="http://events.sfgate.com/search?st=event&cat=7" target="_blank">SF Gate (San Francisco, CA)</a><br />
-  <a href="http://findlocal.latimes.com/search/category.event/category.event.concert?page=1" target="_blank">LA Times (Los Angeles, CA)</a><br />
-  <a href="http://calendar.triblive.com/search?cat=7&st=event" target="_blank">The Trib (Pittsburgh, PA)</a><br />
-  <a href="http://calendar.denverpost.com/search?cat=7&st=event" target="_blank">The Denver Post (Denver, CO)</a><br />
-  <a href="http://getshowtix.com/regattabar/index.shtml" target="_blank">The Regatta Bar (Boston, MA)</a><br />
-</p>
+<div class="span-23 prepend-1">
+  <%= form_for(@user) do |f| %>
+    <div class="span-22 last">
+      <%= render 'shared/error_messages', :object => f.object  %>
+    </div>
+    <div class="span-14">
 
-Bookmarklet: <br />
-<a href="javascript:var d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f= 'http://<%= request.host_with_port %>/users/new',l=d.location,e=encodeURIComponent,p='?v=1&u='+e(l.href)%20+'&t='+e(d.title.replace(/^\s*|\s*$/g,''))%20+'&s='+e(s),u=f+p;location.href=u;">
-  LLLet
-</a>
+      <div class="field">
+        <% str = 'Enter web site (for example http://www.newyorker.com/arts/events/nightlife/)'%>
+        <%= f.label str %><br />
+        <%= f.text_field :name, :size => 70 %>
+      </div>
+      <div class="field">
+        <% str = 'Max # of bands for playlist (optional)'%>
+        <%= f.label str %><br />
+        <%= f.text_field :maxNumberOfBands, :value => "#{$DEFAULT_MAXBANDS}" %>
+      </div>
+      <div class="actions">
+        <%= f.submit "Create Playlist" %>
+      </div>
 
+    </div>
+  <% end %>
+
+  <div class="span-8 last">
+  
+    <p>
+      Web sites supported : <br />
+      <a href="http://thephoenix.com/Boston/Concerts/search/" target="_blank">The Phoenix (Boston, MA)</a><br />
+      <a href="http://portland.thephoenix.com/Concerts/search/"target="_blank">The Phoenix (Portland, ME)</a><br />
+      <a href="http://providence.thephoenix.com/Concerts/search/"target="_blank">The Phoenix (Providence, RI)</a><br />
+      <a href="http://www.newyorker.com/arts/events/nightlife/" target="_blank">The New Yorker (New York, NY)</a><br />
+      <a href="http://cal.startribune.com/dynamic/calendars/find_event.php?open_tab=event_tab" target="_blank">Star Tribune (Minneapolis, MN)</a><br />
+      <a href="http://events.sfgate.com/search?st=event&cat=7" target="_blank">SF Gate (San Francisco, CA)</a><br />
+      <a href="http://findlocal.latimes.com/search/category.event/category.event.concert?page=1" target="_blank">LA Times (Los Angeles, CA)</a><br />
+      <a href="http://calendar.triblive.com/search?cat=7&st=event" target="_blank">The Trib (Pittsburgh, PA)</a><br />
+      <a href="http://calendar.denverpost.com/search?cat=7&st=event" target="_blank">The Denver Post (Denver, CO)</a><br />
+      <a href="http://getshowtix.com/regattabar/index.shtml" target="_blank">The Regatta Bar (Boston, MA)</a><br />
+    </p>
+
+    Bookmarklet: <br />
+    <a href="javascript:var d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f= 'http://<%= request.host_with_port %>/users/new',l=d.location,e=encodeURIComponent,p='?v=1&u='+e(l.href)%20+'&t='+e(d.title.replace(/^\s*|\s*$/g,''))%20+'&s='+e(s),u=f+p;location.href=u;">
+      LLLet</a>
+  
+  </div>
+</div>
+<%= render 'layouts/results' %>

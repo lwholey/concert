@@ -13,8 +13,7 @@ get "pages/contact"
 get "pages/about"
 get "pages/help"
 =end
-  
-
+  match '/result', :to => 'users#new'
   match '/classicsearch', :to   => 'users#new'
   match '/home', :to   => 'search#new'
   match '/contact', :to => 'pages#contact'

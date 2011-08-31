@@ -1,9 +1,9 @@
 .container {
-  width: 710px;
+  width: 90%;
 }
 
 body {
-  background: #000;
+  background: #FFF;
 }
 
 header {
@@ -43,101 +43,94 @@ a:visited {
 }
 
 nav {
-	float: right;
-}
-
-nav {
-	background-color: white;
-	padding: 0 0.7em;
-	white-space: nowrap;
+  float: right;
+  background-color: white;
+  padding: 0 0.7em;
+  white-space: nowrap;
 }
 
 nav ul {
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 nav ul li {
-	list-style-type: none;
-	display: inline-block;
-	padding: 0.2em 0;
+  list-style-type: none;
+  display: inline-block;
+  padding: 0.2em 0;
 }
 
 nav ul li a {
-	padding: 0 5px;
-	font-weight: bold;
+  padding: 0 5px;
+  font-weight: bold;
 }
 
 nav ul li a:visited {
-	color: #09c;
+  color: #09c;
 }
 
 nav ul li a:hover {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 
-a.signup_button {
-	margin-left: auto;
-	margin-right: auto;
-	display: block;
-	text-align: center;
-	width: 190px;
-	color: #fff;
-	background: #006400;
-	font-size: 150%;
-	font-weight: bold;
-	padding: 20px;
+input#search_submit {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  text-align: center;
+  width: 190px;
+  color: #fff;
+  background: #006400;
+  font-size: 150%;
+  font-weight: bold;
+  padding: 20px;
 }
 
 .round {
-	-mox-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	border-radius: 10px;
+  -mox-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
 }
 
 footer {
-  text-align: center;
+  background-color: white;
   margin-top: 10px;
-  width: 710px;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
 }
 
 footer nav {
+  text-align: center;
   float: none;
 }
 
 /* User show page */
 
 table.profile {
-	width: 100%;
-	margin-bottom: 0;
+  width: 100%;
+  margin-bottom: 0;
 }
 
 td.main {
-	width: 70%;
-	padding: lem;
+  width: 70%;
+  padding: lem;
 }
 
 td.sidebar {
-	width: 30%;
-	padding: lem;
-	vertical-align: top;
-	background: #ffc;
+  width: 30%;
+  padding: lem;
+  vertical-align: top;
+  background: #ffc;
 }
-
-.profile img.gravatar {
-	border: 1px solid #999;
-	margin-bottom: -15px;
-}
-
 div.field, div.actions {
-	margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 div.field input {
   background-color: #ff6;
-
 }
+
+
 field_with_errors {
   margin-top: 10px;
   padding: 2px;
@@ -178,3 +171,4 @@ field_with_errors {
   font-size: 12px;
   list-style: square;
 }
+

@@ -1,17 +1,24 @@
-<%= form_for(@search) do |f| %>
-  <%= render 'shared/error_messages', :object => f.object%>
-  <div class="field">
-    <% str = 'Type of music (for example: "jazz")'%>
-    <%= f.label str %><br />
-    <%= f.text_field :form_musiccategory, :size => 70 %>
-  </div>
-  <div class="field">
-    <% str = 'Location'%>
-    <%= f.label str %><br />
-    <%= f.text_field :form_location, :value => "#{$DEFAULT_LOCATION}" %>
-  </div>
-  <div class="actions">
-    <%= f.submit "Create Playlist" %>
-  </div>
-<% end %>
+<div class="span-23 prepend-1">
+  <%= form_for @search, :html => {:class => "new_search"} do |f| %>
+    <fieldset>
+      <div class="span-22 last">
+        <%= render 'shared/error_messages', :object => f.object  %>
+      </div>
 
+      <div class="field span-8">
+        <% str = 'Type of music (for example: "jazz")'%>
+        <%= f.label str %><br />
+        <%= f.text_field :form_musiccategory, :size => 30 %>
+      </div>
+      <div class="field span-6">
+        <% str = 'Location'%>
+        <%= f.label str %><br />
+        <%= f.text_field :form_location, :value => "#{$DEFAULT_LOCATION}" %>
+      </div>
+      <div class="actions span-7">
+        <%= f.submit "Create Playlist" %>
+      </div>
+    </fieldset>
+  <% end %>
+</div>
+<%= render 'layouts/results' %>
