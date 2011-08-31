@@ -96,14 +96,16 @@ class UsersController < ApplicationController
                bandsArray << performer[1]
                eventArray << event['title']
                dateArray << event['start_time']
-               #puts("event['start_time'] = #{event['start_time']}")
                venueArray << event['venue_name']
                detailsArray << event['url']
-               #puts("performer[1] = #{performer[1]}")
              end
            end
          else
-           #puts("nil")
+           bandsArray << event['title']
+           eventArray << event['title']
+           dateArray << event['start_time']
+           venueArray << event['venue_name']
+           detailsArray << event['url']
          end
        end
 
