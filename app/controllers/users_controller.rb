@@ -99,7 +99,8 @@ class UsersController < ApplicationController
                if (performer[0] == 'name')
                  bandsArray << performer[1]
                  eventArray << event['title']
-                 dateArray << massageTime(event['start_time'])
+                 #dateArray << massageTime(event['start_time'])
+                 dateArray << event['start_time']
                  venueArray << event['venue_name']
                  detailsArray << event['url']
                end
@@ -107,7 +108,8 @@ class UsersController < ApplicationController
            else
              bandsArray << event['title']
              eventArray << event['title']
-             dateArray << massageTime(event['start_time'])
+             #dateArray << massageTime(event['start_time'])
+             dateArray << event['start_time']
              venueArray << event['venue_name']
              detailsArray << event['url']
            end
