@@ -81,10 +81,13 @@ class UsersController < ApplicationController
                                     :user => 'lwrunner1',
                                     :password => 'eventfulnerd1'
 
+       date = massageDate(@user.dates)
+       #puts("date = #{date}")
+
        results = eventful.call 'events/search',
                              :location => @user.city,
                              :keywords => @user.keywords,
-                             :date => @user.dates,
+                             :date => date,
                              :category => 'music'
        if (results['events'] != nil)                 
          #puts("results = #{results}")   
@@ -120,6 +123,67 @@ class UsersController < ApplicationController
       createSpotifyPlaylist(bandsArray, eventArray, dateArray, venueArray, detailsArray)
     end
 
+  end
+
+  # parse date for use by eventful
+  # From http://api.eventful.com/libs/ruby/doc/index.html
+  # Limit this list of results to a date range, specified by label or exact range. 
+  # Currently supported labels include: "All", "Future", "Past", "Today", 
+  #{ }"Last Week", "This Week", "Next week", and months by name, e.g. "October". 
+  # Exact ranges take the form 'YYYYMMDDHH-YYYYMMDDHH', e.g. '2008042500-2008042723'. (optional)
+
+  # date values that appear to work:
+  # all, future, past, today, last week, this week, next week, september, october, november, aug, oct, nov, aug.
+
+  # date values that appear NOT to work:
+  # All (the only value that I found to be case sensitive), exact dates?
+  
+  def massageDate(date)
+    tmp = date[0..2].downcase
+    
+    case tmp
+    when 'jan'
+      'january'
+    when 'feb'
+      'february'
+    when 'mar'
+      'march'
+    when 'apr'
+      'april'
+    when 'may'
+      'may'
+    when 'jun'
+      'june'
+    when 'jul'
+      'july'
+    when 'jun'
+      'june'
+    when 'aug'
+      'august'
+    when 'sep'
+      'september'
+    when 'oct'
+      'october'
+    when 'nov'
+      'november'
+    when 'dec'
+      'december'
+    when 'fut'
+      'future'
+    when 'pas'
+      'past'
+    when 'las'
+      'last week'
+    when 'thi'
+      'this week'
+    when 'nex'
+      'next week'
+    when 'all'
+      'all'
+    else
+      'future'
+    end
+      
   end
 
   # Create Spotify playlist to display on web site
