@@ -85,34 +85,36 @@ class UsersController < ApplicationController
                              :location => @user.city,
                              :keywords => @user.keywords,
                              :date => @user.dates
-                          
-       #puts("results = #{results}")   
-       results['events']['event'].each do |event|
-         if (event['performers'] != nil)
-           event['performers']['performer'].each do |performer|
-             if (performer[0] == 'name')
-               bandsArray << performer[1]
-               eventArray << event['title']
-               dateArray << event['start_time']
-               venueArray << event['venue_name']
-               detailsArray << event['url']
+       if (results['events'] != nil)                 
+         #puts("results = #{results}")   
+         results['events']['event'].each do |event|
+           if (event['performers'] != nil)
+             event['performers']['performer'].each do |performer|
+               if (performer[0] == 'name')
+                 bandsArray << performer[1]
+                 eventArray << event['title']
+                 dateArray << event['start_time']
+                 venueArray << event['venue_name']
+                 detailsArray << event['url']
+               end
              end
+           else
+             bandsArray << event['title']
+             eventArray << event['title']
+             dateArray << event['start_time']
+             venueArray << event['venue_name']
+             detailsArray << event['url']
            end
-         else
-           bandsArray << event['title']
-           eventArray << event['title']
-           dateArray << event['start_time']
-           venueArray << event['venue_name']
-           detailsArray << event['url']
          end
        end
 
     rescue Eventful::APIError => e
        puts "There was a problem with the API: #{e}"
+       flash[:error] = "No concerts found"
     end
     
     if (bandsArray.length == 0)
-      flash[:error] = "No bands found"
+      flash[:error] = "No concerts found"
     else
       createSpotifyPlaylist(bandsArray, eventArray, dateArray, venueArray, detailsArray)
     end
