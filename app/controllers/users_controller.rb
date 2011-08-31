@@ -84,7 +84,8 @@ class UsersController < ApplicationController
        results = eventful.call 'events/search',
                              :location => @user.city,
                              :keywords => @user.keywords,
-                             :date => @user.dates
+                             :date => @user.dates,
+                             :category => 'music'
        if (results['events'] != nil)                 
          #puts("results = #{results}")   
          results['events']['event'].each do |event|
