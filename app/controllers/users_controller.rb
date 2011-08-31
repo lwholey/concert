@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
   require 'nokogiri'
   require 'open-uri'
-  require 'scraper'
   require 'eventful/api'
 
   helper_method :getBandHistory
@@ -87,8 +86,7 @@ class UsersController < ApplicationController
                              :keywords => @user.keywords,
                              :date => @user.dates
                           
-       puts("results = #{results}")   
-       #TODO : handle case where performers are not included (use event title instead)
+       #puts("results = #{results}")   
        results['events']['event'].each do |event|
          if (event['performers'] != nil)
            event['performers']['performer'].each do |performer|
