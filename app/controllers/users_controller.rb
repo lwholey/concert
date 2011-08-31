@@ -129,10 +129,10 @@ class UsersController < ApplicationController
     $trackHistory = Array.new
 
     bandsArray.each do |band|
-      trackCode, trackName, artistName = findSpotifyTrack(band)
+      trackCode, trackName, artistName = findSpotifyTrack(band, $bandHistory)
       if (trackCode == nil)
         multiSplit(band).each do |band1|
-          trackCode, trackName, artistName = findSpotifyTrack(band1)
+          trackCode, trackName, artistName = findSpotifyTrack(band1, $bandHistory)
           tracksString = appendStrings(tracksString, trackCode)
           $bandHistory << band1
           $spotifyBandHistory << artistName
@@ -450,36 +450,42 @@ class UsersController < ApplicationController
     return(val)
   end
 
-  def findSpotifyTrack(bandName)
+  def findSpotifyTrack(bandName, bandHistory)
     trackCode = nil
     trackName = nil
     artistName = nil
-  
-    url = createArtistUrl(bandName)
-  
-    if (url != nil)
-      artist = searchArtist(url)
 
-      if (artist != nil)
-        url = "http://ws.spotify.com/lookup/1/?uri=spotify:artist:" + \
-              "#{artist}" + "&extras=album"
-        album = lookupArtist(url)
+    band0 = Array.new
+    band0 << bandName
+    #don't find a spotify track twice
+    puts("bandHistory = #{bandHistory}")
+    puts("band0 = #{band0}")
+    if ((bandHistory & band0).empty? == true )
+      url = createArtistUrl(bandName)
+  
+      if (url != nil)
+        artist = searchArtist(url)
 
-        if (album != nil)
-          url = "http://ws.spotify.com/lookup/1/?uri=spotify:album:" + \
-                "#{album}" + "&extras=trackdetail"
-          trackCode, trackName, artistName = lookupAlbum(url)
-          if (trackCode != nil)
-            if (artistName != nil)
-              artistName.gsub!("&amp;","and")
+        if (artist != nil)
+          url = "http://ws.spotify.com/lookup/1/?uri=spotify:artist:" + \
+                "#{artist}" + "&extras=album"
+          album = lookupArtist(url)
+
+          if (album != nil)
+            url = "http://ws.spotify.com/lookup/1/?uri=spotify:album:" + \
+                  "#{album}" + "&extras=trackdetail"
+            trackCode, trackName, artistName = lookupAlbum(url)
+            if (trackCode != nil)
+              if (artistName != nil)
+                artistName.gsub!("&amp;","and")
+              end
+              trackCode = "spotify:track:#{trackCode}"
+              puts("trackCode = #{trackCode}")
             end
-            trackCode = "spotify:track:#{trackCode}"
-            puts("trackCode = #{trackCode}")
           end
         end
       end
     end
-
     return ([trackCode,trackName,artistName])
   end
 
