@@ -20,7 +20,9 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(params[:user])
-
+    puts("@user.city = #{@user.city}")
+    puts("@user.keywords = #{@user.keywords}")
+    puts("@user.dates = #{@user.dates}")
     # only set $maxBands if input is a digit (\D is a non-digit character)
     i = /\D/ =~ @user.maxNumberOfBands
     if (i == nil) # no non-digit chars were found so use input
@@ -36,30 +38,7 @@ class UsersController < ApplicationController
       @maxBands = $DEFAULT_MAXBANDS
     end
 
-#    parseBands
-    begin
-
-       # Start an API session with a username and password
-       eventful = Eventful::API.new 'gr2xkHcHxTF3BQNk',
-                                    :user => 'lwrunner1',
-                                    :password => 'eventfulnerd1'
-
-       # Lookup an event by its unique id
-       event = eventful.call 'events/get',
-                             :id => 'E0-001-001042544-7'
-
-       puts "Event Title: #{event['title']}"
-
-       # Get information about that event's venue
-       venue = eventful.call 'venues/get',
-                             :id => event['venue_id']
-
-       puts "Venue: #{venue['name']}"
-
-    rescue Eventful::APIError => e
-       puts "There was a problem with the API: #{e}"
-    end
-
+    parseBands
 
     if @user.save
       redirect_to "/entry"
@@ -80,32 +59,51 @@ class UsersController < ApplicationController
     return $trackHistory
   end
 
-=begin
   # Parses bands from web sites and creates playlist for Spotify
   def parseBands
-    
-    url = @user.name
-    
-    url = prepareUrl(url)
 
-    if Scraper.siteSupported?( url )
-      s = Scraper.create(url)
-      bandsArray = s.scrape(@maxBands)
-    
-      if (bandsArray == "BadWebSite")
-        flash[:error] = "Could not open web site"  
-      elsif (bandsArray == nil)
-        flash[:error] = "No bands found"
-      else
-        createSpotifyPlaylist(bandsArray)
-      end
+    bandsArray = Array.new
 
-    else
-      flash[:error] = "Web site not supported"
+    begin
+
+       # Start an API session with a username and password
+       eventful = Eventful::API.new 'gr2xkHcHxTF3BQNk',
+                                    :user => 'lwrunner1',
+                                    :password => 'eventfulnerd1'
+
+       results = eventful.call 'events/search',
+                             :location => @user.city,
+                             :keywords => @user.keywords,
+                             :date => @user.dates
+                             
+       #TODO : handle case where performers are not included (use event title instead)
+       results['events']['event'].each do |event|
+         if (event['performers'] != nil)
+           event['performers']['performer'].each do |performer|
+             if (performer[0] == 'name')
+               bandsArray << performer[1]
+               puts("performer[1] = #{performer[1]}")
+             end
+           end
+         else
+           puts("nil")
+         end
+         #puts "performer = #{performer}"
+         
+         #puts "Performer: #{performer['name']}"
+       end
+
+    rescue Eventful::APIError => e
+       puts "There was a problem with the API: #{e}"
     end
-  end
+    
+    if (bandsArray.length == 0)
+      flash[:error] = "No bands found"
+    else
+      createSpotifyPlaylist(bandsArray)
+    end
 
-=end
+  end
 
   #remove whitespace from the front and prepend http:// if needed
   def prepareUrl(url)
