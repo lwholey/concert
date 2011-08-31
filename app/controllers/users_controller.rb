@@ -88,7 +88,9 @@ class UsersController < ApplicationController
                              :location => @user.city,
                              :keywords => @user.keywords,
                              :date => date,
-                             :category => 'music'
+                             :category => 'music',
+                             :sort_order => 'date',
+                             :sort_direction => 'ascending'
        if (results['events'] != nil)                 
          #puts("results = #{results}")   
          results['events']['event'].each do |event|
@@ -97,7 +99,7 @@ class UsersController < ApplicationController
                if (performer[0] == 'name')
                  bandsArray << performer[1]
                  eventArray << event['title']
-                 dateArray << event['start_time']
+                 dateArray << massageTime(event['start_time'])
                  venueArray << event['venue_name']
                  detailsArray << event['url']
                end
@@ -105,7 +107,7 @@ class UsersController < ApplicationController
            else
              bandsArray << event['title']
              eventArray << event['title']
-             dateArray << event['start_time']
+             dateArray << massageTime(event['start_time'])
              venueArray << event['venue_name']
              detailsArray << event['url']
            end
@@ -123,6 +125,39 @@ class UsersController < ApplicationController
       createSpotifyPlaylist(bandsArray, eventArray, dateArray, venueArray, detailsArray)
     end
 
+  end
+
+  def massageTime(time)
+    t = time.asctime
+    i = /\s/ =~ t
+    dayOfWeek = t[0...i]
+    puts("dayOfWeek = #{dayOfWeek}")
+    #puts("time = #{time}")
+    month = time.mon
+    day = time.day
+    #puts("month = #{month}")
+    #puts("day = #{day}")
+    date = month.to_s + "/" + day.to_s
+    #puts("date = #{date}")
+    
+    hour = time.hour
+    #puts("hour = #{hour}")
+    minutes = time.min
+    if minutes < 10
+      minutes = "0" + minutes.to_s
+    end
+    #puts("minutes = #{minutes}")
+    
+    if (hour > 12)
+      hour -= 12
+      dateAndTime = "#{dayOfWeek} " + "#{date} " + "#{hour}" + ":" + "#{minutes}" + "PM"
+    else
+      dateAndTime = "#{dayOfWeek} " + "#{date} " + "#{hour}" + ":" + "#{minutes}" + "AM"
+    end
+    
+    #puts("dateAndTime = #{dateAndTime}")
+    return dateAndTime
+    
   end
 
   # parse date for use by eventful
