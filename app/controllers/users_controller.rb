@@ -8,6 +8,10 @@ class UsersController < ApplicationController
   helper_method :getSpotifyBandHistory
   helper_method :getTrackHistory
   helper_method :client_browser_name
+  helper_method :getEventHistory
+  helper_method :getDateHistory
+  helper_method :getVenueHistory
+  helper_method :getDetailsHistory
 
   # maximum number of bands to find tracks for
   $DEFAULT_MAXBANDS = 15
@@ -20,9 +24,9 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(params[:user])
-    puts("@user.city = #{@user.city}")
-    puts("@user.keywords = #{@user.keywords}")
-    puts("@user.dates = #{@user.dates}")
+    #puts("@user.city = #{@user.city}")
+    #puts("@user.keywords = #{@user.keywords}")
+    #puts("@user.dates = #{@user.dates}")
     # only set $maxBands if input is a digit (\D is a non-digit character)
     i = /\D/ =~ @user.maxNumberOfBands
     if (i == nil) # no non-digit chars were found so use input
@@ -59,10 +63,30 @@ class UsersController < ApplicationController
     return $trackHistory
   end
 
+  def getEventHistory
+    return $eventHistory
+  end
+  
+  def getDateHistory
+    return $dateHistory
+  end
+  
+  def getVenueHistory
+    return $venueHistory
+  end
+  
+  def getDetailsHistory
+    return $detailsHistory
+  end
+
   # Parses bands from web sites and creates playlist for Spotify
   def parseBands
 
     bandsArray = Array.new
+    eventArray = Array.new
+    dateArray = Array.new
+    venueArray = Array.new
+    detailsArray = Array.new
 
     begin
 
@@ -82,15 +106,17 @@ class UsersController < ApplicationController
            event['performers']['performer'].each do |performer|
              if (performer[0] == 'name')
                bandsArray << performer[1]
-               puts("performer[1] = #{performer[1]}")
+               eventArray << event['title']
+               dateArray << event['start_time']
+               #puts("event['start_time'] = #{event['start_time']}")
+               venueArray << event['venue_name']
+               detailsArray << event['url']
+               #puts("performer[1] = #{performer[1]}")
              end
            end
          else
-           puts("nil")
+           #puts("nil")
          end
-         #puts "performer = #{performer}"
-         
-         #puts "Performer: #{performer['name']}"
        end
 
     rescue Eventful::APIError => e
@@ -100,7 +126,7 @@ class UsersController < ApplicationController
     if (bandsArray.length == 0)
       flash[:error] = "No bands found"
     else
-      createSpotifyPlaylist(bandsArray)
+      createSpotifyPlaylist(bandsArray, eventArray, dateArray, venueArray, detailsArray)
     end
 
   end
@@ -121,12 +147,17 @@ class UsersController < ApplicationController
 
   # Create Spotify playlist to display on web site
   # uses an array of strings (bandsArray) as input
-  def createSpotifyPlaylist(bandsArray)
+  def createSpotifyPlaylist(bandsArray, eventArray, dateArray, venueArray, detailsArray)
 
     tracksString = ""
     $bandHistory = Array.new
     $spotifyBandHistory = Array.new
     $trackHistory = Array.new
+    $eventHistory = Array.new
+    $dateHistory = Array.new
+    $venueHistory = Array.new
+    $detailsHistory = Array.new
+    i = 0
 
     bandsArray.each do |band|
       trackCode, trackName, artistName = findSpotifyTrack(band, $bandHistory)
@@ -137,13 +168,22 @@ class UsersController < ApplicationController
           $bandHistory << band1
           $spotifyBandHistory << artistName
           $trackHistory << trackName
+          $eventHistory << eventArray[i]
+          $dateHistory << dateArray[i]
+          $venueHistory << venueArray[i]
+          $detailsHistory << detailsArray[i]
         end     
       else
         tracksString = appendStrings(tracksString, trackCode)
         $bandHistory << band
         $spotifyBandHistory << artistName
         $trackHistory << trackName
+        $eventHistory << eventArray[i]
+        $dateHistory << dateArray[i]
+        $venueHistory << venueArray[i]
+        $detailsHistory << detailsArray[i]
       end
+      i += 1
     end
 
     if (tracksString != "")
@@ -458,8 +498,6 @@ class UsersController < ApplicationController
     band0 = Array.new
     band0 << bandName
     #don't find a spotify track twice
-    puts("bandHistory = #{bandHistory}")
-    puts("band0 = #{band0}")
     if ((bandHistory & band0).empty? == true )
       url = createArtistUrl(bandName)
   
