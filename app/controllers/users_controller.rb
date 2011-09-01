@@ -90,26 +90,45 @@ class UsersController < ApplicationController
                              :location => @user.city,
                              :keywords => @user.keywords,
                              :date => date,
-                             :category => 'music'
-       if (results['events'] != nil)                 
-         #puts("results = #{results}")   
+                             :category => 'music',
+                             :sort_order => 'date',
+                             :sort_direction => 'ascending'
+       if (results['events'] != nil)                  
          results['events']['event'].each do |event|
-           if (event['performers'] != nil)
-             event['performers']['performer'].each do |performer|
-               if (performer[0] == 'name')
-                 bandsArray << performer[1]
-                 eventArray << event['title']
-                 dateArray << event['start_time']
-                 venueArray << event['venue_name']
-                 detailsArray << event['url']
+           if (event.class == Hash)
+             if (event['performers'] != nil)
+               event['performers']['performer'].each do |performer|
+                 if (performer[0] == 'name')
+                   bandsArray << performer[1]
+                   eventArray << event['title']
+                   #dateArray << massageTime(event['start_time'])
+                   dateArray << event['start_time']
+                   venueArray << event['venue_name']
+                   detailsArray << event['url']
+                 end
                end
+             else
+               bandsArray << event['title']
+               eventArray << event['title']
+               #dateArray << massageTime(event['start_time'])
+               dateArray << event['start_time']
+               venueArray << event['venue_name']
+               detailsArray << event['url']
              end
            else
-             bandsArray << event['title']
-             eventArray << event['title']
-             dateArray << event['start_time']
-             venueArray << event['venue_name']
-             detailsArray << event['url']
+             case event[0]
+             when 'title'
+               bandsArray << event[1]
+               eventArray << event[1]
+             when 'start_time'
+               dateArray << event[1]
+             when 'venue_name'
+               venueArray << event[1]
+             when 'url'
+               #puts("event[1] = #{event[1]}")
+               detailsArray << event[1]
+             else
+             end 
            end
          end
        end
@@ -125,6 +144,39 @@ class UsersController < ApplicationController
       createSpotifyPlaylist(bandsArray, eventArray, dateArray, venueArray, detailsArray)
     end
 
+  end
+
+  def massageTime(time)
+    t = time.asctime
+    i = /\s/ =~ t
+    dayOfWeek = t[0...i]
+    puts("dayOfWeek = #{dayOfWeek}")
+    #puts("time = #{time}")
+    month = time.mon
+    day = time.day
+    #puts("month = #{month}")
+    #puts("day = #{day}")
+    date = month.to_s + "/" + day.to_s
+    #puts("date = #{date}")
+    
+    hour = time.hour
+    #puts("hour = #{hour}")
+    minutes = time.min
+    if minutes < 10
+      minutes = "0" + minutes.to_s
+    end
+    #puts("minutes = #{minutes}")
+    
+    if (hour > 12)
+      hour -= 12
+      dateAndTime = "#{dayOfWeek} " + "#{date} " + "#{hour}" + ":" + "#{minutes}" + "PM"
+    else
+      dateAndTime = "#{dayOfWeek} " + "#{date} " + "#{hour}" + ":" + "#{minutes}" + "AM"
+    end
+    
+    #puts("dateAndTime = #{dateAndTime}")
+    return dateAndTime
+    
   end
 
   # parse date for use by eventful
@@ -203,10 +255,12 @@ class UsersController < ApplicationController
     i = 0
 
     bandsArray.each do |band|
-      trackCode, trackName, artistName = findSpotifyTrack(band, $bandHistory)
+      trackCode, trackName, artistName = findSpotifyTrack(band, $bandHistory,
+                                         $spotifyBandHistory, $trackHistory)
       if (trackCode == nil)
         multiSplit(band).each do |band1|
-          trackCode, trackName, artistName = findSpotifyTrack(band1, $bandHistory)
+          trackCode, trackName, artistName = findSpotifyTrack(band1, $bandHistory,
+                                             $spotifyBandHistory, $trackHistory)
           tracksString = appendStrings(tracksString, trackCode)
           $bandHistory << band1
           $spotifyBandHistory << artistName
@@ -533,15 +587,23 @@ class UsersController < ApplicationController
     return(val)
   end
 
-  def findSpotifyTrack(bandName, bandHistory)
+  def findSpotifyTrack(bandName, bandHistory, spotifyBandHistory, trackHistory)
     trackCode = nil
     trackName = nil
     artistName = nil
 
-    band0 = Array.new
-    band0 << bandName
     #don't find a spotify track twice
-    if ((bandHistory & band0).empty? == true )
+    i = 0
+    matchFound = false
+    bandHistory.each do |band|
+      if (bandHistory[i] == bandName)
+        matchFound = true
+        break
+      end
+      i += 1
+    end
+    
+    if (matchFound == false)
       url = createArtistUrl(bandName)
   
       if (url != nil)
@@ -566,6 +628,9 @@ class UsersController < ApplicationController
           end
         end
       end
+    else
+      artistName = spotifyBandHistory[i]
+      trackName = trackHistory[i]
     end
     return ([trackCode,trackName,artistName])
   end
