@@ -20,6 +20,16 @@
         <%= f.text_field :keywords %>
       </td>
     </tr>
+
+	  <%= (getPageNumber) %>
+		<% flash.each do |key, value| %>
+	    <% if (key == :error)  %>
+		  <div class="field">
+		    <%= f.hidden_field :pageNumber,  :value => (getPageNumber) %>
+		  </div>
+		  <% end %>
+	  <% end %>
+
     <tr>
       <td class="mid actions">
         <%= f.submit "Create" %>

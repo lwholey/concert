@@ -11,6 +11,7 @@ class UsersController < ApplicationController
   helper_method :getDateHistory
   helper_method :getVenueHistory
   helper_method :getDetailsHistory
+  helper_method :getPageNumber
 
   # maximum number of bands to find tracks for (this variable currently isn't used for anything)
   $DEFAULT_MAXBANDS = 10
@@ -67,6 +68,10 @@ class UsersController < ApplicationController
     return $detailsHistory
   end
 
+  def getPageNumber
+    return $pageNumber
+  end
+
   # Parses bands from web sites and creates playlist for Spotify
   def parseBands
 
@@ -76,6 +81,17 @@ class UsersController < ApplicationController
     venueArray = Array.new
     detailsArray = Array.new
 
+    $pageNumber = @user.pageNumber
+    puts("@user.pageNumber = #{@user.pageNumber}")
+    puts("$pageNumber 1 = #{$pageNumber}")
+    if (@user.pageNumber == nil)
+      $pageNumber = 1
+    else
+      $pageNumber += 1
+    end
+    puts("$pageNumber 2 = #{$pageNumber}")
+
+=begin
     begin
 
        # Start an API session with a username and password
@@ -162,7 +178,7 @@ class UsersController < ApplicationController
        puts "There was a problem with the API: #{e}"
        flash[:error] = "No concerts found"
     end
-    
+=end
     if (bandsArray.length == 0)
       flash[:error] = "No concerts found"
     else
