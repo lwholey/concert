@@ -1,4 +1,13 @@
+
 <header>
-  <nav class="round">
-  </nav>
+
+<% if @title != "Home"  %>
+  <section class="round">
+  <%= render 'shared/search-header.html.erb' %>
+  </section>
+  
+<% else %>
+<% end %>
+
 </header>
+

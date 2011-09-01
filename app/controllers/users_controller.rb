@@ -30,11 +30,13 @@ class UsersController < ApplicationController
 
     parseBands
 
-    if @user.save
-      redirect_to "/entry"
-    else
-      redirect_to "/entry"
-    end
+    redirect_to "/results"
+  end
+
+  def results
+    @user = User.new
+    @title = "Results"
+      #redirect_to "/entry"
   end
 
   def getBandHistory

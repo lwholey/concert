@@ -1,0 +1,30 @@
+<%= form_for(@user) do |f| %>
+  <%= render 'shared/error_messages' %>
+  <table class="search-form" >
+    <tr>
+      <td class="left field">
+        <% str = 'City'%>
+        <%= f.label str %>
+        <%= f.text_field :city %>
+      </td>
+
+      <td class="mid field"> 
+        <% str = 'Dates'%>
+        <%= f.label str %>
+        <%= f.text_field :dates %>
+      </td>
+
+      <td class="right field">
+        <% str = 'Keywords'%>
+        <%= f.label str %>
+        <%= f.text_field :keywords %>
+      </td>
+    </tr>
+    <tr>
+      <td class="mid actions">
+        <%= f.submit "Create" %>
+      </td>
+    </tr>
+  </table>
+
+<% end %>

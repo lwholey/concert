@@ -7,6 +7,7 @@ body {
 }
 
 header {
+  /*background: #fff;*/
   padding-top: 20px;
 }
 
@@ -113,8 +114,24 @@ footer nav {
   white-space: normal;
 }
 
-/* User show page */
+/* Table in Header*/
+table.search-form{
+  width: 500px;
+}
+td.left{
+  vertical-align: top;
+  width: 200px;
+}
+td.mid{
+  vertical-align: top;
+  width: 50px;
+}
+td.right{
+  vertical-align: top;
+  width: 50px;
+}
 
+/* User show page */
 table.profile {
   width: 100%;
   margin-bottom: 0;

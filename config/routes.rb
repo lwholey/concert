@@ -11,7 +11,7 @@ get "pages/about"
 get "pages/help"
 =end
   
-
+  match '/results', :to => 'users#results'
   match '/entry', :to => 'users#new'
   match '/contact', :to => 'pages#contact'
   match '/about', :to   => 'pages#about'
