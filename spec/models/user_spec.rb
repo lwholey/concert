@@ -8,6 +8,7 @@
 #  dates      :string(255)
 #  city       :string(255)
 #  keywords   :string(255)
+#  pageNumber :integer
 #
 
 require 'spec_helper'
