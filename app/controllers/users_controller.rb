@@ -238,10 +238,12 @@ class UsersController < ApplicationController
     i = 0
 
     bandsArray.each do |band|
-      trackCode, trackName, artistName = findSpotifyTrack(band, $bandHistory)
+      trackCode, trackName, artistName = findSpotifyTrack(band, $bandHistory,
+                                         $spotifyBandHistory, $trackHistory)
       if (trackCode == nil)
         multiSplit(band).each do |band1|
-          trackCode, trackName, artistName = findSpotifyTrack(band1, $bandHistory)
+          trackCode, trackName, artistName = findSpotifyTrack(band1, $bandHistory,
+                                             $spotifyBandHistory, $trackHistory)
           tracksString = appendStrings(tracksString, trackCode)
           $bandHistory << band1
           $spotifyBandHistory << artistName
@@ -568,15 +570,23 @@ class UsersController < ApplicationController
     return(val)
   end
 
-  def findSpotifyTrack(bandName, bandHistory)
+  def findSpotifyTrack(bandName, bandHistory, spotifyBandHistory, trackHistory)
     trackCode = nil
     trackName = nil
     artistName = nil
 
-    band0 = Array.new
-    band0 << bandName
     #don't find a spotify track twice
-    if ((bandHistory & band0).empty? == true )
+    i = 0
+    matchFound = false
+    bandHistory.each do |band|
+      if (bandHistory[i] == bandName)
+        matchFound = true
+        break
+      end
+      i += 1
+    end
+    
+    if (matchFound == false)
       url = createArtistUrl(bandName)
   
       if (url != nil)
@@ -601,6 +611,9 @@ class UsersController < ApplicationController
           end
         end
       end
+    else
+      artistName = spotifyBandHistory[i]
+      trackName = trackHistory[i]
     end
     return ([trackCode,trackName,artistName])
   end
