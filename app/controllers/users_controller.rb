@@ -86,6 +86,15 @@ class UsersController < ApplicationController
        date = massageDate(@user.dates)
        #puts("date = #{date}")
 
+       #if city field is empty, put "usa".  This is to keep the site from
+       #crashing which happened when city field and dates field were empty,
+       # and Keywords field was set to "Red Rocks"
+       # TODO: a bogus city like "asdasd" still crashes the site 
+       if (@user.city.length == 0)
+         @user.city = "usa"
+         puts("@user.city = #{@user.city}")
+       end
+
        results = eventful.call 'events/search',
                              :location => @user.city,
                              :keywords => @user.keywords,
@@ -93,44 +102,60 @@ class UsersController < ApplicationController
                              :category => 'music',
                              :sort_order => 'date',
                              :sort_direction => 'ascending'
-       if (results['events'] != nil)                  
+       if (results['events'] != nil)
+         eventTmp = bandsTmp = dateTmp = venueTmp = detailsTmp = nil                   
          results['events']['event'].each do |event|
+           # if eventful returns more than oven event it will be in hash format
+           # if it returns one event, it will be in array format
            if (event.class == Hash)
              if (event['performers'] != nil)
                event['performers']['performer'].each do |performer|
                  if (performer[0] == 'name')
-                   bandsArray << performer[1]
-                   eventArray << event['title']
-                   #dateArray << massageTime(event['start_time'])
-                   dateArray << event['start_time']
-                   venueArray << event['venue_name']
-                   detailsArray << event['url']
+                   if (stripEvent(event['title']))
+                     bandsArray << performer[1]
+                     eventArray << event['title']
+                     #dateArray << massageTime(event['start_time'])
+                     dateArray << event['start_time']
+                     venueArray << event['venue_name']
+                     detailsArray << event['url']
+                   end
                  end
                end
              else
-               bandsArray << event['title']
-               eventArray << event['title']
-               #dateArray << massageTime(event['start_time'])
-               dateArray << event['start_time']
-               venueArray << event['venue_name']
-               detailsArray << event['url']
+               if (stripEvent(event['title']))
+                 bandsArray << event['title']
+                 eventArray << event['title']
+                 #dateArray << massageTime(event['start_time'])
+                 dateArray << event['start_time']
+                 venueArray << event['venue_name']
+                 detailsArray << event['url']
+               end
              end
            else
              case event[0]
              when 'title'
-               bandsArray << event[1]
-               eventArray << event[1]
+               bandsTmp = event[1]
+               eventTmp = event[1]
              when 'start_time'
-               dateArray << event[1]
+               dateTmp = event[1]
              when 'venue_name'
-               venueArray << event[1]
+               venueTmp = event[1]
              when 'url'
                #puts("event[1] = #{event[1]}")
-               detailsArray << event[1]
+               detailsTmp = event[1]
              else
-             end 
+             end
            end
          end
+         
+         if ( (eventTmp != nil) && (stripEvent(eventTmp)) )
+           bandsArray << bandsTmp
+           eventArray << eventTmp
+           dateArray << dateTmp
+           venueArray << venueTmp
+           detailsArray << detailsTmp
+         end
+         
        end
 
     rescue Eventful::APIError => e
@@ -144,6 +169,18 @@ class UsersController < ApplicationController
       createSpotifyPlaylist(bandsArray, eventArray, dateArray, venueArray, detailsArray)
     end
 
+  end
+
+  def stripEvent(event)
+    # open mike concerts generally aren't good
+    i = /open mike/i =~ event
+    if (i != nil)
+      puts("found open mike")
+      return false
+    else
+      return true
+    end
+    
   end
 
   def massageTime(time)
