@@ -234,6 +234,8 @@ class UsersController < ApplicationController
       'next week'
     when 'all'
       'all'
+    when 'tod'
+      'today'
     else
       'future'
     end
