@@ -2,18 +2,21 @@
 <%= form_for(@user) do |f| %>
   <%= render 'shared/error_messages' %>
   <div class="field">
-	  <% str = 'City'%>
-    <%= f.label str %><br />
+    <% str = 'City'%>
+    <%= f.label str %>
+    <i class="quiet small">(Boston, 94035, ... )</i><br/>
     <%= f.text_field :city %>
   </div>
   <div class="field">
-	  <% str = 'Dates (e.g. Future, Past, Today, This week, Last week, Next week, October)'%>
-    <%= f.label str %><br />
+    <% str = 'Dates'%>
+    <%= f.label str %>
+    <i class="quiet small">(Future, Past, Today, This week, Last week, Next week, October, ... )</i><br/>
     <%= f.text_field :dates %>
   </div>
-	<div class="field">
-	  <% str = 'Keywords (e.g. Jazz, The Fillmore, Red Rocks)'%>
-    <%= f.label str %><br />
+  <div class="field">
+    <% str = 'Keywords'%>
+    <%= f.label str %>
+    <i class="quiet small">(Jazz, The Fillmore, Red Rocks, ... )</i><br/>
     <%= f.text_field :keywords %>
   </div>
   <div class="actions">
