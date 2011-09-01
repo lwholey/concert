@@ -158,8 +158,7 @@ class UsersController < ApplicationController
          
        end
 
-    rescue Eventful::APIError => e
-       puts "There was a problem with the API: #{e}"
+    rescue
        flash[:error] = "No concerts found"
     end
     
