@@ -91,27 +91,42 @@ class UsersController < ApplicationController
                              :category => 'music',
                              :sort_order => 'date',
                              :sort_direction => 'ascending'
-       if (results['events'] != nil)                 
-         #puts("results = #{results}")   
+       if (results['events'] != nil)                  
          results['events']['event'].each do |event|
-           if (event['performers'] != nil)
-             event['performers']['performer'].each do |performer|
-               if (performer[0] == 'name')
-                 bandsArray << performer[1]
-                 eventArray << event['title']
-                 #dateArray << massageTime(event['start_time'])
-                 dateArray << event['start_time']
-                 venueArray << event['venue_name']
-                 detailsArray << event['url']
+           if (event.class == Hash)
+             if (event['performers'] != nil)
+               event['performers']['performer'].each do |performer|
+                 if (performer[0] == 'name')
+                   bandsArray << performer[1]
+                   eventArray << event['title']
+                   #dateArray << massageTime(event['start_time'])
+                   dateArray << event['start_time']
+                   venueArray << event['venue_name']
+                   detailsArray << event['url']
+                 end
                end
+             else
+               bandsArray << event['title']
+               eventArray << event['title']
+               #dateArray << massageTime(event['start_time'])
+               dateArray << event['start_time']
+               venueArray << event['venue_name']
+               detailsArray << event['url']
              end
            else
-             bandsArray << event['title']
-             eventArray << event['title']
-             #dateArray << massageTime(event['start_time'])
-             dateArray << event['start_time']
-             venueArray << event['venue_name']
-             detailsArray << event['url']
+             case event[0]
+             when 'title'
+               bandsArray << event[1]
+               eventArray << event[1]
+             when 'start_time'
+               dateArray << event[1]
+             when 'venue_name'
+               venueArray << event[1]
+             when 'url'
+               #puts("event[1] = #{event[1]}")
+               detailsArray << event[1]
+             else
+             end 
            end
          end
        end
