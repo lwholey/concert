@@ -17,7 +17,6 @@ class UsersController < ApplicationController
 
   def new    
     @user = User.new
-    #@user.name = params[:u]
     @title = "Home"
   end
 
