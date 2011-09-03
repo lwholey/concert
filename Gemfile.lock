@@ -114,6 +114,7 @@ DEPENDENCIES
   eventfulapi
   factory_girl_rails (= 1.0)
   faker (= 0.3.1)
+  nokogiri
   rails (= 3.0.9)
   redgreen
   rspec-rails (= 2.6.1)

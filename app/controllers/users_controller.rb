@@ -22,15 +22,16 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(params[:user])
-    #puts("@user.city = #{@user.city}")
-    #puts("@user.keywords = #{@user.keywords}")
-    #puts("@user.dates = #{@user.dates}")
     @maxBands = $DEFAULT_MAXBANDS
+    
+    if @user.save
+      parseBands
+      redirect_to "/results"
+    else
+      @title = "Home"
+      render 'new'
+    end
 
-    parseBands
-
-    @user.save
-    redirect_to "/results"
   end
 
   def results
@@ -85,15 +86,6 @@ class UsersController < ApplicationController
 
        date = massageDate(@user.dates)
        #puts("date = #{date}")
-
-       #if city field is empty, put "usa".  This is to keep the site from
-       #crashing which happened when city field and dates field were empty,
-       # and Keywords field was set to "Red Rocks"
-       # TODO: a bogus city like "asdasd" still crashes the site 
-       if (@user.city.length == 0)
-         @user.city = "usa"
-         puts("@user.city = #{@user.city}")
-       end
 
        results = eventful.call 'events/search',
                              :location => @user.city,

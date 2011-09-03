@@ -4,6 +4,7 @@ gem 'rails', '3.0.9'
 gem 'will_paginate', '3.0.pre2'
 gem 'sqlite3', '1.3.3'
 gem 'eventfulapi'
+gem 'nokogiri'
 
 group :development do
   gem 'rspec-rails', '2.6.1'

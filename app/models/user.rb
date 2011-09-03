@@ -17,6 +17,13 @@ class User < ActiveRecord::Base
   attr_accessible :city
   attr_accessible :keywords
 
-#  validates :name,  :presence => true
-#                    :length   => { :minimum => 10 }
+  #validates :city, :presence => true
+
+  validate :must_fill_in_city_or_date_field
+
+  def must_fill_in_city_or_date_field
+    if dates.blank? and city.blank? 
+      errors.add(:user, "must enter a city or date")
+    end
+  end
 end

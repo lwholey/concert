@@ -25,6 +25,11 @@ describe User do
   it "should create a new instance given valid attributes" do
     User.create!(@attr)
   end
-  
-  it "should require a city" 
+ 
+
+  it "should require a search criteria" do
+    no_field_user = User.new(@attr.merge(:dates => "", :city => "", :keywords => "Red Rocks"))
+    no_field_user.should_not be_valid
+  end
+
 end
