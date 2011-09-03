@@ -14,6 +14,7 @@ class UsersController < ApplicationController
 
   # maximum number of bands to find tracks for (this variable currently isn't used for anything)
   $DEFAULT_MAXBANDS = 10
+  $DEFAULT_KEYWORDS = 'concert'
 
   def new    
     @user = User.new
@@ -35,7 +36,7 @@ class UsersController < ApplicationController
       end
 
       if (@user.keywords.length == 0)
-        @user.keywords = "concert"
+        @user.keywords = $DEFAULT_KEYWORDS
       end
       
       parseBands
@@ -100,13 +101,21 @@ class UsersController < ApplicationController
        date = massageDate(@user.dates)
        #puts("date = #{date}")
 
+       if (@user.keywords == $DEFAULT_KEYWORDS )
+         sort_order = 'popularity'
+         sort_direction = 'descending'
+       else
+         sort_order = 'date'
+         sort_direction = 'ascending'
+       end
+
        results = eventful.call 'events/search',
                              :location => @user.city,
                              :keywords => @user.keywords,
                              :date => date,
                              :category => 'music',
-                             :sort_order => 'date',
-                             :sort_direction => 'ascending'
+                             :sort_order => sort_order,
+                             :sort_direction => sort_direction
        if (results['events'] != nil)
          eventTmp = bandsTmp = dateTmp = venueTmp = detailsTmp = nil                   
          results['events']['event'].each do |event|
