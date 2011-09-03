@@ -24,12 +24,20 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     @maxBands = $DEFAULT_MAXBANDS
     
-    
-    if (@user.city.length == 0)
-       @user.city = "usa"
-    end
-    
     if @user.save
+      
+      if (@user.city.length == 0)
+         @user.city = "usa"
+      end
+
+      if (@user.dates.length == 0)
+         @user.dates = "This week"
+      end
+
+      if (@user.keywords.length == 0)
+        @user.keywords = "concert"
+      end
+      
       parseBands
       redirect_to "/results"
     else
