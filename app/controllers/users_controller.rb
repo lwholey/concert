@@ -24,6 +24,11 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     @maxBands = $DEFAULT_MAXBANDS
     
+    
+    if (@user.city.length == 0)
+       @user.city = "usa"
+    end
+    
     if @user.save
       parseBands
       redirect_to "/results"
