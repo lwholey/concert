@@ -30,6 +30,7 @@ class UsersController < ApplicationController
 
     parseBands
 
+    @user.save
     redirect_to "/results"
   end
 
