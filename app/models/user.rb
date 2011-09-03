@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
 
   #validates :city, :presence => true
 
+=begin
   validate :must_fill_in_city_or_date_field
 
   def must_fill_in_city_or_date_field
@@ -26,4 +27,5 @@ class User < ActiveRecord::Base
       errors.add(:user, "must enter a city or date")
     end
   end
+=end
 end
