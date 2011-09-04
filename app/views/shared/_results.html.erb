@@ -28,53 +28,53 @@
         FlashVars=<%= valueStr %>
       bgcolor="#ffffff"
       /> </object>
-    <br> and paste to Spotify Play Queue </br>
-    <font size="6">or ...</font> </br>
-  <% end %>
+      <br> and paste to Spotify Play Queue </br>
+      <font size="6">or ...</font> </br>
+    <% end %>
 
-  Copy the following text and paste to Spotify Play Queue 
-  </br>
-  <!-- cols and rows values don't do anything here, need to change screen.css> -->
-  <%= text_area_tag :reason, value, :cols=>2,:rows=>2 %>
-  </br>
+    Copy the following text and paste to Spotify Play Queue 
+	  </br>
+	  <!-- cols and rows values don't do anything here, need to change screen.css> -->
+	  <%= text_area_tag :reason, value, :cols=>2,:rows=>2 %>
+	  </br>
 
-<% elsif (key == :warning)  %>
-  <% bandHistory = getBandHistory %>
-  <% spotifyBandHistory = getSpotifyBandHistory %>
-  <% trackHistory = getTrackHistory %>
-  <% eventHistory = getEventHistory %>
-  <% dateHistory = getDateHistory %>
-  <% venueHistory = getVenueHistory %>
-  <% detailsHistory = getDetailsHistory %>
-  </br>
-  <font size="6">Events Found</font>
-  <table border="1">
-    <%  i = 0 %>
-    <tr>
-      <td><b>Event</b></td>
-      <td><b>Date/Time</b></td>
-      <td><b>Venue</b></td>
-      <td><b>Band Name (Spotify)</b></td>
-      <td><b>Track (Spotify)</b></td>
-      <td><b></b></td>
-    </tr>
-    <%  bandHistory.each do |band| %>
-      <tr>
-        <td> <%= eventHistory[i] %> </td>
-        <td> <%= dateHistory[i] %> </td>
-        <td> <%= venueHistory[i] %> </td>
-        <td> <%= if (spotifyBandHistory[i] == nil) then "N/A" else spotifyBandHistory[i] end %> </td>
-          <td> <%= if (trackHistory[i] == nil) then "N/A" else trackHistory[i] end %> </td>
-            <!-- ><td> <%= detailsHistory[i] %></td> -->
-            <td> <a href="<%= detailsHistory[i] %>">More details</a> </td>
-          </tr>
-          <% i += 1 %>
-        <% end %>
-      </table>
-      </br>
-    <% else %>
-      <font size="6"><%= value %></font> 
-      </br>
-    <% end %> 
-  <% end %>
-  </section>
+	<% elsif (key == :warning)  %>
+	  <% bandHistory = getBandHistory %>
+	  <% spotifyBandHistory = getSpotifyBandHistory %>
+	  <% trackHistory = getTrackHistory %>
+	  <% eventHistory = getEventHistory %>
+	  <% dateHistory = getDateHistory %>
+	  <% venueHistory = getVenueHistory %>
+	  <% detailsHistory = getDetailsHistory %>
+	  </br>
+	  <font size="6">Events Found</font>
+	  <table border="1">
+	    <%  i = 0 %>
+	    <tr>
+	      <td><b>Event</b></td>
+	      <td><b>Date/Time</b></td>
+	      <td><b>Venue</b></td>
+	      <td><b>Band Name (Spotify)</b></td>
+	      <td><b>Track (Spotify)</b></td>
+	      <td><b></b></td>
+	    </tr>
+	    <%  bandHistory.each do |band| %>
+	      <tr>
+	        <td> <%= eventHistory[i] %> </td>
+	        <td> <%= dateHistory[i] %> </td>
+	        <td> <%= venueHistory[i] %> </td>
+	        <td> <%= if (spotifyBandHistory[i] == nil) then "N/A" else spotifyBandHistory[i] end %> </td>
+	          <td> <%= if (trackHistory[i] == nil) then "N/A" else trackHistory[i] end %> </td>
+	            <!-- ><td> <%= detailsHistory[i] %></td> -->
+	            <td> <a href="<%= detailsHistory[i] %>">More details</a> </td>
+	      </tr>
+	      <% i += 1 %>
+	    <% end %>
+	  </table>
+	</br>
+	<% else %>
+	  <font size="6"><%= value %></font> 
+	  </br>
+	<% end %> 
+<% end %>
+</section>
