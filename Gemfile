@@ -21,9 +21,9 @@ group :test do
   gem 'factory_girl_rails', '1.0'
   gem 'autotest', '4.4.6'
   gem 'autotest-rails-pure', '4.1.2'
-  gem 'ZenTest' if RUBY_PLATFORM =~ /linux/
-  gem 'redgreen' if RUBY_PLATFORM =~ /linux/
-  gem 'test-unit' if RUBY_PLATFORM =~ /linux/
-  gem 'autotest-fsevent', '0.2.4' if RUBY_PLATFORM =~ /darwin/
-  gem 'autotest-growl', '0.2.9' if RUBY_PLATFORM =~ /darwin/
+  gem 'ZenTest'
+  gem 'redgreen'
+  gem 'test-unit'
+  gem 'autotest-fsevent', '0.2.4'
+  gem 'autotest-growl', '0.2.9'
 end
