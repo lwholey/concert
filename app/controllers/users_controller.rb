@@ -197,10 +197,13 @@ class UsersController < ApplicationController
   end
 
   def massageTime(time)
-    
+    puts("massageTime start")
     begin  
+      puts("massageTime 0")
       t = time.asctime
+      puts("massageTime 1")
       i = /\s/ =~ t
+      puts("massageTime 2")
       dayOfWeek = t[0...i]
       puts("dayOfWeek = #{dayOfWeek}")
       #puts("time = #{time}")
