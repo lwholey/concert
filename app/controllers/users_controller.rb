@@ -199,6 +199,7 @@ class UsersController < ApplicationController
   def massageTime(time)
     puts("massageTime start")
     begin  
+      puts("time = #{time}")
       puts("massageTime 0")
       puts("time.asctime = #{time.asctime}")
       t = time.asctime
