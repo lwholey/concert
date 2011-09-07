@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   require 'nokogiri'
   require 'open-uri'
   require 'eventful/api'
+  require 'time'
 
   helper_method :getBandHistory
   helper_method :getSpotifyBandHistory
@@ -198,6 +199,7 @@ class UsersController < ApplicationController
 
   def massageTime(time)
     puts("massageTime start")
+    puts("time.class = #{time.class}")
     begin  
       puts("time = #{time}")
       puts("massageTime 0")
