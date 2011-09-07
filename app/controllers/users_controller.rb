@@ -128,8 +128,8 @@ class UsersController < ApplicationController
                    if (stripEvent(event['title']))
                      bandsArray << performer[1]
                      eventArray << event['title']
-                     #dateArray << massageTime(event['start_time'])
-                     dateArray << event['start_time']
+                     dateArray << massageTime(event['start_time'])
+                     #dateArray << event['start_time']
                      venueArray << event['venue_name']
                      detailsArray << event['url']
                    end
@@ -139,8 +139,8 @@ class UsersController < ApplicationController
                if (stripEvent(event['title']))
                  bandsArray << event['title']
                  eventArray << event['title']
-                 #dateArray << massageTime(event['start_time'])
-                 dateArray << event['start_time']
+                 dateArray << massageTime(event['start_time'])
+                 #dateArray << event['start_time']
                  venueArray << event['venue_name']
                  detailsArray << event['url']
                end
@@ -197,35 +197,40 @@ class UsersController < ApplicationController
   end
 
   def massageTime(time)
-    t = time.asctime
-    i = /\s/ =~ t
-    dayOfWeek = t[0...i]
-    puts("dayOfWeek = #{dayOfWeek}")
-    #puts("time = #{time}")
-    month = time.mon
-    day = time.day
-    #puts("month = #{month}")
-    #puts("day = #{day}")
-    date = month.to_s + "/" + day.to_s
-    #puts("date = #{date}")
     
-    hour = time.hour
-    #puts("hour = #{hour}")
-    minutes = time.min
-    if minutes < 10
-      minutes = "0" + minutes.to_s
+    begin  
+      t = time.asctime
+      i = /\s/ =~ t
+      dayOfWeek = t[0...i]
+      puts("dayOfWeek = #{dayOfWeek}")
+      #puts("time = #{time}")
+      month = time.mon
+      day = time.day
+      #puts("month = #{month}")
+      #puts("day = #{day}")
+      date = month.to_s + "/" + day.to_s
+      #puts("date = #{date}")
+    
+      hour = time.hour
+      puts("hour = #{hour}")
+      minutes = time.min
+      if minutes < 10
+        minutes = "0" + minutes.to_s
+      end
+      puts("minutes = #{minutes}")
+    
+      if (hour > 12)
+        hour -= 12
+        dateAndTime = "#{dayOfWeek} " + "#{date} " + "#{hour}" + ":" + "#{minutes}" + "PM"
+      else
+        dateAndTime = "#{dayOfWeek} " + "#{date} " + "#{hour}" + ":" + "#{minutes}" + "AM"
+      end
+    
+      puts("dateAndTime = #{dateAndTime}")
+      return dateAndTime  
+    rescue
+      return time
     end
-    #puts("minutes = #{minutes}")
-    
-    if (hour > 12)
-      hour -= 12
-      dateAndTime = "#{dayOfWeek} " + "#{date} " + "#{hour}" + ":" + "#{minutes}" + "PM"
-    else
-      dateAndTime = "#{dayOfWeek} " + "#{date} " + "#{hour}" + ":" + "#{minutes}" + "AM"
-    end
-    
-    #puts("dateAndTime = #{dateAndTime}")
-    return dateAndTime
     
   end
 
