@@ -32,7 +32,7 @@ class UsersController < ApplicationController
       end
 
       if (@user.dates.length == 0)
-         @user.dates = "This week"
+         @user.dates = "future"
       end
 
       if (@user.keywords.length == 0)
@@ -105,8 +105,9 @@ class UsersController < ApplicationController
          sort_order = 'popularity'
          sort_direction = 'descending'
        else
-         sort_order = 'date'
-         sort_direction = 'ascending'
+         sort_order = 'relevance'
+         puts("sort_order = #{sort_order}")
+         sort_direction = 'descending'
        end
 
        results = eventful.call 'events/search',
