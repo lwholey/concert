@@ -200,7 +200,7 @@ class UsersController < ApplicationController
     puts("massageTime start")
     
     if (time.class == String)
-      timeTmp = DateTime.strptime("#{time}", "%Y/%m/%d %H:%M:%S").to_time
+      timeTmp = DateTime.strptime("#{time}", "%Y-%m-%d %H:%M:%S").to_time
     else
       timeTmp = time
     end
