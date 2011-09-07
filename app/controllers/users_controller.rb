@@ -200,6 +200,7 @@ class UsersController < ApplicationController
     puts("massageTime start")
     begin  
       puts("massageTime 0")
+      puts("time.asctime = #{time.asctime}")
       t = time.asctime
       puts("massageTime 1")
       i = /\s/ =~ t
