@@ -198,30 +198,34 @@ class UsersController < ApplicationController
 
   def massageTime(time)
     puts("massageTime start")
-    puts("time.class = #{time.class}")
-    a = Time.new 
-    puts("a = #{a}")
+    
+    if (time.class == String)
+      timeTmp = DateTime.strptime("#{time}", "%Y/%m/%d %H:%M:%S").to_time
+    else
+      timeTmp = time
+    end
+    
     begin  
-      puts("time = #{time}")
+      puts("timeTmp = #{timeTmp}")
       puts("massageTime 0")
-      puts("time.asctime = #{time.asctime}")
-      t = time.asctime
+      puts("timeTmp.asctime = #{timeTmp.asctime}")
+      t = timeTmp.asctime
       puts("massageTime 1")
       i = /\s/ =~ t
       puts("massageTime 2")
       dayOfWeek = t[0...i]
       puts("dayOfWeek = #{dayOfWeek}")
       #puts("time = #{time}")
-      month = time.mon
-      day = time.day
+      month = timeTmp.mon
+      day = timeTmp.day
       #puts("month = #{month}")
       #puts("day = #{day}")
       date = month.to_s + "/" + day.to_s
       #puts("date = #{date}")
     
-      hour = time.hour
+      hour = timeTmp.hour
       puts("hour = #{hour}")
-      minutes = time.min
+      minutes = timeTmp.min
       if minutes < 10
         minutes = "0" + minutes.to_s
       end
