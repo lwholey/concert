@@ -12,9 +12,13 @@ class UsersController < ApplicationController
   helper_method :getVenueHistory
   helper_method :getDetailsHistory
   helper_method :getPageNumber
+  helper_method :isLastPage
+  helper_method :getLastCity
+  helper_method :getLastDates
+  helper_method :getLastKeywords
 
-  # maximum number of bands to find tracks for (this variable currently isn't used for anything)
-  $DEFAULT_MAXBANDS = 10
+  # number of concerts for eventful to return
+  $PAGE_SIZE = 5
 
   def new    
     @user = User.new
@@ -27,8 +31,8 @@ class UsersController < ApplicationController
     #puts("@user.city = #{@user.city}")
     #puts("@user.keywords = #{@user.keywords}")
     #puts("@user.dates = #{@user.dates}")
-    @maxBands = $DEFAULT_MAXBANDS
 
+    keepUserData
     parseBands
 
     redirect_to "/results"
@@ -72,8 +76,44 @@ class UsersController < ApplicationController
     return $pageNumber
   end
 
+  def isLastPage
+    if ($pageNumber >= $totalPages)
+      return true
+    else
+      return false
+    end
+  end
+
+  def getLastCity
+    return $city
+  end
+
+  def getLastDates
+    return $dates
+  end
+  
+  def getLastKeywords
+    return $keywords
+  end
+  
+  def keepUserData
+    $pageNumber = @user.pageNumber
+    $city = @user.city
+    $dates = @user.dates
+    $keywords = @user.keywords
+    
+    if (@user.pageNumber == nil)
+      $pageNumber = 1
+    else
+      $pageNumber += 1
+    end
+  end
+  
   # Parses bands from web sites and creates playlist for Spotify
   def parseBands
+
+    # initialize
+    $totalPages = 1
 
     bandsArray = Array.new
     eventArray = Array.new
@@ -81,17 +121,6 @@ class UsersController < ApplicationController
     venueArray = Array.new
     detailsArray = Array.new
 
-    $pageNumber = @user.pageNumber
-    puts("@user.pageNumber = #{@user.pageNumber}")
-    puts("$pageNumber 1 = #{$pageNumber}")
-    if (@user.pageNumber == nil)
-      $pageNumber = 1
-    else
-      $pageNumber += 1
-    end
-    puts("$pageNumber 2 = #{$pageNumber}")
-
-=begin
     begin
 
        # Start an API session with a username and password
@@ -117,7 +146,11 @@ class UsersController < ApplicationController
                              :date => date,
                              :category => 'music',
                              :sort_order => 'date',
-                             :sort_direction => 'ascending'
+                             :sort_direction => 'ascending',
+                             :page_size => $PAGE_SIZE,
+                             :page_number => $pageNumber
+
+       $totalPages = results['page_count']                     
        if (results['events'] != nil)
          eventTmp = bandsTmp = dateTmp = venueTmp = detailsTmp = nil                   
          results['events']['event'].each do |event|
@@ -178,7 +211,7 @@ class UsersController < ApplicationController
        puts "There was a problem with the API: #{e}"
        flash[:error] = "No concerts found"
     end
-=end
+
     if (bandsArray.length == 0)
       flash[:error] = "No concerts found"
     else

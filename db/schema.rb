@@ -13,12 +13,12 @@
 ActiveRecord::Schema.define(:version => 20110901193109) do
 
   create_table "users", :force => true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "dates"
-    t.string   "city"
-    t.string   "keywords"
-    t.integer  "pageNumber"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string    "dates"
+    t.string    "city"
+    t.string    "keywords"
+    t.integer   "pageNumber"
   end
 
 end
