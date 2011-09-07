@@ -197,7 +197,6 @@ class UsersController < ApplicationController
   end
 
   def massageTime(time)
-    puts("massageTime start")
     
     if (time.class == String)
       timeTmp = DateTime.strptime("#{time}", "%Y-%m-%d %H:%M:%S").to_time
@@ -206,39 +205,26 @@ class UsersController < ApplicationController
     end
     
     begin  
-      puts("timeTmp = #{timeTmp}")
-      puts("massageTime 0")
-      puts("timeTmp.asctime = #{timeTmp.asctime}")
       t = timeTmp.asctime
-      puts("massageTime 1")
       i = /\s/ =~ t
-      puts("massageTime 2")
       dayOfWeek = t[0...i]
-      puts("dayOfWeek = #{dayOfWeek}")
-      #puts("time = #{time}")
       month = timeTmp.mon
       day = timeTmp.day
-      #puts("month = #{month}")
-      #puts("day = #{day}")
       date = month.to_s + "/" + day.to_s
-      #puts("date = #{date}")
     
       hour = timeTmp.hour
-      puts("hour = #{hour}")
       minutes = timeTmp.min
       if minutes < 10
         minutes = "0" + minutes.to_s
       end
-      puts("minutes = #{minutes}")
     
       if (hour > 12)
         hour -= 12
-        dateAndTime = "#{dayOfWeek} " + "#{date} " + "#{hour}" + ":" + "#{minutes}" + "PM"
+        dateAndTime = "#{dayOfWeek} " + "#{date} " + "#{hour}" + ":" + "#{minutes} " + "PM"
       else
-        dateAndTime = "#{dayOfWeek} " + "#{date} " + "#{hour}" + ":" + "#{minutes}" + "AM"
+        dateAndTime = "#{dayOfWeek} " + "#{date} " + "#{hour}" + ":" + "#{minutes} " + "AM"
       end
     
-      puts("dateAndTime = #{dateAndTime}")
       return dateAndTime  
     rescue
       puts ("Rescue called")
