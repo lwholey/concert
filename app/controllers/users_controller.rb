@@ -234,6 +234,8 @@ class UsersController < ApplicationController
       puts("dateAndTime = #{dateAndTime}")
       return dateAndTime  
     rescue
+      puts ("Rescue called")
+      puts( $! ); # print the exception
       return time
     end
     
