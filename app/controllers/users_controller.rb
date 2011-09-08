@@ -97,7 +97,7 @@ class UsersController < ApplicationController
     return $pageNumber
   end
 
-  def isLastPage	
+  def isLastPage
     if ($pageNumber >= $totalPages)	
       return true	
     else	
@@ -170,22 +170,30 @@ class UsersController < ApplicationController
                              :sort_direction => sort_direction,
                              :page_size => $PAGE_SIZE,
                              :page_number => $pageNumber
-                             
+       #puts("results = #{results}")                       
        $totalPages = results['page_count']
        if (results['events'] != nil)
          eventTmp = bandsTmp = dateTmp = venueTmp = detailsTmp = nil                   
          results['events']['event'].each do |event|
            # if eventful returns more than oven event it will be in hash format
            # if it returns one event, it will be in array format
+           # puts("event = #{event}")
            if (event.class == Hash)
              if (event['performers'] != nil)
                event['performers']['performer'].each do |performer|
-                 if (performer[0] == 'name')
+                 #puts("performer = #{performer}")
+                 if (performer.class == Hash)
+                     bandsArray << performer['name']
+                     eventArray << event['title']
+                     dateArray << massageTime(event['start_time'])
+                     venueArray << event['venue_name']
+                     detailsArray << event['url']
+                 elsif (performer[0] == 'name')
+                   #puts("performer[1] = #{performer[1]}")
                    if (stripEvent(event['title']))
                      bandsArray << performer[1]
                      eventArray << event['title']
                      dateArray << massageTime(event['start_time'])
-                     #dateArray << event['start_time']
                      venueArray << event['venue_name']
                      detailsArray << event['url']
                    end
@@ -196,7 +204,6 @@ class UsersController < ApplicationController
                  bandsArray << event['title']
                  eventArray << event['title']
                  dateArray << massageTime(event['start_time'])
-                 #dateArray << event['start_time']
                  venueArray << event['venue_name']
                  detailsArray << event['url']
                end
@@ -204,6 +211,7 @@ class UsersController < ApplicationController
            else
              case event[0]
              when 'title'
+               puts("event[1] = #{event[1]}")
                bandsTmp = event[1]
                eventTmp = event[1]
              when 'start_time'

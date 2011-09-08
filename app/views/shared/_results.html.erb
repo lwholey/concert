@@ -78,7 +78,7 @@
 	<% end %> 
 <% end %>
 
-<% if (isLastPage == false) %>
+<% if ( (defined? isLastPage != nil) && (isLastPage == false) ) %>
  	<%= form_for(@user) do |f| %>
  	  <div class="field">	
       <%= f.hidden_field :city, :value => (getLastCity) %>	
