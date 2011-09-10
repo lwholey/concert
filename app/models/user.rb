@@ -19,6 +19,9 @@ class User < ActiveRecord::Base
   attr_accessible :keywords
   attr_accessible :pageNumber
 
+  # ensure results are destroyed along with user
+  has_many :results, :dependent => :destroy
+  
   #validates :city, :presence => true
 
 =begin

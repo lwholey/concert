@@ -50,6 +50,9 @@ class UsersController < ApplicationController
         @user.keywords = $DEFAULT_KEYWORDS
       end
       
+      # create results
+      #
+
       parseBands
       redirect_to "/results"
     else
@@ -57,6 +60,12 @@ class UsersController < ApplicationController
       render 'new'
     end
 
+  end
+
+  def show
+    @user = User.find(params[:id])
+    @results = @user.results.paginate(:page => params[:page])
+    @title = "Results"
   end
 
   def results
