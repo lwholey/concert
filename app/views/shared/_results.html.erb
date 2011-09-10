@@ -48,6 +48,23 @@
 	  <% detailsHistory = getDetailsHistory %>
 	  </br>
 	  <font size="6">Events Found</font>
+	
+		<% if ( (defined? isLastPage != nil) && (isLastPage == false) ) %>
+		 	<%= form_for(@user) do |f| %>
+		 	  <div class="field">	
+		      <%= f.hidden_field :city, :value => (getLastCity) %>	
+		      <%= f.hidden_field :dates, :value => (getLastDates) %>
+		      <%= f.hidden_field :keywords, :value => (getLastKeywords) %>
+		      <%= f.hidden_field :pageNumber,  :value => (getPageNumber) %>
+		    </div>	
+		    <tr>
+		      <td class="mid actions">
+		        <font size="5"> <center> <%= f.submit "More Concerts" %> </center> </font>
+		      </td>
+		    </tr>
+		  <% end %>
+		<% end %>
+
 	  <table border="1">
 	    <%  i = 0 %>
 	    <tr>
@@ -71,7 +88,6 @@
 	      <% i += 1 %>
 	    <% end %>
 	  </table>
-	</br>
 	<% else %>
 	  <font size="6"><%= value %></font> 
 	  </br>
@@ -88,7 +104,7 @@
     </div>	
     <tr>
       <td class="mid actions">
-        <%= f.submit "More Concerts" %>
+        <center> <%= f.submit "More Concerts" %> </center>
       </td>
     </tr>
   <% end %>

@@ -235,6 +235,7 @@ class UsersController < ApplicationController
        end
 
     rescue
+       puts("rescue called, No concerts found")
        flash[:error] = "No concerts found"
     end
     
