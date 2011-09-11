@@ -1,1 +1,0 @@
-RELOAD_CONTROLLERS = Dir[Rails.root + 'app/controllers/*.rb'] if Rails.env.development?

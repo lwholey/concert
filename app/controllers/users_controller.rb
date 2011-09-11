@@ -168,6 +168,7 @@ class UsersController < ApplicationController
                              :sort_direction => sort_direction,
                              :page_size => $PAGE_SIZE,
                              :page_number => $pageNumber
+       puts("eventful call complete")
        #puts("results = #{results}")                       
        $totalPages = results['page_count']
        if (results['events'] != nil)
