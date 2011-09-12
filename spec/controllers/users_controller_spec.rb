@@ -39,6 +39,24 @@ describe UsersController do
 
   end
 
+  describe "GET 'show'" do
+
+    before(:each) do
+      @user = Factory(:user)
+    end
+
+    it "should show the results" do
+
+      r1 = Factory(:result, :user => @user, :name => "the first event");
+      r2 = Factory(:result, :user => @user, :name => "the second event");
+      get :show :id => @user
+      response.should have_selector("span.result", :event => r1.name)
+      response.should have_selector("span.result", :event => r2.name)
+
+    end
+  end
+
+
   describe "POST 'create'" do
     
     describe "failure" do
