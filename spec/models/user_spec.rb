@@ -52,11 +52,11 @@ describe User do
     
   end
  
-=begin
-  it "should require a search criteria" do
-    no_field_user = User.new(@attr.merge(:dates => "", :city => "", :keywords => "Red Rocks"))
-    no_field_user.should_not be_valid
+  it "should set default search criteria" do
+    u = User.new(@attr.merge(:dates => nil, :city => nil, :keywords => nil))
+    u.city.should == "usa"
+    u.dates.should == "future"
+    u.keywords.should == "concert"
   end
-=end
 
 end

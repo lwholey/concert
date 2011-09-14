@@ -11,81 +11,108 @@ module UsersHelper
   end
 
   # number of concerts for eventful to return
-  @@PAGE_SIZE = 30
+  @@PAGE_SIZE = 12
+
+
+  def get_fake_results( num )
+    results = {  "events" => { "event" => [] }  }
+
+    num.times do |n|
+      event = {
+        "performers" => { "performer" => {"creator"=>"legalsmith", "id"=>"P1-001-000153086-2", "linker"=>"chuck", "name"=>"Pierce Pettis", "short_bio"=>"singer songwriter", "url"=>"http://eventful.com/performers/pierce-pettis-/P0-001-000153086-2?utm_source=apis&utm_medium=apim&utm_campaign=apic"}},
+        "title" => Faker::Name.name,
+        "start_time" => "2012-02-10 20:00:00",
+        "venue_name" => "me &amp; thee coffeehouse",
+        "url" => "http://eventful.com/marblehead/events/pierce-pettis-connor-garvey-/E0-001-041702648-3?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+      }
+      puts "event: " + event.to_s
+      results["events"]["event"] << event
+    end
+    return results
+  end
 
   # Parses bands from web sites and creates playlist for Spotify
   def get_results(user)
 
-    bandsArray = Array.new
-    eventArray = Array.new
-    dateArray = Array.new
-    venueArray = Array.new
-    detailsArray = Array.new
-
     begin
-
-      # Start an API session with a username and password
-      eventful = Eventful::API.new 'gr2xkHcHxTF3BQNk',
-        :user => 'lwrunner1',
-        :password => 'eventfulnerd1'
-
-      date = massageDate(user.dates)
-      #puts("date = #{date}")
-
-      if (user.keywords == @@DEFAULT_KEYWORDS )
-        sort_order = 'popularity'
-        sort_direction = 'descending'
+      if Rails.env == 'test'
+        results = get_fake_results(20)
       else
-        sort_order = 'relevance'
-        puts("sort_order = #{sort_order}")
-        sort_direction = 'descending'
+        puts "Starting EVENTFUL session"
+
+        # Start an API session with a username and password
+        eventful = Eventful::API.new 'gr2xkHcHxTF3BQNk',
+          :user => 'lwrunner1',
+          :password => 'eventfulnerd1'
+
+        date = massageDate(user.dates)
+        #puts("date = #{date}")
+
+        if (user.keywords == @@DEFAULT_KEYWORDS )
+          sort_order = 'popularity'
+          sort_direction = 'descending'
+        else
+          sort_order = 'relevance'
+          puts("sort_order = #{sort_order}")
+          sort_direction = 'descending'
+        end
+
+        results = eventful.call 'events/search',
+          :location => user.city,
+          :keywords => user.keywords,
+          :date => date,
+          :category => 'music',
+          :sort_order => sort_order,
+          :sort_direction => sort_direction,
+          :page_size => @@PAGE_SIZE
+
+        puts("results = #{results}")                       
+return results
+        if (results['events'] == nil)
+          # flash no concerts found and exit
+          flash[:error] = "No concerts found"
+        end
       end
 
-      results = eventful.call 'events/search',
-        :location => user.city,
-        :keywords => user.keywords,
-        :date => date,
-        :category => 'music',
-        :sort_order => sort_order,
-        :sort_direction => sort_direction,
-        :page_size => @@PAGE_SIZE
-
-      #puts("results = #{results}")                       
-
-      if (results['events'] == nil)
-        # flash no concerts found and exit
-        flash[:error] = "No concerts found"
-      end
-
-      generateResults( results, user )
-      createSpotifyPlaylist( user )
+      create_results_for_user( results, user )
+      update_results_with_spotify_tracks( user )
 
     rescue
-      flash[:error] = "No concerts found"
+   #   flash[:error] = "No concerts found"
+      puts $!
     end
   end
 
-  def generateResults ( results, user )
-    results['events']['event'].each do |event|
-      result_attr = {
-        :name => event['title'],
-        :date_string => massageTime(event['start_time']),
-        :venue => event['venue_name'],
-        :details_url => event['url']
-      }
-      
-      if (event['performers'] == nil)
-        user.results.build( result_attr.merge( :band => event['title'] ) ).save
-      elsif (event['performers'].class == Array)
-        # need to get an example of this from the API and make a test case
-        event['performers']['performer'].each do |performer|
+  def create_results_for_user ( results, user )
+
+    begin
+
+      results['events']['event'].each do |event|
+        massaged_time = massageTime(event['start_time'])
+
+        result_attr = {
+          :name => event['title'],
+          :date_string => massaged_time,
+          :venue => event['venue_name'],
+          :details_url => event['url']
+        }
+
+        if (event['performers'] == nil)
+          user.results.build( result_attr.merge( :band => event['title'] ) ).save
+        elsif (event['performers']['performer'].class == Hash)
+          perfArray = [ event['performers']['performer'] ]
+        else
+          perfArray = event['performers']['performer'] 
+        end
+
+        perfArray.each do |performer|
           user.results.build( result_attr.merge( :band => performer['name'] ) ).save
         end
-      elsif (event['performers'].class == Hash)
-        performer=event['performers']['performer']
-        user.results.build( result_attr.merge( :band => performer['name'] ) ).save
       end
 
+    rescue
+      puts "Rescue called ... "
+      puts $1
     end
 
   end
@@ -213,14 +240,14 @@ module UsersHelper
     end
   end
 
-  
+
   # Update the eventful results with spotify track data.
   #
   # If no spotify data is found using the event's band 
   # name we try and split up the band name and if the 
   # new names produce spotify data we will create new
   # results.
-  def createSpotifyPlaylist( user )
+  def update_results_with_spotify_tracks( user )
 
     @cache = []
 
@@ -452,7 +479,7 @@ module UsersHelper
     if Rails.env.test?
       return (["test-track-code", "test-track-name", "test-artist"])
     end
-    
+
     trackCode = nil
     trackName = nil
     artistName = nil
@@ -571,7 +598,7 @@ module UsersHelper
         return spotifyResult
       end
     end
-      
+
     spotifyResult = SpotifyResult.new
 
     url = createArtistUrl(bandName)
@@ -595,7 +622,7 @@ module UsersHelper
             trackCode = "spotify:track:#{trackCode}"
             puts("trackCode = #{trackCode}")
             attr = {:band => artistName, :trackCode => trackCode, :trackName => trackName}
-           
+
             return SpotifyResult.new( attr )
           end
         end

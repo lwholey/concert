@@ -40,7 +40,7 @@ describe UsersHelper do
 
     end
 
-    it "appends spotify track data to results" do
+    it "add spotify track data to results" do
       @user.results.build( :name => "test event", :band => "test band" ).save
       helper.createSpotifyPlaylist( @user )
       puts @user.results

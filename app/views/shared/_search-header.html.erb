@@ -20,12 +20,6 @@
         <%= f.text_field :keywords %>
       </td>
     </tr>
-
-
-		<div class="field">
-      <%= f.hidden_field :pageNumber,  :value => nil %>
-		</div>
-
     <tr>
       <td class="mid actions">
         <%= f.submit "Create" %>
@@ -33,20 +27,4 @@
     </tr>
   </table>
 
-<% end %>
-
-<% if ( (defined? isLastPage != nil) && (isLastPage == false) ) %>
-  <%= form_for(@user) do |f| %>
-    <div class="field">
-      <%= f.hidden_field :city, :value => (getLastCity) %>
-      <%= f.hidden_field :dates, :value => (getLastDates) %>
-      <%= f.hidden_field :keywords, :value => (getLastKeywords) %>
-      <%= f.hidden_field :pageNumber,  :value => (getPageNumber) %>
-    </div>
-    <tr>
-      <td class="mid actions">
-        <%= f.submit "More Concerts" %>
-      </td>
-    </tr>
-  <% end %>
 <% end %>
