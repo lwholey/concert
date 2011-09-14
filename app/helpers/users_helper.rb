@@ -67,7 +67,7 @@ module UsersHelper
           :page_size => @@PAGE_SIZE
 
         puts("results = #{results}")                       
-return results
+        
         if (results['events'] == nil)
           # flash no concerts found and exit
           flash[:error] = "No concerts found"
@@ -88,17 +88,26 @@ return results
     begin
 
       results['events']['event'].each do |event|
-        massaged_time = massageTime(event['start_time'])
+        name = event['title']
+        date = massageTime(event['start_time'])
+        venue = event['venue_name']
+        details = event['url']
+
+        puts "Name: " + name.to_s
+        puts "Date " + date.to_s
+        puts "Venue " + venue.to_s
+        puts "Details " + details.to_s
 
         result_attr = {
-          :name => event['title'],
-          :date_string => massaged_time,
-          :venue => event['venue_name'],
-          :details_url => event['url']
+          :name => name,
+          :date_string => date,
+          :venue => venue,           
+          :details_url => details   
         }
 
         if (event['performers'] == nil)
           user.results.build( result_attr.merge( :band => event['title'] ) ).save
+          next
         elsif (event['performers']['performer'].class == Hash)
           perfArray = [ event['performers']['performer'] ]
         else
@@ -111,7 +120,7 @@ return results
       end
 
     rescue
-      puts "Rescue called ... "
+      puts "Rescue called in create_results_for_user ... "
       puts $1
     end
 
@@ -254,8 +263,8 @@ return results
     user.results.each do |result|
       spotifyData = findSpotifyTrack(result.band ) 
       if ( spotifyData.nil? )
-        multiSplit(event.band).each do |band1|
-          spotifyData = findSpotifyTrack( event.band ) 
+        multiSplit(result.band).each do |band1|
+          spotifyData = findSpotifyTrack( result.band ) 
           if ( !spotifyData.nil? )
             newResult = result.dup();
             newResult.id = nil
