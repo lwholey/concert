@@ -2,6 +2,9 @@ class UsersController < ApplicationController
   require 'nokogiri'
   require 'open-uri'
   require 'eventful/api'
+  require 'rdio'
+  require 'om'
+  #require 'rdio_consumer_credentials'
 
   helper_method :getBandHistory
   helper_method :getSpotifyBandHistory
@@ -21,6 +24,9 @@ class UsersController < ApplicationController
   $PAGE_SIZE = 5
   $DEFAULT_KEYWORDS = 'concert'
 
+  RDIO_CONSUMER_KEY = "r4efjacbzxz8n76f9papqz5p"
+  RDIO_CONSUMER_SECRET = "UuNDyK2bzM"
+
   def new    
     @user = User.new
     @title = "Home"
@@ -33,8 +39,26 @@ class UsersController < ApplicationController
     puts("@user.pageNumber = #{@user.pageNumber}")
     puts("@user.dates = #{@user.dates}")
     puts("@user.keywords = #{@user.keywords}")
+
     
-    keepUserData
+
+    # create an instance of the Rdio object with our consumer credentials
+    rdio = Rdio.new([RDIO_CONSUMER_KEY, RDIO_CONSUMER_SECRET])
+
+    # authenticate against the Rdio service
+    url = rdio.begin_authentication('oob')
+    puts 'Go to: ' + url
+    print 'Then enter the code: '
+    verifier = gets.strip
+    rdio.complete_authentication(verifier)
+
+    # find out what playlists you created
+    playlists = rdio.call('getPlaylists')['result']['owned']
+
+    # list them
+    playlists.each { |playlist| puts "%s\t%s" % [playlist['shortUrl'], playlist['name']] }
+    
+    #keepUserData
     
     if @user.save
       
@@ -50,7 +74,7 @@ class UsersController < ApplicationController
         @user.keywords = $DEFAULT_KEYWORDS
       end
       
-      parseBands
+      #parseBands
       redirect_to "/results"
     else
       @title = "Home"
