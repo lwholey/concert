@@ -7,10 +7,6 @@ class UsersController < ApplicationController
     @title = "Home"
   end
 
-  def update
-    create
-  end
-
   def create
     puts params[:user]
     @user = User.new(params[:user])

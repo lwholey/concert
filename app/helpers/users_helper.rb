@@ -11,7 +11,7 @@ module UsersHelper
   end
 
   # number of concerts for eventful to return
-  @@PAGE_SIZE = 12
+  @@PAGE_SIZE = 40 
 
 
   def get_fake_results( num )
@@ -36,7 +36,8 @@ module UsersHelper
 
     begin
       if Rails.env == 'test'
-        results = get_fake_results(20)
+        # if there are more than 30 results we'll paginate
+        results = get_fake_results(40)
       else
         puts "Starting EVENTFUL session"
 
@@ -67,10 +68,11 @@ module UsersHelper
           :page_size => @@PAGE_SIZE
 
         puts("results = #{results}")                       
-        
+
         if (results['events'] == nil)
           # flash no concerts found and exit
           flash[:error] = "No concerts found"
+          return
         end
       end
 
@@ -78,7 +80,7 @@ module UsersHelper
       update_results_with_spotify_tracks( user )
 
     rescue
-   #   flash[:error] = "No concerts found"
+      #   flash[:error] = "No concerts found"
       puts $!
     end
   end
@@ -693,3 +695,30 @@ def client_browser_name
   end 
 end
 
+def clippy(text, bgcolor='#FFFFFF')
+  html = <<-EOF
+    <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+            width="110"
+            height="14"
+            id="clippy" >
+    <param name="movie" value="/clippy.swf"/>
+    <param name="allowScriptAccess" value="always" />
+    <param name="quality" value="high" />
+    <param name="scale" value="noscale" />
+    <param NAME="FlashVars" value="text=#{text}">
+    <param name="bgcolor" value="#{bgcolor}">
+    <embed src="/clippy.swf"
+           width="110"
+           height="14"
+           name="clippy"
+           quality="high"
+           allowScriptAccess="always"
+           type="application/x-shockwave-flash"
+           pluginspage="http://www.macromedia.com/go/getflashplayer"
+           FlashVars="text=#{text}"
+           bgcolor="#{bgcolor}"
+    />
+    </object>
+  EOF
+  html.html_safe
+end

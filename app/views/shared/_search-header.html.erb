@@ -1,30 +1,25 @@
 <%= form_for(@user) do |f| %>
   <%= render 'shared/error_messages' %>
-  <table class="search-form" >
-    <tr>
-      <td class="left field">
-        <% str = 'City'%>
-        <%= f.label str %>
-        <%= f.text_field :city %>
-      </td>
-
-      <td class="mid field"> 
-        <% str = 'Dates'%>
-        <%= f.label str %>
-        <%= f.text_field :dates %>
-      </td>
-
-      <td class="right field">
-        <% str = 'Venue...'%>
-        <%= f.label str %>
-        <%= f.text_field :keywords %>
-      </td>
-    </tr>
-    <tr>
-      <td class="mid actions">
-        <%= f.submit "Create" %>
-      </td>
-    </tr>
-  </table>
-
+  <div class="search-form">
+    <div class="span-5 prepend-1 ">
+      <% str = 'City'%>
+      <%= f.label str %>
+      </br>
+      <%= f.text_field :city, :size => 25 %>
+    </div>
+    <div class="span-5 ">
+      <% str = 'Dates'%>
+      <%= f.label str %>
+      <%= f.text_field :dates, :size => 25 %>
+    </div>
+    <div class="span-5 last ">
+      <% str = 'Venue...'%>
+      <%= f.label str %>
+      <%= f.text_field :keywords, :size => 25 %>
+    </div>
+    </hr>
+    <div class="span-17 prepend-1 last">
+      <%= f.submit "Create" %>
+    </div>
+  </div>
 <% end %>

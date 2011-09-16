@@ -11,6 +11,7 @@ SampleApp::Application.routes.draw do
   end
   
   
+  match '/users', :to => 'users#new'
   match '/search', :to => 'users#new'
   root :to => "users#new"
   

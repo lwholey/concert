@@ -1,13 +1,43 @@
+<div class = "results span-18 round">
+  <% flash.each do |key, value| %>
+    <div class="round flash <%= key %>"><%= value %></div>
+  <% end %>
+
+  <% unless @results.empty? %>
+    <table class="results" summary="Results of Search">
+      <tr>
+        <td><b>Event</b></td>
+        <td><b>Date/Time</b></td>
+        <td><b>Venue</b></td>
+        <td><b>Band Name (Spotify)</b></td>
+        <td><b>Track (Spotify)</b></td>
+        <td><b>Details</b></td>
+      </tr>
+      <%= render @results %>
+    </table>
+    <%= will_paginate @results %>
+  <% end %>
+
+</div>
+
+
+<% valueStr = "" %>
 <% unless @results.empty? %>
-  <table class="results" summary="Results of Search">
-    <tr>
-      <td><b>Event</b></td>
-      <td><b>Date/Time</b></td>
-      <td><b>Venue</b></td>
-      <td><b>Band Name (Spotify)</b></td>
-      <td><b>Track (Spotify)</b></td>
-    </tr>
-    <%= render @results %>
-  </table>
-  <%= will_paginate @results %>
+  <% @results.each do |result| %>
+    <% unless result.track_spotify.nil? %>
+      <% valueStr += result.track_spotify + "\n"%>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% unless valueStr.blank? %>
+  <div class = "spotify-results span-4 last border round">
+
+    <!-- replace whitespace with %20 because that's the way FlashVars variable below likes it -->
+    <% valueStr.gsub!(" ", "%20") %>
+    <% if (client_browser_name == "notMobile") %>
+      Click <%=  clippy( valueStr ) %> and paste to Spotify Play Queue 
+      <%= text_area_tag 'spotify-results', valueStr %>
+    <% end %>
+  </div>
 <% end %>
