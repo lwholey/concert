@@ -11,7 +11,7 @@ module UsersHelper
   end
 
   # number of concerts for eventful to return
-  @@PAGE_SIZE = 40 
+  @@PAGE_SIZE = 10 
 
 
   def get_fake_results( num )

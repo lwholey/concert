@@ -34,7 +34,7 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     puts "found #{@user.results.count} results"
-    @results = @user.results.paginate(:page => params[:page])
+    @results = @user.results.paginate(:page => params[:page], :per_page => 5)
     @title = "Results"
   end
 
