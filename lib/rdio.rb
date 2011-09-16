@@ -35,7 +35,7 @@ class Rdio
   def begin_authentication(callback_url)
     # request a request token from the server
     response = signed_post('http://api.rdio.com/oauth/request_token',
-                           {'oauth_callback' => callback_url})
+                           ['oauth_callback', callback_url])
     # parse the response
     parsed = CGI.parse(response)
     # save the token
@@ -47,7 +47,7 @@ class Rdio
   def complete_authentication(verifier)
     # request an access token
     response = signed_post('http://api.rdio.com/oauth/access_token',
-                           {'oauth_verifier' => verifier})
+                           ['oauth_verifier', verifier])
     # parse the response
     parsed = CGI.parse(response)
     # save the token
@@ -70,7 +70,8 @@ class Rdio
     url = URI.parse(url)
     http = Net::HTTP.new(url.host, url.port)
     req = Net::HTTP::Post.new(url.path, {'Authorization' => auth})
-    req.set_form_data(params)
+    paramsNew = {params[0]=>params[1]}
+    req.set_form_data(paramsNew)
     res = http.request(req)
     return res.body
   end

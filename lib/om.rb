@@ -73,14 +73,15 @@ def om(consumer, url, post_params, token=nil, method='POST', realm=nil, timestam
   url.fragment = nil
 
   # add OAuth params
-  params = params + [
+  tmp1 = params[0]
+  tmp2 = params[1]
+  params = Array.new
+  params = [tmp1, tmp2],
     ['oauth_version', '1.0'],
     ['oauth_timestamp', timestamp || Time.now.to_i.to_s],
     ['oauth_nonce', nonce || rand(1000000).to_s],
     ['oauth_signature_method', 'HMAC-SHA1'],
-    ['oauth_consumer_key', consumer[0]],
-  ]
-
+    ['oauth_consumer_key', consumer[0]]
   # the consumer secret is the first half of the HMAC-SHA1 key
   hmac_key = consumer[1] + '&'
 
@@ -99,7 +100,7 @@ def om(consumer, url, post_params, token=nil, method='POST', realm=nil, timestam
           c == '-' or c == '.' or c == '_' or c == '~')
         c
       else
-        '%%%02X' % c[0]
+        '%%%02X' % c.ord
       end
     end
     chars.join
@@ -114,7 +115,6 @@ def om(consumer, url, post_params, token=nil, method='POST', realm=nil, timestam
   signature_base_string = (percent_encode(method) +
                            '&' + percent_encode(url.to_s) +
                            '&' + percent_encode(normalized_params))
-
   # HMAC-SHA1
   hmac = Digest::HMAC.new(hmac_key, Digest::SHA1)
   hmac.update(signature_base_string)
@@ -135,6 +135,5 @@ def om(consumer, url, post_params, token=nil, method='POST', realm=nil, timestam
                   'oauth_signature_method', 'oauth_signature',
                   'oauth_consumer_key', 'oauth_token']
   authorization_params.concat(params.select { |param| nil != oauth_params.index(param[0]) })
-
   return 'OAuth ' + (authorization_params.collect {|param| '%s="%s"' % param}).join(', ')
 end

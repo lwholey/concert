@@ -24,8 +24,8 @@ class UsersController < ApplicationController
   $PAGE_SIZE = 5
   $DEFAULT_KEYWORDS = 'concert'
 
-  RDIO_CONSUMER_KEY = "r4efjacbzxz8n76f9papqz5p"
-  RDIO_CONSUMER_SECRET = "UuNDyK2bzM"
+  RDIO_CONSUMER_KEY = 'r4efjacbzxz8n76f9papqz5p'
+  RDIO_CONSUMER_SECRET = 'UuNDyK2bzM'
 
   def new    
     @user = User.new
@@ -40,7 +40,18 @@ class UsersController < ApplicationController
     puts("@user.dates = #{@user.dates}")
     puts("@user.keywords = #{@user.keywords}")
 
-    
+=begin
+    session.clear
+    # begin the authentication process
+    rdio = Rdio.new([RDIO_CONSUMER_KEY, RDIO_CONSUMER_SECRET])
+    callback_url = (URI.join request.url, '/callback').to_s
+    url = rdio.begin_authentication(callback_url)
+    # save our request token in the session
+    session[:rt] = rdio.token[0]
+    session[:rts] = rdio.token[1]
+    # go to Rdio to authenticate the app
+    redirect url
+=end
 
     # create an instance of the Rdio object with our consumer credentials
     rdio = Rdio.new([RDIO_CONSUMER_KEY, RDIO_CONSUMER_SECRET])
@@ -57,7 +68,7 @@ class UsersController < ApplicationController
 
     # list them
     playlists.each { |playlist| puts "%s\t%s" % [playlist['shortUrl'], playlist['name']] }
-    
+  
     #keepUserData
     
     if @user.save
