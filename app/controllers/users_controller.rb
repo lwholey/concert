@@ -21,6 +21,15 @@ class UsersController < ApplicationController
   $PAGE_SIZE = 5
   $DEFAULT_KEYWORDS = 'concert'
 
+  # YouTube API parameters
+  DEVELOPER_KEY = 'AI39si7SV5n5UyDjSu4HZ92aHlfO-TJ_afBaUyFwSFhIWt46aFBD6KqS7TfGuDZR_a9OUL3A4HtxGMOpAf56WNCAAQz_ptBCbw'
+  CALLBACK = 'atom'
+  CATEGORIES = 'Music'
+  VERSION = '2'
+  MORE_KEYWORDS = '%2Cband'
+  ORDER_BY = 'relevance'
+  MAX_RESULTS = '10'
+
   def new    
     @user = User.new
     @title = "Home"
@@ -808,3 +817,55 @@ def client_browser_name
     "notMobile" 
   end 
 end
+
+# url to send to YouTube API requesting info
+def setYouTubeUrl(keywords)
+
+  keywordsM = massageKeywords(keywords)
+
+  url = "https://gdata.youtube.com/feeds/api/videos?category=" <<
+        "#{CATEGORIES}&q=#{keywordsM}#{MORE_KEYWORDS}&v=#{VERSION}&key=#{DEVELOPER_KEY}&alt=#{CALLBACK}" <<
+      "&orderby=#{ORDER_BY}&max-results=#{MAX_RESULTS}"
+
+  return (url)
+end
+
+# Convert keywords string for use by YouTube
+def massageKeywords(str1)
+  str2 = str1
+  
+  if (str2 != nil)
+    #replace anything that's not an alphanumeric character with white space
+    str2 = str2.gsub(/\W/," ")
+    
+    #replace more than one consecutive white spaces with one white space
+    str2.squeeze!(" ")
+    
+    #remove leading and trailing whitespace
+    str2 = str2.lstrip.rstrip
+    
+    #change to lower case
+    str2 = str2.downcase
+    
+    #replace whitespace with %2C
+    str2.gsub!(" ", "%2C")
+
+  end  
+  
+  return str2
+  
+end
+
+# get URL for youTube video, should be able to copy paste
+# str into a browser and see the video
+def getVideoUrl(url)
+  doc = Nokogiri::XML(open(url))
+  node=doc.xpath('//xmlns:entry')
+  video_count=node.length
+  ids=node.xpath('//media:group/yt:videoid')
+  #just pull the first returned video (should be the most popular of MAX_RESULTS)
+  str = "https://www.youtube.com/watch?v="+ids[0].text
+  puts("str = #{str}")
+  return str
+end
+
