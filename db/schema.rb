@@ -28,13 +28,6 @@ ActiveRecord::Schema.define(:version => 20110909231452) do
 
   add_index "results", ["user_id"], :name => "index_results_on_user_id"
 
-  create_table "searches", :force => true do |t|
-    t.string   "form_location"
-    t.string   "form_musiccategory"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "users", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"

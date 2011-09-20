@@ -25,6 +25,4 @@ group :test do
   gem 'redgreen'
   gem 'faker', '0.3.1'
   gem 'test-unit'
-  gem 'autotest-fsevent', '0.2.4' if RUBY_PLATFORM =~ /darwin/
-  gem 'autotest-growl', '0.2.9' if RUBY_PLATFORM =~ /darwin/
 end
