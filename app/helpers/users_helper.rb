@@ -41,11 +41,26 @@ module UsersHelper
       else
         puts "Starting EVENTFUL session"
 
+        if user.city.blank? then 
+          city = "usa" 
+        else
+          city = user.city
+        end
+        if user.dates.blank? then 
+          dates = "future" 
+        else
+          dates = user.dates  
+        end
+        if user.keywords.blank? then 
+          keywords = @@DEFAULT_KEYWORDS
+        else
+          keywords = user.keywords
+        end
+
         # Start an API session with a username and password
         eventful = Eventful::API.new 'gr2xkHcHxTF3BQNk'
 
-        date = massageDate(user.dates)
-        #puts("date = #{date}")
+        date = massageDate(dates)
 
         if (user.keywords == @@DEFAULT_KEYWORDS )
           sort_order = 'popularity'
@@ -57,8 +72,8 @@ module UsersHelper
         end
 
         results = eventful.call 'events/search',
-          :location => user.city,
-          :keywords => user.keywords,
+          :location => city,
+          :keywords => keywords,
           :date => date,
           :category => 'music',
           :sort_order => sort_order,

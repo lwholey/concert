@@ -13,7 +13,7 @@
 
 require 'digest'
 class User < ActiveRecord::Base
-  after_initialize :default_values
+#  after_initialize :default_values
 
   attr_accessible :maxNumberOfBands
   attr_accessible :dates
@@ -24,12 +24,14 @@ class User < ActiveRecord::Base
   # ensure results are destroyed along with user
   has_many :results, :dependent => :destroy
   
-  private 
+  private
+=begin
   def default_values
     if self.city.blank? then self.city = "usa" end
     if self.dates.blank? then self.dates = "future" end
     if self.keywords.blank? then self.keywords = UsersHelper.DEFAULT_KEYWORDS end
   end
+=end
 
   #validates :city, :presence => true
 
