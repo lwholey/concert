@@ -42,9 +42,7 @@ module UsersHelper
         puts "Starting EVENTFUL session"
 
         # Start an API session with a username and password
-        eventful = Eventful::API.new 'gr2xkHcHxTF3BQNk',
-          :user => 'lwrunner1',
-          :password => 'eventfulnerd1'
+        eventful = Eventful::API.new 'gr2xkHcHxTF3BQNk'
 
         date = massageDate(user.dates)
         #puts("date = #{date}")
