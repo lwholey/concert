@@ -10,6 +10,7 @@ group :development do
   gem 'rspec-rails', '2.6.1'
   gem 'annotate', '2.4.0'
   gem 'faker', '0.3.1'
+  gem 'pry'
 end
 
 # Followed instructions here:
@@ -23,5 +24,6 @@ group :test do
   gem 'autotest-rails-pure', '4.1.2'
   gem 'ZenTest'
   gem 'redgreen'
+  gem 'faker', '0.3.1'
   gem 'test-unit'
 end

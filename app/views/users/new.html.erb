@@ -1,3 +1,5 @@
+<div class = "span-17 prepend-1 last round new-search">
+
 <font size="5">lennylonglegs - create concert calendar and playlist</font> </br></br>
 <%= form_for(@user) do |f| %>
   <%= render 'shared/error_messages' %>
@@ -19,13 +21,10 @@
     <i class="quiet small">(The Fillmore, Rubblebucket, Jazz, ... )</i><br/>
     <%= f.text_field :keywords %>
   </div>
-
-	<div class="field">
-	 	<%= f.hidden_field :pageNumber,  :value => nil %>
-	</div>
-
   <div class="actions">
     <%= f.submit "Create" %>
   </div>
 <% end %>
 <div align="right"> <img src="/images/LLL.png" alt="LLL" WIDTH="25" HEIGHT="25" /> </div>
+
+</div>

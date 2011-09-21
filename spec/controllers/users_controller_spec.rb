@@ -39,31 +39,25 @@ describe UsersController do
 
   end
 
-  describe "POST 'create'" do
-    
-    describe "failure" do
-      
-      before "failure" do
-        @attr = { :city => "", :keywords => "", :dates => "" }
-      end
-    
-      it "should not create a user" do
-        lambda do
-          post :create, :user => @attr
-        end.should_not change(User, :count)
-      end
+  describe "GET 'show'" do
 
-      it "should have the right title" do
-        post :create, :user => @attr
-        response.should have_selector("title", :content => "Home")
-      end
-      
-      it "should render the 'new' page" do
-        post :create, :user => @attr
-        response.should render_template('new')
-      end
-      
+    before(:each) do
+      @user = Factory(:user)
     end
+
+    it "should show the results" do
+
+      r1 = Factory(:result, :user => @user, :name => "the first event")
+      r2 = Factory(:result, :user => @user, :name => "the second event")
+      get :show, :id => @user
+      response.should have_selector("table", :class => "results")
+      response.should have_selector("td", :content => r1.name)
+      response.should have_selector("td", :content => r2.name)
+    end
+  end
+
+
+  describe "POST 'create'" do
     
     describe "success" do
       
@@ -80,7 +74,7 @@ describe UsersController do
       
       it "should redirect to the results page" do
         post :create, :user => @attr
-        response.should redirect_to(results_path)
+        response.should redirect_to(user_path(assigns (:user)))
       end
     end
   end

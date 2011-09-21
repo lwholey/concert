@@ -22,16 +22,41 @@ describe User do
               :keywords => "jazz",
             }
   end
-  
+ 
   it "should create a new instance given valid attributes" do
     User.create!(@attr)
   end
- 
-=begin
-  it "should require a search criteria" do
-    no_field_user = User.new(@attr.merge(:dates => "", :city => "", :keywords => "Red Rocks"))
-    no_field_user.should_not be_valid
+  
+  describe "results association" do
+
+    before(:each) do
+      @user = User.create(@attr)
+      @r1 = Factory(:result, :user => @user, :track_spotify => "something")
+      @r2 = Factory(:result, :user => @user, :track_spotify => "")
+    end
+
+    it "should have a results attribute" do
+      @user.should respond_to(:results)
+    end
+
+    it "should have the right results in the right order" do
+      @user.results.should == [@r1, @r2]
+    end
+
+    it "should destroy associated results" do
+      @user.destroy
+      [@r1, @r2].each do |result|
+        Result.find_by_id(result.id).should be_nil
+      end
+    end
+    
   end
-=end
+ 
+  it "should set default search criteria" do
+    u = User.new(@attr.merge(:dates => nil, :city => nil, :keywords => nil))
+    u.city.should == "usa"
+    u.dates.should == "future"
+    u.keywords.should == "concert"
+  end
 
 end
