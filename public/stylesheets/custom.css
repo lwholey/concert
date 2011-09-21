@@ -20,6 +20,13 @@ div.spotify-results {
   padding: 5px;
 }
 
+div.youTube-results {
+  background: #fff;
+  margin-top: 1em;
+  font-size: 120%;
+  padding: 5px;
+}
+
 div.results {
   background: #fff;
   margin-top: 1em;

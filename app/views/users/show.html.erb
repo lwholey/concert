@@ -11,6 +11,7 @@
         <td><b>Venue</b></td>
         <td><b>Band (Spotify)</b></td>
         <td><b>Track (Spotify)</b></td>
+        <td><b>YouTube</b></td>
         <td><b>Details</b></td>
       </tr>
       <%= render @results %>
@@ -41,3 +42,11 @@
     <% end %>
   </div>
 <% end %>
+
+<div class = "youTube-results span-18 round">
+	<object style="height: 195px; width: 320px">
+	<param name="movie" value="http://www.youtube.com/v/q9hOSZGMXlI?version=3">
+	<param name="allowFullScreen" value="true">
+	<param name="allowScriptAccess" value="always">
+	<embed src="http://www.youtube.com/v/q9hOSZGMXlI?version=3" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="320" height="195"></object>
+</div>

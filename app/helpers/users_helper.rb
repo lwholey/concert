@@ -13,6 +13,15 @@ module UsersHelper
   # number of concerts for eventful to return
   @@PAGE_SIZE = 10 
 
+  # YouTube API parameters
+  @@DEVELOPER_KEY = 'AI39si7SV5n5UyDjSu4HZ92aHlfO-TJ_afBaUyFwSFhIWt46aFBD6KqS7TfGuDZR_a9OUL3A4HtxGMOpAf56WNCAAQz_ptBCbw'
+  @@CALLBACK = 'atom'
+  @@CATEGORIES = 'Music'
+  @@VERSION = '2'
+  @@MORE_KEYWORDS = '%2Cband'
+  @@ORDER_BY = 'relevance'
+  @@MAX_RESULTS = '10'
+
 
   def get_fake_results( num )
     results = {  "events" => { "event" => [] }  }
@@ -91,6 +100,8 @@ module UsersHelper
 
       create_results_for_user( results, user )
       update_results_with_spotify_tracks( user )
+      update_results_with_you_tube_url( user )
+
 
     rescue
       #   flash[:error] = "No concerts found"
@@ -292,6 +303,23 @@ module UsersHelper
       end
     end
 
+  end
+
+  def update_results_with_you_tube_url( user )
+    user.results.each do |result|
+      url = setYouTubeUrl(result.band)
+      videoUrl = getVideoUrl(url)
+      updateResultForYoutube( result, videoUrl)
+    end
+    
+  end
+
+  def updateResultForYoutube( result, videoUrl)
+    if (videoUrl.nil?)
+      return
+    end
+    result.update_attributes(:you_tube_url => videoUrl)
+    
   end
 
   def updateResultAndCache( result, spotifyData )
@@ -695,6 +723,56 @@ module UsersHelper
     return val
   end
 
+  # url to send to YouTube API requesting info
+  def setYouTubeUrl(keywords)
+   	keywordsM = massageKeywords(keywords)
+   	url = "https://gdata.youtube.com/feeds/api/videos?category=" <<
+          "#{@@CATEGORIES}&q=#{keywordsM}#{@@MORE_KEYWORDS}&v=#{@@VERSION}" <<
+          "&key=#{@@DEVELOPER_KEY}&alt=#{@@CALLBACK}" <<
+   	      "&orderby=#{@@ORDER_BY}&max-results=#{@@MAX_RESULTS}"
+   	return (url)
+  end
+
+  # Convert keywords string for use by YouTube
+  def massageKeywords(str1)
+   	str2 = str1
+   	if (str2 != nil)
+   	  #replace anything that's not an alphanumeric character with white space
+   	  str2 = str2.gsub(/\W/," ")
+   	  #replace more than one consecutive white spaces with one white space
+   	  str2.squeeze!(" ")
+   	  #remove leading and trailing whitespace
+   	  str2 = str2.lstrip.rstrip
+   	  #change to lower case
+   	  str2 = str2.downcase
+   	  #replace whitespace with %2C
+   	  str2.gsub!(" ", "%2C")
+   	end  
+
+   	return str2
+  end
+
+  # get URL for youTube video, should be able to copy paste
+  # str into a browser and see the video
+  def getVideoUrl(url)
+    begin
+     	doc = Nokogiri::XML(open(url))
+     	node=doc.xpath('//xmlns:entry')
+     	video_count=node.length
+     	ids=node.xpath('//media:group/yt:videoid')
+     	#just pull the first returned video (should be the most popular of MAX_RESULTS)
+     	if (ids != nil)
+       	str = "https://www.youtube.com/v/"+ids[0].text+"?version=3"
+       	#puts("str = #{str}")
+       	return str
+     	else
+     	  return nil
+      end
+    rescue
+      return nil
+    end
+  end
+
 end
 
 def client_browser_name 
@@ -735,3 +813,4 @@ def clippy(text, bgcolor='#FFFFFF')
   EOF
   html.html_safe
 end
+

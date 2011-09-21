@@ -14,6 +14,7 @@
 #  created_at    :datetime
 #  updated_at    :datetime
 #  user_id       :integer
+#  you_tube_url  :string(255)
 #
 
 require 'spec_helper'
