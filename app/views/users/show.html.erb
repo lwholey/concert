@@ -43,10 +43,15 @@
   </div>
 <% end %>
 
-<div class = "youTube-results span-18 round">
-	<object style="height: 195px; width: 320px">
-	<param name="movie" value="http://www.youtube.com/v/q9hOSZGMXlI?version=3">
-	<param name="allowFullScreen" value="true">
-	<param name="allowScriptAccess" value="always">
-	<embed src="http://www.youtube.com/v/q9hOSZGMXlI?version=3" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="320" height="195"></object>
-</div>
+
+<!-- Show the first available youTube video -->
+<% unless @results.empty? %>
+  <% @results.each do |result| %>
+    <% unless result.you_tube_url.nil? %>
+      <% valueStr = result.you_tube_url %>
+      <%= showYouTubeVideo(valueStr) %>
+      <% break %>
+    <% end %>
+  <% end %>
+<% end %>
+
