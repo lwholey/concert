@@ -76,7 +76,7 @@ module UsersHelper
           sort_direction = 'descending'
         else
           sort_order = 'relevance'
-          puts("sort_order = #{sort_order}")
+          #puts("sort_order = #{sort_order}")
           sort_direction = 'descending'
         end
 
@@ -89,7 +89,7 @@ module UsersHelper
           :sort_direction => sort_direction,
           :page_size => @@PAGE_SIZE
 
-        puts("results = #{results}")                       
+        #puts("results = #{results}")                       
 
         if (results['events'] == nil)
           # flash no concerts found and exit
@@ -307,8 +307,14 @@ module UsersHelper
 
   def update_results_with_you_tube_url( user )
     user.results.each do |result|
-      url = setYouTubeUrl(result.band)
+      searchWithQuotes = 1
+      url = setYouTubeUrl(result.band, searchWithQuotes)
       videoUrl = getVideoUrl(url)
+      if videoUrl == nil
+        searchWithQuotes = 0
+        url = setYouTubeUrl(result.band, searchWithQuotes)
+        videoUrl = getVideoUrl(url) 
+      end
       updateResultForYoutube( result, videoUrl)
     end
     
@@ -724,8 +730,8 @@ module UsersHelper
   end
 
   # url to send to YouTube API requesting info
-  def setYouTubeUrl(keywords)
-   	keywordsM = massageKeywords(keywords)
+  def setYouTubeUrl(keywords, searchWithQuotes)
+   	keywordsM = massageKeywords(keywords, searchWithQuotes)
    	url = "https://gdata.youtube.com/feeds/api/videos?category=" <<
           "#{@@CATEGORIES}&q=#{keywordsM}#{@@MORE_KEYWORDS}&v=#{@@VERSION}" <<
           "&key=#{@@DEVELOPER_KEY}&alt=#{@@CALLBACK}" <<
@@ -734,7 +740,7 @@ module UsersHelper
   end
 
   # Convert keywords string for use by YouTube
-  def massageKeywords(str1)
+  def massageKeywords(str1, searchWithQuotes)
    	str2 = str1
    	if (str2 != nil)
    	  #replace anything that's not an alphanumeric character with white space
@@ -745,8 +751,13 @@ module UsersHelper
    	  str2 = str2.lstrip.rstrip
    	  #change to lower case
    	  str2 = str2.downcase
-   	  #replace whitespace with %2C
-   	  str2.gsub!(" ", "%2C")
+   	  if (searchWithQuotes == 1)
+     	  str2.gsub!(" ", "+")
+     	  str2 = "%22" + str2 + "%22"
+     	else
+     	  #replace whitespace with %2C
+     	  str2.gsub!(" ", "%2C")
+   	  end
    	end  
 
    	return str2
