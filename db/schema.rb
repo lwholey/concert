@@ -10,12 +10,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110921004545) do
+ActiveRecord::Schema.define(:version => 20110924231243) do
 
   create_table "results", :force => true do |t|
     t.string   "name"
     t.string   "date_string"
-    t.datetime "date_type"
     t.string   "venue"
     t.string   "band"
     t.string   "track_name"

@@ -5,7 +5,6 @@
 #  id            :integer         not null, primary key
 #  name          :string(255)
 #  date_string   :string(255)
-#  date_type     :datetime
 #  venue         :string(255)
 #  band          :string(255)
 #  track_name    :string(255)
@@ -26,7 +25,6 @@ describe Result do
     @attr = { 
       :name => "Lenny Live At The Paramount",
       :date_string => "Sunday Aug 24, 2011 at 7PM",
-      :date_type => "",
       :venue => "Paramount Theater",
       :band => "Lenny and the Long Legs",
       :track_name => "Sweet Home Pennyslyania",

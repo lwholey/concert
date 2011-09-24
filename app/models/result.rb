@@ -5,7 +5,6 @@
 #  id            :integer         not null, primary key
 #  name          :string(255)
 #  date_string   :string(255)
-#  date_type     :datetime
 #  venue         :string(255)
 #  band          :string(255)
 #  track_name    :string(255)
