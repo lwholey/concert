@@ -76,7 +76,6 @@ module UsersHelper
           sort_direction = 'descending'
         else
           sort_order = 'relevance'
-          #puts("sort_order = #{sort_order}")
           sort_direction = 'descending'
         end
 
@@ -112,55 +111,68 @@ module UsersHelper
   def create_results_for_user ( results, user )
 
     begin
-
+      eventTmp = bandsTmp = dateTmp = venueTmp = detailsTmp = nil  
       results['events']['event'].each do |event|
-        name = event['title']
-        date = massageTime(event['start_time'])
-        venue = event['venue_name']
-        details = event['url']
+        #event will be a Hash if there is more than one event
+        if (event.class == Hash)
+          name = event['title']
+          date = massageTime(event['start_time'])
+          venue = event['venue_name']
+          details = event['url']
 
-        puts "Name: " + name.to_s
-        puts "Date " + date.to_s
-        puts "Venue " + venue.to_s
-        puts "Details " + details.to_s
+          puts "Name: " + name.to_s
+          puts "Date " + date.to_s
+          puts "Venue " + venue.to_s
+          puts "Details " + details.to_s
 
-        result_attr = {
-          :name => name,
-          :date_string => date,
-          :venue => venue,           
-          :details_url => details   
-        }
+          result_attr = {
+            :name => name,
+            :date_string => date,
+            :venue => venue,           
+            :details_url => details   
+          }
 
-        if (event['performers'] == nil)
-          user.results.build( result_attr.merge( :band => event['title'] ) ).save
-          next
-        elsif (event['performers']['performer'].class == Hash)
-          perfArray = [ event['performers']['performer'] ]
+          if (event['performers'] == nil)
+            user.results.build( result_attr.merge( :band => event['title'] ) ).save
+            next
+          elsif (event['performers']['performer'].class == Hash)
+            perfArray = [ event['performers']['performer'] ]
+          else
+            perfArray = event['performers']['performer'] 
+          end
+
+          perfArray.each do |performer|
+            user.results.build( result_attr.merge( :band => performer['name'] ) ).save
+          end
         else
-          perfArray = event['performers']['performer'] 
-        end
-
-        perfArray.each do |performer|
-          user.results.build( result_attr.merge( :band => performer['name'] ) ).save
+          case event[0]
+          when 'title'
+            eventTmp = event[1]
+          when 'start_time'
+            dateTmp = event[1]
+          when 'venue_name'
+            venueTmp = event[1]
+          when 'url'
+            detailsTmp = event[1]
+          else
+          end
         end
       end
+
+      if (eventTmp != nil)
+        result_attr = {
+          :name => eventTmp,
+          :date_string => dateTmp,
+          :venue => venueTmp,           
+          :details_url => detailsTmp   
+        }
+        user.results.build( result_attr.merge( :band => eventTmp ) ).save
+      end
+      
 
     rescue
       puts "Rescue called in create_results_for_user ... "
       puts $1
-    end
-
-  end
-
-  # put validations like this in model?
-  def stripEvent(event)
-    # open mike concerts generally aren't good
-    i = /open mike/i =~ event
-    if (i != nil)
-      puts("found open mike")
-      return false
-    else
-      return true
     end
 
   end
@@ -288,17 +300,7 @@ module UsersHelper
 
     user.results.each do |result|
       spotifyData = findSpotifyTrack(result.band ) 
-      if ( spotifyData.nil? )
-        multiSplit(result.band).each do |band1|
-          spotifyData = findSpotifyTrack( result.band ) 
-          if ( !spotifyData.nil? )
-            newResult = result.dup();
-            newResult.id = nil
-            newResult.save
-            updateResultAndCache( newResult, spotifyData )
-          end
-        end     
-      else
+      if ( spotifyData != nil )
         updateResultAndCache( result, spotifyData )
       end
     end
@@ -653,7 +655,7 @@ module UsersHelper
     #don't find a spotify track twice
     @cache.each do |spotifyResult|
       if (spotifyResult.band == bandName)
-        return spotifyResult
+        return nil
       end
     end
 
@@ -688,30 +690,7 @@ module UsersHelper
     end
     return nil
   end
-
-  #split a string into an array
-  # E.g. "the bad plus, kurt rosenwinkel, and the rolling stones" ->
-  # ["the bad plus", "kurt rosenwinkel", "the rolling stones"]
-  def multiSplit(str)
-    val = str
-
-    splitArray = Array.new
-    splitArray[0] = ' and '
-    splitArray[1] = ','
-    splitArray[2] = "&amp;"
-    splitArray[3] = '&'
-
-    splitArray.each do |tmp|
-      tmp2 = val.split("#{tmp}")
-      val = tmp2.join("-")
-    end
-    val.gsub!("--","-")
-    val = val.split("-")
-
-    return (val)
-
-  end
-
+  
   # using str1, return what's between str2 and str3
   def betweenTwoStrings(str1, str2, str3)
     val = nil
