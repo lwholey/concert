@@ -8,7 +8,6 @@ end
 Factory.define :result do |result|
   result.name  "Lenny Live At The Paramount"
   result.date_string  "Sunday Aug 24 2011 at 7PM"
-  result.date_type  ""
   result.venue  "Paramount Theater"
   result.band  "Lenny and the Long Legs"
   result.track_name  "Sweet Home Pennyslyania"
