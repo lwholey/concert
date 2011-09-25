@@ -18,7 +18,7 @@ module UsersHelper
   @@CALLBACK = 'atom'
   @@CATEGORIES = 'Music'
   @@VERSION = '2'
-  @@MORE_KEYWORDS = '%2Cband'
+  @@MORE_KEYWORDS = '%2Cband%2Clive'
   @@ORDER_BY = 'relevance'
   @@MAX_RESULTS = '10'
 
@@ -337,8 +337,7 @@ module UsersHelper
 
     result.update_attributes(
       :track_spotify => spotifyData.trackCode,
-      :track_name => spotifyData.trackName,
-      :band => spotifyData.band
+      :track_name => spotifyData.trackName
     )
     @cache << spotifyData
   end
@@ -681,7 +680,7 @@ module UsersHelper
             end
             trackCode = "spotify:track:#{trackCode}"
             puts("trackCode = #{trackCode}")
-            attr = {:band => artistName, :trackCode => trackCode, :trackName => trackName}
+            attr = {:band => bandName, :trackCode => trackCode, :trackName => trackName}
 
             return SpotifyResult.new( attr )
           end
