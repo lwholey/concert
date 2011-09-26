@@ -308,7 +308,20 @@ module UsersHelper
   end
 
   def update_results_with_you_tube_url( user )
+    cache = []
+    
     user.results.each do |result|
+      bandFound = 0
+      cache.each do |searchedBand|
+        if (result.band == searchedBand)
+          bandFound = 1
+        end
+      end
+      if (bandFound == 1)
+        next
+      end
+      cache << result.band
+      
       searchWithQuotes = 1
       url = setYouTubeUrl(result.band, searchWithQuotes)
       videoUrl = getVideoUrl(url)
@@ -317,6 +330,7 @@ module UsersHelper
         url = setYouTubeUrl(result.band, searchWithQuotes)
         videoUrl = getVideoUrl(url) 
       end
+      
       updateResultForYoutube( result, videoUrl)
     end
     
