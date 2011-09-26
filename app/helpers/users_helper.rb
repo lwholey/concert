@@ -828,22 +828,22 @@ end
 def getSpotifyTracks(results)
   cache = [] 
   
-  tracks = Array.new
+  tracks = ""
   results.each do |result|
-    bandPresent = 0
-    cache.each do |foundBand|
-      if (result.band == foundBand)
-        bandPresent = 1
+    bandFound = 0
+    cache.each do |searchedBand|
+      if (result.band == searchedBand)
+        bandFound = 1
       end
     end
-    if bandPresent == 1
+    if (bandFound == 1)
       next
     end
+    cache << result.band
     
     trackCode, trackName, artistName = getTrackInfo(result.band)
     if (trackCode != nil)
       tracks << " #{trackCode}"
-      cache << result.band
     end
   end
   return tracks
