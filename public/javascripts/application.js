@@ -5,8 +5,9 @@ jQuery.ajaxSetup({
 });
 
 $(document).ready(function (){  
+  $('#spotify-results').hide();
   $('#clickForSpotify').click(function (){
     $.get($(this).attr('action'), null, null, "script");  
-    return false;  
+  return false;  
   });  
 });
