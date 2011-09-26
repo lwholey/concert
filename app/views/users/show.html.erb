@@ -1,3 +1,5 @@
+<%= javascript_include_tag ['/javascripts/jquery-1.6.4.js', '/javascripts/application.js'] %>
+
 <div class = "results span-18 round">
   <% flash.each do |key, value| %>
     <div class="round flash <%= key %>"><%= value %></div>
@@ -43,6 +45,11 @@
   </div>
 <% end %>
 
+<div id="sidebar" class = "spotify-results span-4 last border round">
+<!-- ><a href="">jQuery</a> -->
+<button id="clickForSpotify">Create Spotify Playlist</button>
+<p id="spotifyTracks"></p>
+</div>
 
 <!-- Show the first available youTube video -->
 <% unless @results.empty? %>

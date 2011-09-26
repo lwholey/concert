@@ -98,7 +98,7 @@ module UsersHelper
       end
 
       create_results_for_user( results, user )
-      update_results_with_spotify_tracks( user )
+      #update_results_with_spotify_tracks( user )
       update_results_with_you_tube_url( user )
 
 
@@ -359,6 +359,10 @@ module UsersHelper
   #returns Spotify's coded value for artist
   #TODO : Handle case where more than one artist is returned
   def searchArtist(url)
+    if url == nil
+      return nil
+    end
+    
     if Rails.env.test?
       return "test artist"
     end
@@ -488,7 +492,14 @@ module UsersHelper
 
   #returns Spotify's coded value for the first
   #album that is available in the US (look for US or worldwide)
-  def lookupArtist(url)
+  def lookupArtist(artist)
+    if artist == nil
+      return nil
+    end
+    
+    url = "http://ws.spotify.com/lookup/1/?uri=spotify:artist:" + \
+      "#{artist}" + "&extras=album"
+    
     if Rails.env.test?
       return "test artist"
     end
@@ -534,7 +545,14 @@ module UsersHelper
   #returns Spotify's coded value for the first
   #track that is available
   #assume min track popularity is 0
-  def lookupAlbum(url)
+  def lookupAlbum(album)
+    if album == nil
+      return nil
+    end
+    
+    url = "http://ws.spotify.com/lookup/1/?uri=spotify:album:" + \
+      "#{album}" + "&extras=trackdetail"
+    
     if Rails.env.test?
       return (["test-track-code", "test-track-name", "test-artist"])
     end
@@ -565,9 +583,11 @@ module UsersHelper
         if ((logic1 == 1) && (popularity >= maxPopularity))
           maxPopularity = popularity
           trackCode = betweenTwoStrings(str1,"spotify:track:","\"")
+          trackCode = "spotify:track:#{trackCode}"
           trackName = betweenTwoStrings(str1,"<name>","</name>")
           tmp = betweenTwoStrings(str1,"<artist","</artist>")
           artistName = betweenTwoStrings(tmp,"<name>","</name>")
+          artistName.gsub!("&amp;","and")
         end
         k += 1
       end
@@ -576,6 +596,7 @@ module UsersHelper
 
     end
 
+    puts("trackCode = #{trackCode}")
     return([trackCode,trackName,artistName])
   end
 
@@ -659,35 +680,22 @@ module UsersHelper
     end
 
     spotifyResult = SpotifyResult.new
+    trackCode, trackName, artistName = getTrackInfo(bandName)
 
-    url = createArtistUrl(bandName)
-
-    if (url != nil)
-      artist = searchArtist(url)
-
-      if (artist != nil)
-        url = "http://ws.spotify.com/lookup/1/?uri=spotify:artist:" + \
-          "#{artist}" + "&extras=album"
-        album = lookupArtist(url)
-
-        if (album != nil)
-          url = "http://ws.spotify.com/lookup/1/?uri=spotify:album:" + \
-            "#{album}" + "&extras=trackdetail"
-          trackCode, trackName, artistName = lookupAlbum(url)
-          if (trackCode != nil)
-            if (artistName != nil)
-              artistName.gsub!("&amp;","and")
-            end
-            trackCode = "spotify:track:#{trackCode}"
-            puts("trackCode = #{trackCode}")
-            attr = {:band => bandName, :trackCode => trackCode, :trackName => trackName}
-
-            return SpotifyResult.new( attr )
-          end
-        end
-      end
+    if (trackCode != nil)
+      attr = {:band => bandName, :trackCode => trackCode, :trackName => trackName}
+      return SpotifyResult.new( attr )
+    else
+      return nil
     end
-    return nil
+  end
+
+  def getTrackInfo(bandName)
+    url = createArtistUrl(bandName)
+    artist = searchArtist(url)
+    album = lookupArtist(artist)
+    trackCode, trackName, artistName = lookupAlbum(album)
+    return([trackCode,trackName,artistName])
   end
   
   # using str1, return what's between str2 and str3
@@ -761,7 +769,8 @@ module UsersHelper
       return nil
     end
   end
-
+  
+  module_function :getTrackInfo
 end
 
 def client_browser_name 
@@ -816,3 +825,26 @@ def showYouTubeVideo(text)
   html.html_safe
 end
 
+def getSpotifyTracks(results)
+  cache = [] 
+  
+  tracks = Array.new
+  results.each do |result|
+    bandPresent = 0
+    cache.each do |foundBand|
+      if (result.band == foundBand)
+        bandPresent = 1
+      end
+    end
+    if bandPresent == 1
+      next
+    end
+    
+    trackCode, trackName, artistName = getTrackInfo(result.band)
+    if (trackCode != nil)
+      tracks << " #{trackCode}"
+      cache << result.band
+    end
+  end
+  return tracks
+end
