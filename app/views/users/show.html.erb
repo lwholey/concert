@@ -44,10 +44,12 @@
   </div>
 <% end %>
 
+<% if (client_browser_name == "notMobile") %>
 <div id="sidebar" class = "spotify-results span-4 last border round">
 <button id="clickForSpotify">Create Spotify Playlist</button>
 <%= text_area_tag 'spotify-results', valueStr %>
 </div>
+<% end %>
 
 <!-- Show the first available youTube video -->
 <% unless @results.empty? %>
