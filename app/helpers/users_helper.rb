@@ -828,6 +828,7 @@ end
 
 def showYouTubeVideo(text)
   html = <<-EOF
+  <center>
   <div class = "youTube-results span-18 round">
   	<object style="height: 195px; width: 320px">
   	<param name="movie" value="#{text}">
@@ -835,6 +836,7 @@ def showYouTubeVideo(text)
   	<param name="allowScriptAccess" value="always">
   	<embed src="#{text}" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="320" height="195"></object>
   </div>
+  </center>
   EOF
   html.html_safe
 end
