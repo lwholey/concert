@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110924231243) do
+ActiveRecord::Schema.define(:version => 20110927225220) do
 
   create_table "results", :force => true do |t|
     t.string   "name"
@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(:version => 20110924231243) do
     t.string   "city"
     t.string   "keywords"
     t.integer  "pageNumber"
+    t.integer  "max_pages"
   end
 
 end

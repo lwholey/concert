@@ -14,6 +14,7 @@ class UsersController < ApplicationController
     puts("@user.city = #{@user.city}")
     puts("@user.dates = #{@user.dates}")
     puts("@user.keywords = #{@user.keywords}")
+    puts("@user.pageNumber = #{@user.pageNumber}")
     
     if @user.save
      

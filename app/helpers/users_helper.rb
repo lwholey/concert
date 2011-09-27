@@ -65,6 +65,9 @@ module UsersHelper
         else
           keywords = user.keywords
         end
+        if user.pageNumber == nil then
+          user.pageNumber = 1
+        end
 
         # Start an API session with a username and password
         eventful = Eventful::API.new 'gr2xkHcHxTF3BQNk'
@@ -86,7 +89,8 @@ module UsersHelper
           :category => 'music',
           :sort_order => sort_order,
           :sort_direction => sort_direction,
-          :page_size => @@PAGE_SIZE
+          :page_size => @@PAGE_SIZE,
+          :page_number => user.pageNumber
 
         #puts("results = #{results}")                       
 
@@ -95,6 +99,10 @@ module UsersHelper
           flash[:error] = "No concerts found"
           return
         end
+        
+        user.max_pages = results['page_count']
+        user.save
+        
       end
 
       create_results_for_user( results, user )

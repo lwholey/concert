@@ -9,6 +9,7 @@
 #  city       :string(255)
 #  keywords   :string(255)
 #  pageNumber :integer
+#  max_pages  :integer
 #
 
 require 'digest'
@@ -20,6 +21,7 @@ class User < ActiveRecord::Base
   attr_accessible :city
   attr_accessible :keywords
   attr_accessible :pageNumber
+  attr_accessible :max_pages
 
   # ensure results are destroyed along with user
   has_many :results, :dependent => :destroy

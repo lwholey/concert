@@ -9,6 +9,7 @@
 #  city       :string(255)
 #  keywords   :string(255)
 #  pageNumber :integer
+#  max_pages  :integer
 #
 
 require 'spec_helper'

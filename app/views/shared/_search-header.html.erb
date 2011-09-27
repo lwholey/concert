@@ -17,6 +17,9 @@
       <%= f.label str %>
       <%= f.text_field :keywords, :size => 25 %>
     </div>
+		<div class="field">
+		  <%= f.hidden_field :pageNumber,  :value => nil %>
+		</div>
     </hr>
     <div class="span-17 prepend-1 last">
       <%= f.submit "Create" %>

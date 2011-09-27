@@ -17,6 +17,21 @@
       <%= render @results %>
     </table>
     <%= will_paginate @results %>
+		<% if ((@user.pageNumber != nil) && (defined? @user.max_pages) && (@user.pageNumber < @user.max_pages)) %>
+		  <%= form_for(@user) do |f| %>
+		    <div class="field">	
+		      <%= f.hidden_field :city, :value => @user.city %>	
+	        <%= f.hidden_field :dates, :value => @user.dates %>	
+		      <%= f.hidden_field :keywords, :value => @user.keywords %>	
+		      <%= f.hidden_field :pageNumber,  :value => (@user.pageNumber + 1) %>	
+		    </div>	
+		    <tr>	
+		      <td class="mid actions">	
+		        <%= f.submit "More Concerts" %>
+		      </td>	
+		    </tr>	
+		  <% end %>
+		<% end %>
   <% end %>
 
 </div>
