@@ -3,8 +3,5 @@
   <td><%=  result.band  %></td>
   <td><%=  result.date_string  %></td>
   <td><%=  result.venue  %></td>
-  <td><%=  if (result.you_tube_url != nil)
-           link_to("YouTube", result.you_tube_url, :target => '_blank') 
-           end %></td>
   <td><%=  link_to("Details", result.details_url, :target => '_blank')  %></td>
 </tr>

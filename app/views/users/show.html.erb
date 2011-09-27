@@ -12,7 +12,6 @@
         <td><b>Performer</b></td>
         <td><b>Date/Time</b></td>
         <td><b>Venue</b></td>
-        <td><b>YouTube</b></td>
         <td><b>Details</b></td>
       </tr>
       <%= render @results %>
@@ -55,9 +54,11 @@
 <% unless @results.empty? %>
   <% @results.each do |result| %>
     <% unless result.you_tube_url.nil? %>
-      <% valueStr = result.you_tube_url %>
-      <%= showYouTubeVideo(valueStr) %>
-      <% break %>
+      <div>
+	      <% bandName = result.band %>
+	      <% youTubeUrl = result.you_tube_url %>
+	      <%= showYouTubeVideo(youTubeUrl, bandName) %>
+      </div>
     <% end %>
   <% end %>
 <% end %>

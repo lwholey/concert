@@ -826,15 +826,19 @@ def clippy(text, bgcolor='#FFFFFF')
   html.html_safe
 end
 
-def showYouTubeVideo(text)
+def showYouTubeVideo(youTubeUrl, bandName)
   html = <<-EOF
   <center>
+  
   <div class = "youTube-results span-18 round">
+    <p> #{bandName} </p>
+    <p>
   	<object style="height: 195px; width: 320px">
-  	<param name="movie" value="#{text}">
+  	<param name="movie" value="#{youTubeUrl}">
   	<param name="allowFullScreen" value="true">
   	<param name="allowScriptAccess" value="always">
-  	<embed src="#{text}" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="320" height="195"></object>
+  	<embed src="#{youTubeUrl}" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="320" height="195"></object>
+    </p>
   </div>
   </center>
   EOF
