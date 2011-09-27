@@ -41,7 +41,21 @@ div.info{
   background: #fff;
   margin-top: 1em;
   font-size: 120%;
+  padding: 0px;
+  margin-left:0em;
+  margin-bottom: 0em;
 }
+
+div.infoText{
+  background: #fff;
+  margin-top: 1em;
+  font-size: 100%;
+  padding: 0px;
+  margin-left:2em;
+  margin-bottom: 0em;
+  color: black;
+}
+
 /* Footer */
 
 .footer {
