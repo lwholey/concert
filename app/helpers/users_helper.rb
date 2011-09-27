@@ -71,7 +71,7 @@ module UsersHelper
 
         date = massageDate(dates)
 
-        if (user.keywords == @@DEFAULT_KEYWORDS )
+        if (keywords == @@DEFAULT_KEYWORDS )
           sort_order = 'popularity'
           sort_direction = 'descending'
         else
