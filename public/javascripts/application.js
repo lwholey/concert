@@ -7,7 +7,8 @@ jQuery.ajaxSetup({
 $(document).ready(function (){  
   $('#spotify-results').hide();
   $('#clickForSpotify').click(function (){
-    $.get($(this).attr('action'), null, null, "script");  
+    $.get($(this).attr('action'), null, null, "script");
+  $("#clickForSpotify").html("Creating ...");
   return false;  
   });  
 });
