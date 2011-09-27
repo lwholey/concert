@@ -18,7 +18,7 @@ module UsersHelper
   @@CALLBACK = 'atom'
   @@CATEGORIES = 'Music'
   @@VERSION = '2'
-  @@MORE_KEYWORDS = '%2Cband%2Clive'
+  @@MORE_KEYWORDS = '%2Clive%2Cband'
   @@ORDER_BY = 'relevance'
   @@MAX_RESULTS = '10'
 
