@@ -74,13 +74,8 @@ module UsersHelper
 
         date = massageDate(dates)
 
-        if (keywords == @@DEFAULT_KEYWORDS )
-          sort_order = 'popularity'
-          sort_direction = 'descending'
-        else
-          sort_order = 'relevance'
-          sort_direction = 'descending'
-        end
+        sort_order = 'popularity'
+        sort_direction = 'descending'
 
         results = eventful.call 'events/search',
           :location => city,
