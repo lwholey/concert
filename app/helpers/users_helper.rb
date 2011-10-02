@@ -330,17 +330,37 @@ module UsersHelper
       end
       cache << result.band
       
-      searchWithQuotes = 1
-      url = setYouTubeUrl(result.band, searchWithQuotes)
-      videoUrl = getVideoUrl(url)
-      if videoUrl == nil
-        searchWithQuotes = 0
+      videoUrl = findYouTubeVideo(result.band)
+      
+      if (videoUrl == nil) 
+        searchWithQuotes = 1
         url = setYouTubeUrl(result.band, searchWithQuotes)
-        videoUrl = getVideoUrl(url) 
+        videoUrl = getVideoUrl(url)
+        if videoUrl == nil
+          searchWithQuotes = 0
+          url = setYouTubeUrl(result.band, searchWithQuotes)
+          videoUrl = getVideoUrl(url) 
+        end
       end
       
       updateResultForYoutube( result, videoUrl)
     end
+    
+  end
+
+  # check model for presence of band and YouTube url
+  def findYouTubeVideo(band)
+    url = nil
+    
+    @performer = Performer.where("performer = ?", band.downcase)
+    puts("band = #{band}")
+    #if more than one performer, just use the first
+    @performer.each do |tmp|
+      url = "https://www.youtube.com/v/"+tmp.you_tube_url+"?version=3"
+      puts("url = #{url}")
+      break
+    end
+    return url
     
   end
 

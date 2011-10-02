@@ -26,6 +26,7 @@ class User < ActiveRecord::Base
   # ensure results are destroyed along with user
   has_many :results, :dependent => :destroy
   
+  has_many :performers
   private
 =begin
   def default_values
