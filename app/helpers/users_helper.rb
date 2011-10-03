@@ -335,12 +335,33 @@ module UsersHelper
           searchWithQuotes = 0
           url = setYouTubeUrl(result.band, searchWithQuotes)
           videoUrl = getVideoUrl(url) 
+          if videoUrl == nil
+            # take only the text after 'featuring'
+            band = findTextAfter(result.band, 'featuring')
+            if (band != nil)
+              url = setYouTubeUrl(band, searchWithQuotes)
+              videoUrl = getVideoUrl(url)
+            end
+          end
         end
       end
       
       updateResultForYoutube( result, videoUrl)
     end
     
+  end
+
+  def findTextAfter(str1, str2)
+    str = nil
+    regx = /#{str2}/
+    i = regx =~ str1
+    if (i != nil)
+      tmp = i + str2.length
+      if tmp < str1.length
+        str = str1[tmp...str1.length]
+      end
+    end
+    return str
   end
 
   # check model for presence of band and YouTube url
