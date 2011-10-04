@@ -314,31 +314,33 @@ module UsersHelper
     cache = []
     
     user.results.each do |result|
+      band = remove_accents(result.band)
       bandFound = 0
       cache.each do |searchedBand|
-        if (result.band == searchedBand)
+        if (band == searchedBand)
           bandFound = 1
         end
       end
       if (bandFound == 1)
         next
       end
-      cache << result.band
+      cache << band
       
-      videoUrl = findYouTubeVideo(result.band)
+      videoUrl = findYouTubeVideo(band)
       
       if (videoUrl == nil) 
         searchWithQuotes = 1
-        url = setYouTubeUrl(result.band, searchWithQuotes)
+        url = setYouTubeUrl(band, searchWithQuotes)
         videoUrl = getVideoUrl(url)
         if videoUrl == nil
           searchWithQuotes = 0
-          url = setYouTubeUrl(result.band, searchWithQuotes)
+          url = setYouTubeUrl(band, searchWithQuotes)
           videoUrl = getVideoUrl(url) 
           if videoUrl == nil
             # take only the text after 'featuring'
-            band = findTextAfter(result.band, 'featuring')
+            band = findTextAfter(band, 'featuring')
             if (band != nil)
+              searchWithQuotes = 1
               url = setYouTubeUrl(band, searchWithQuotes)
               videoUrl = getVideoUrl(url)
             end
