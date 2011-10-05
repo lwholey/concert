@@ -872,7 +872,7 @@ def clippy(text, bgcolor='#FFFFFF')
   html.html_safe
 end
 
-def showYouTubeVideo(youTubeUrl, bandName, i)
+def showYouTubeVideo(youTubeUrl, bandName)
   if (client_browser_name == "notMobile")
     html = <<-EOF
     <center>
@@ -891,35 +891,33 @@ def showYouTubeVideo(youTubeUrl, bandName, i)
     EOF
     html.html_safe
   else
-    if (i == 1) #temporary hack just to play first video
-      videoId = betweenTwoStrings(youTubeUrl,'v/','\?')
-      html = <<-EOF
-      <!-- 1. The <div> tag will contain the <iframe> (and video player) -->
-      <div id="player#{i}"></div>
+    videoId = betweenTwoStrings(youTubeUrl,'v/','\?')
+    html = <<-EOF
+    <!-- 1. The <div> tag will contain the <iframe> (and video player) -->
+    <div id="player"></div>
 
-      <script>
-        // 2. This code loads the IFrame Player API code asynchronously.
-        var tag = document.createElement('script');
-        tag.src = "http://www.youtube.com/player_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    <script>
+      // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement('script');
+      tag.src = "http://www.youtube.com/player_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-        // 3. This function creates an <iframe> (and YouTube player)
-        //    after the API code downloads.
-        var player;
-        function onYouTubePlayerAPIReady() {
-          player = new YT.Player("player#{i}", {
-            height: '195px',
-            width: '320px',
-            videoId: "#{videoId}"
-          });
-        }
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubePlayerAPIReady() {
+        player = new YT.Player("player", {
+          height: '195px',
+          width: '320px',
+          videoId: "#{videoId}"
+        });
+      }
 
 
-      </script>    
-      EOF
-      html.html_safe
-    end
+    </script>    
+    EOF
+    html.html_safe
   end
 end
 

@@ -1,6 +1,8 @@
 
 class UsersController < ApplicationController
   include UsersHelper
+  EVENTS_PER_PAGE = 5
+  EVENTS_PER_PAGE_SMARTPHONE = 1
 
   def new    
     @user = User.new
@@ -33,9 +35,15 @@ class UsersController < ApplicationController
   end
 
   def show
+    if (client_browser_name == "notMobile")
+      per_page = EVENTS_PER_PAGE
+    else
+      per_page = EVENTS_PER_PAGE_SMARTPHONE
+    end
+    
     @user = User.find(params[:id])
     puts "found #{@user.results.count} results"
-    @results = @user.results.paginate(:page => params[:page], :per_page => 5)
+    @results = @user.results.paginate(:page => params[:page], :per_page => per_page)
     @title = "Results"
   end
 
