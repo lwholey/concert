@@ -67,12 +67,14 @@
 
 <!-- Show the first available youTube video -->
 <% unless @results.empty? %>
+  <% i = 0 %>
   <% @results.each do |result| %>
+    <% i += 1 %>
     <% unless result.you_tube_url.nil? %>
       <div>
 	      <% bandName = result.band %>
 	      <% youTubeUrl = result.you_tube_url %>
-	      <%= showYouTubeVideo(youTubeUrl, bandName) %>
+	      <%= showYouTubeVideo(youTubeUrl, bandName, i) %>
       </div>
     <% end %>
   <% end %>
