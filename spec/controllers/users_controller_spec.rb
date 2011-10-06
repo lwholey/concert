@@ -32,9 +32,14 @@ describe UsersController do
       response.should have_selector("input[name='user[keywords]'][type='text']")
     end
 
-    it "should have a dates field" do
+    it "should have a start_date field" do
       get :new
-      response.should have_selector("input[name='user[dates]'][type='text']")
+      response.should have_selector("input[name='user[start_date]'][type='text']")
+    end
+
+    it "should have a end_date field" do
+      get :new
+      response.should have_selector("input[name='user[end_date]'][type='text']")
     end
 
   end
@@ -63,7 +68,8 @@ describe UsersController do
       
       before(:each) do
         @attr = { :city => "Boston", :keywords => "Jazz", 
-                  :dates => "Today" }
+                  :start_date => "11/4/2011",
+                  :end_date => "11/6/2011", }
       end
       
       it "should create a user" do

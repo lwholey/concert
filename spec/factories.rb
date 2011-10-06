@@ -1,6 +1,7 @@
 # By using the symbol ':user', we get Factory Girl to simulate the User model.
 Factory.define :user do |user|
-  user.dates           "today"
+  user.start_date "11/4/2011",
+  user.end_date   "11/6/2011",
   user.city          "Boston"
   user.keywords       "testing"
 end

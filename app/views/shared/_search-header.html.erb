@@ -1,21 +1,27 @@
 <%= form_for(@user) do |f| %>
   <%= render 'shared/error_messages' %>
+  <% form_size = 20 %>
   <div class="search-form">
-    <div class="span-5 prepend-1 ">
+    <div class="span-4 prepend-1 ">
       <% str = 'City'%>
       <%= f.label str %>
       </br>
-      <%= f.text_field :city, :size => 25 %>
+      <%= f.text_field :city, :size => form_size %>
     </div>
-    <div class="span-5 ">
-      <% str = 'Dates'%>
+    <div class="span-4 ">
+      <% str = 'Start Date'%>
       <%= f.label str %>
-      <%= f.text_field :dates, :size => 25 %>
+      <%= f.text_field :start_date, :size => form_size %>
     </div>
-    <div class="span-5 last ">
+		<div class="span-4 ">
+      <% str = 'End Date'%>
+      <%= f.label str %>
+      <%= f.text_field :end_date, :size => form_size %>
+    </div>
+    <div class="span-4 last ">
       <% str = 'Venue...'%>
       <%= f.label str %>
-      <%= f.text_field :keywords, :size => 25 %>
+      <%= f.text_field :keywords, :size => form_size %>
     </div>
 		<div class="field">
 		  <%= f.hidden_field :pageNumber,  :value => nil %>

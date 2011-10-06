@@ -5,11 +5,12 @@
 #  id         :integer         not null, primary key
 #  created_at :datetime
 #  updated_at :datetime
-#  dates      :string(255)
 #  city       :string(255)
 #  keywords   :string(255)
 #  pageNumber :integer
 #  max_pages  :integer
+#  start_date :string(255)
+#  end_date   :string(255)
 #
 
 require 'spec_helper'
@@ -18,7 +19,8 @@ describe User do
   #pending "add some examples to (or delete) #{__FILE__}"
   
   before(:each) do
-    @attr = { :dates => "today", 
+    @attr = { :start_date => "11/4/2011",
+              :end_date => "11/6/2011",
               :city => "Boston",
               :keywords => "jazz",
             }
@@ -54,9 +56,10 @@ describe User do
   end
  
   it "should set default search criteria" do
-    u = User.new(@attr.merge(:dates => nil, :city => nil, :keywords => nil))
+    u = User.new(@attr.merge(:start_date => nil, :end_date => nil, :city => nil, :keywords => nil))
     u.city.should == "usa"
-    u.dates.should == "future"
+    u.start_date.should == "11/4/2011"
+    u.end_date.should == "11/6/2011" 
     u.keywords.should == "concert"
   end
 

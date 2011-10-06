@@ -4,6 +4,14 @@ jQuery.ajaxSetup({
     'beforeSend': function (xhr) {xhr.setRequestHeader("Accept", "text/javascript")}  
 });
 
+$(function (){  
+  $('#user_start_date').datepicker();   
+});
+
+$(function (){  
+  $('#user_end_date').datepicker();   
+});
+
 $(document).ready(function (){  
   $('#spotify-results').hide();
   $('#clickForSpotify').click(function (){

@@ -4,6 +4,9 @@
 	  <link rel="image_src" href="/images/LLL.png">
     <title><%= title %></title>
     <%= csrf_meta_tag %>
+		<%= stylesheet_link_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/redmond/jquery-ui.css", "application" %>  
+		<%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js", "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js", "application" %>
+
     <%= render 'layouts/stylesheets' %>
   </head>
   <body>

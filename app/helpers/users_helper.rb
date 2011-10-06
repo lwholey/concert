@@ -55,10 +55,12 @@ module UsersHelper
         else
           city = user.city
         end
-        if user.dates.blank? then 
-          dates = "future" 
+        if ((user.start_date.blank?) || (user.end_date.blank?)) then 
+          start_date = "future"
+          end_date = "future"
         else
-          dates = user.dates  
+          start_date = user.start_date
+          end_date = user.end_date
         end
         if user.keywords.blank? then 
           keywords = @@DEFAULT_KEYWORDS
@@ -72,7 +74,7 @@ module UsersHelper
         # Start an API session with a username and password
         eventful = Eventful::API.new 'gr2xkHcHxTF3BQNk'
 
-        date = massageDate(dates)
+        date = massageDate(start_date, end_date)
 
         sort_order = 'popularity'
         sort_direction = 'descending'
@@ -219,66 +221,42 @@ module UsersHelper
   end
 
   # parse date for use by eventful
-  # From http://api.eventful.com/libs/ruby/doc/index.html
-  # Limit this list of results to a date range, specified by label or exact range. 
-  # Currently supported labels include: "All", "Future", "Past", "Today", 
-  #{ }"Last Week", "This Week", "Next week", and months by name, e.g. "October". 
-  # Exact ranges take the form 'YYYYMMDDHH-YYYYMMDDHH', e.g. '2008042500-2008042723'. (optional)
+  # Exact ranges take the form 'YYYYMMDDHH-YYYYMMDDHH', e.g. '2008042500-2008042723'
+  # If problem, just return 'future'
+  # input are of the form 'mm/dd/yyyy' 
+  def massageDate(start_date, end_date)
+    tmp = 'future'
+    if ( (start_date != 'future') && (end_date != 'future') &&
+          (start_date.length == 10) &&
+          (end_date.length == 10) )
+      start_month = start_date[0..1]
+      start_day = start_date[3..4]
+      start_year = start_date[6..9]
 
-  # date values that appear to work:
-  # all, future, past, today, last week, this week, next week, september, october, november, aug, oct, nov, aug.
+      total_start_days = start_year.to_i * 365 + 
+                         start_month.to_i * 30 +
+                         start_day.to_i
 
-  # date values that appear NOT to work:
-  # All (the only value that I found to be case sensitive), exact dates?
+      end_month = end_date[0..1]
+      end_day = end_date[3..4]
+      end_year = end_date[6..9]
 
-  def massageDate(date)
-    tmp = date[0..2].downcase
+      total_end_days =   end_year.to_i * 365 + 
+                         end_month.to_i * 30 +
+                         end_day.to_i
 
-    case tmp
-    when 'jan'
-      'january'
-    when 'feb'
-      'february'
-    when 'mar'
-      'march'
-    when 'apr'
-      'april'
-    when 'may'
-      'may'
-    when 'jun'
-      'june'
-    when 'jul'
-      'july'
-    when 'jun'
-      'june'
-    when 'aug'
-      'august'
-    when 'sep'
-      'september'
-    when 'oct'
-      'october'
-    when 'nov'
-      'november'
-    when 'dec'
-      'december'
-    when 'fut'
-      'future'
-    when 'pas'
-      'past'
-    when 'las'
-      'last week'
-    when 'thi'
-      'this week'
-    when 'nex'
-      'next week'
-    when 'all'
-      'all'
-    when 'tod'
-      'today'
-    else
-      'future'
+      if (total_end_days < total_start_days)
+        end_month = start_month
+        end_day = start_day
+        end_year = start_year
+      end
+
+      #'YYYYMMDDHH-YYYYMMDDHH'
+      tmp = start_year + start_month + start_day + "00" + "-" +
+            end_year + end_month + end_day + "00"
+
     end
-
+    return tmp
   end
 
   class SpotifyResult

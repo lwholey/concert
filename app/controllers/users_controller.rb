@@ -14,7 +14,8 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     
     puts("@user.city = #{@user.city}")
-    puts("@user.dates = #{@user.dates}")
+    puts("@user.start_date = #{@user.start_date}")
+    puts("@user.end_date = #{@user.end_date}")
     puts("@user.keywords = #{@user.keywords}")
     puts("@user.pageNumber = #{@user.pageNumber}")
     

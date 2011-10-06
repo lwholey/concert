@@ -10,10 +10,16 @@
     <%= f.text_field :city %>
   </div>
   <div class="field">
-    <% str = 'Dates'%>
+    <% str = 'Start Date'%>
     <%= f.label str %>
-    <i class="quiet small">(Today, This week, Next week, September, ... )</i><br/>
-    <%= f.text_field :dates %>
+    <br/>
+    <%= f.text_field :start_date %>
+  </div>
+	<div class="field">
+    <% str = 'End Date'%>
+    <%= f.label str %>
+    <br/>
+    <%= f.text_field :end_date %>
   </div>
   <div class="field">
     <% str = 'Venue, Band or Genre'%>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111001231234) do
+ActiveRecord::Schema.define(:version => 20111006015157) do
 
   create_table "performers", :force => true do |t|
     t.string   "performer"
@@ -38,11 +38,12 @@ ActiveRecord::Schema.define(:version => 20111001231234) do
   create_table "users", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "dates"
     t.string   "city"
     t.string   "keywords"
     t.integer  "pageNumber"
     t.integer  "max_pages"
+    t.string   "start_date"
+    t.string   "end_date"
   end
 
 end

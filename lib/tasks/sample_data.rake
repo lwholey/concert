@@ -3,15 +3,16 @@ namespace :db do
   task :populate => :environment do
     Rake::Task['db:reset'].invoke
 
-    User.create!(:dates => "today",
+    User.create!(:start_date => "11/4/2011",
+                 :end_date => "11/6/2011",
                  :city => "Boston",
                  :keywords => "jazz")
 
     3.times do |n|
-      dates  = "today"
       city = "Boston"
       keywords  = Faker::Name.name
-      User.create!(:dates => dates,
+      User.create!(:start_date => "11/4/2011",
+                   :end_date => "11/6/2011",
                    :city => city,
                    :keywords => keywords )
     end
