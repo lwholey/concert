@@ -1,0 +1,15 @@
+<div class="span-18 info round">
+	<div class="infoText">
+		<h2>Comment</h2>
+		<%= form_for(@comment) do |f| %>
+	    <%= render 'shared/error_messages' %>
+	    <div class="field">
+	      <%= f.text_area :body %>
+	    </div>
+	    <div class="actions">
+	      <%= f.submit "Send" %>
+	    </div>
+	  <% end %>
+	  lwrunner1@gmail.com
+  </div>
+</div>

@@ -9,15 +9,13 @@ SampleApp::Application.routes.draw do
     collection do
     end
   end
-  
-  
+
   match '/users', :to => 'users#new'
   match '/search', :to => 'users#new'
   root :to => "users#new"
   
-  match '/contact', :to => 'pages#contact'
   match '/about', :to   => 'pages#about'
-
+  match '/comments', :to => 'comments#comments'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

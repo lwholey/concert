@@ -11,12 +11,6 @@ describe "LayoutLinks" do
     get '/results'
     response.should have_selector('title', :content => "Results")
   end
-  
-
-  it "should have a Contact page at '/contact'" do
-    get '/contact'
-    response.should have_selector('title', :content => "Contact")
-  end
 
   
   it "should have an About page at '/about'" do
@@ -29,8 +23,6 @@ describe "LayoutLinks" do
     visit root_path
     click_link "About"
     response.should have_selector('title', :content => "About")
-    click_link "Contact"
-    response.should have_selector('title', :content => "Contact")
     click_link "Home"
     response.should have_selector('title', :content => "Home")
   end
