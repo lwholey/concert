@@ -8,7 +8,6 @@ class PerformersController < ApplicationController
     @user = User.new
     if ( (@performer.performer != nil) && (@performer.you_tube_url != nil) &&
       (@performer.you_tube_url.length == YOU_TUBE_LENGTH) )
-      binding.pry
       @performer.performer.downcase!
       @performer.save
       redirect_to :action => 'performers'
