@@ -1,11 +1,19 @@
 <div class="span-18 info round">
 	<div class="infoText">
-		<h2>Comment</h2>
 		<%= form_for(@comment) do |f| %>
 	    <%= render 'shared/error_messages' %>
 	    <div class="field">
+				<% str = 'Comment'%>
+		    <%= f.label str %>
+		    <p>
 	      <%= f.text_area :body %>
 	    </div>
+		  <div class="field">
+		    <% str = 'Email'%>
+		    <%= f.label str %>
+		    <i class="quiet small">(optional)</i><br/>
+		    <%= f.text_field :email %>
+		  </div>
 	    <div class="actions">
 	      <%= f.submit "Send" %>
 	    </div>

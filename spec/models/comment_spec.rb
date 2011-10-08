@@ -6,6 +6,7 @@
 #  body       :text
 #  created_at :datetime
 #  updated_at :datetime
+#  email      :string(255)
 #
 
 require 'spec_helper'
