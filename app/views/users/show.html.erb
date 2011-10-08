@@ -69,9 +69,7 @@
   <% @results.each do |result| %>
     <% unless result.you_tube_url.nil? %>
       <div>
-	      <% bandName = result.band %>
-	      <% youTubeUrl = result.you_tube_url %>
-	      <%= showYouTubeVideo(youTubeUrl, bandName) %>
+	      <%= showYouTubeVideo(result.you_tube_url, result.band, result.name) %>
       </div>
     <% end %>
   <% end %>

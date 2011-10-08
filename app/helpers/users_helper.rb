@@ -850,13 +850,18 @@ def clippy(text, bgcolor='#FFFFFF')
   html.html_safe
 end
 
-def showYouTubeVideo(youTubeUrl, bandName)
+def showYouTubeVideo(youTubeUrl, bandName, eventName)
   if (client_browser_name == "notMobile")
+    if (eventName == bandName)
+      description = "#{eventName}"
+    else
+      description = "#{eventName} : #{bandName}"
+    end
     html = <<-EOF
     <center>
   
     <div class = "youTube-results span-18 round">
-      <p> #{bandName} </p>
+      <p> #{description} </p>
       <p>
     	<object style="height: 195px; width: 320px">
     	<param name="movie" value="#{youTubeUrl}">
