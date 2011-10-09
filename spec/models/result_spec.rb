@@ -2,7 +2,7 @@
 #
 # Table name: results
 #
-#  id            :integer         not null, primary key
+#  id            :integer         primary key
 #  name          :string(255)
 #  date_string   :string(255)
 #  venue         :string(255)
@@ -10,8 +10,8 @@
 #  track_name    :string(255)
 #  track_spotify :string(255)
 #  details_url   :string(255)
-#  created_at    :datetime
-#  updated_at    :datetime
+#  created_at    :timestamp
+#  updated_at    :timestamp
 #  user_id       :integer
 #  you_tube_url  :string(255)
 #

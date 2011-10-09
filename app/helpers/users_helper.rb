@@ -76,8 +76,13 @@ module UsersHelper
 
         date = massageDate(start_date, end_date)
 
-        sort_order = 'popularity'
-        sort_direction = 'descending'
+        if (user.sort_by == 'popularity')
+          sort_order = 'popularity'
+          sort_direction = 'descending'
+        else
+          sort_order = 'date'
+          sort_direction = 'ascending'
+        end
 
         results = eventful.call 'events/search',
           :location => city,

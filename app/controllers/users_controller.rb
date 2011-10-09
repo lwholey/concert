@@ -18,6 +18,7 @@ class UsersController < ApplicationController
     puts("@user.end_date = #{@user.end_date}")
     puts("@user.keywords = #{@user.keywords}")
     puts("@user.pageNumber = #{@user.pageNumber}")
+    puts("@user.sort_by = #{@user.sort_by}")
     
     if @user.save
      

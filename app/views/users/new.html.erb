@@ -28,6 +28,13 @@
     <%= f.text_field :keywords %>
   </div>
 	<div class="field">
+    <% str = 'Sort by'%>
+    <%= f.label str %>
+    <p>
+    <%= f.radio_button :sort_by, 'popularity', :checked => true %> <i class="quiet medium">Popularity</i>
+    <%= f.radio_button :sort_by, 'date' %> <i class="quiet medium">Date</i>
+  </div>
+	<div class="field">
 	  <%= f.hidden_field :pageNumber,  :value => nil %>
 	</div>
   <div class="actions">

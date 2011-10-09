@@ -22,7 +22,8 @@
 	        <%= f.hidden_field :start_date, :value => @user.start_date %>
 	        <%= f.hidden_field :end_date, :value => @user.end_date %>	
 		      <%= f.hidden_field :keywords, :value => @user.keywords %>	
-		      <%= f.hidden_field :pageNumber,  :value => (@user.pageNumber + 1) %>	
+		      <%= f.hidden_field :pageNumber,  :value => (@user.pageNumber + 1) %>
+		      <%= f.hidden_field :sort_by,  :value => @user.sort_by %>		
 		    </div>	
 		    <tr>	
 		      <td class="mid actions">	

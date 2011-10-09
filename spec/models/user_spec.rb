@@ -2,15 +2,16 @@
 #
 # Table name: users
 #
-#  id         :integer         not null, primary key
-#  created_at :datetime
-#  updated_at :datetime
+#  id         :integer         primary key
+#  created_at :timestamp
+#  updated_at :timestamp
 #  city       :string(255)
 #  keywords   :string(255)
 #  pageNumber :integer
 #  max_pages  :integer
 #  start_date :string(255)
 #  end_date   :string(255)
+#  sort_by    :string(255)
 #
 
 require 'spec_helper'

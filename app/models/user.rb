@@ -2,15 +2,16 @@
 #
 # Table name: users
 #
-#  id         :integer         not null, primary key
-#  created_at :datetime
-#  updated_at :datetime
+#  id         :integer         primary key
+#  created_at :timestamp
+#  updated_at :timestamp
 #  city       :string(255)
 #  keywords   :string(255)
 #  pageNumber :integer
 #  max_pages  :integer
 #  start_date :string(255)
 #  end_date   :string(255)
+#  sort_by    :string(255)
 #
 
 require 'digest'
@@ -24,6 +25,7 @@ class User < ActiveRecord::Base
   attr_accessible :keywords
   attr_accessible :pageNumber
   attr_accessible :max_pages
+  attr_accessible :sort_by
 
   # ensure results are destroyed along with user
   has_many :results, :dependent => :destroy

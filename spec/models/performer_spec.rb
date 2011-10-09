@@ -2,11 +2,11 @@
 #
 # Table name: performers
 #
-#  id           :integer         not null, primary key
+#  id           :integer         primary key
 #  performer    :string(255)
 #  you_tube_url :string(255)
-#  created_at   :datetime
-#  updated_at   :datetime
+#  created_at   :timestamp
+#  updated_at   :timestamp
 #
 
 require 'spec_helper'
