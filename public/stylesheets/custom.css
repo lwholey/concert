@@ -27,6 +27,13 @@ div.youTube-results {
   padding: 0px;
 }
 
+div.external-links {
+  background: #fff;
+  margin-top: 1em;
+  font-size: 120%;
+  padding: 0px;	
+}
+
 div.results {
   background: #fff;
   margin-top: 1em;
