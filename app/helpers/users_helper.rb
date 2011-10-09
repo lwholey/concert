@@ -22,6 +22,8 @@ module UsersHelper
   @@ORDER_BY = 'relevance'
   @@MAX_RESULTS = '10'
 
+  @@ECHONEST_KEY = 'PZWDKUDNKSN4AV3N1'
+  @@ECHONEST_START = 'http://developer.echonest.com/api/v4/'
 
   def get_fake_results( num )
     results = {  "events" => { "event" => [] }  }
@@ -46,7 +48,7 @@ module UsersHelper
     begin
       if Rails.env == 'test'
         # if there are more than 30 results we'll paginate
-        results = get_fake_results(40)
+        results = get_fake_results(10)
       else
         puts "Starting EVENTFUL session"
 
@@ -84,22 +86,14 @@ module UsersHelper
           sort_direction = 'ascending'
         end
 
-        results = eventful.call 'events/search',
-          :location => city,
-          :keywords => keywords,
-          :date => date,
-          :category => 'music',
-          :sort_order => sort_order,
-          :sort_direction => sort_direction,
-          :page_size => @@PAGE_SIZE,
-          :page_number => user.pageNumber
-
+        results = call_eventful(eventful, city, keywords, date, sort_order, sort_direction, user.pageNumber)
         #puts("results = #{results}")                       
 
         if (results['events'] == nil)
-          # flash no concerts found and exit
-          flash[:error] = "No concerts found"
-          return
+          # no concerts so replace keywords with something intelligent from Echonest
+          keywords = getEchoNestKeyword(keywords)
+          puts("Echonest keywords = #{keywords}")
+          results = call_eventful(eventful, city, keywords, date, sort_order, sort_direction, user.pageNumber)
         end
         
         user.max_pages = results['page_count']
@@ -113,10 +107,32 @@ module UsersHelper
 
 
     rescue
-      #   flash[:error] = "No concerts found"
+      flash[:error] = "No concerts found"
       puts $!
     end
   end
+
+  def call_eventful(eventful, city, keywords, date, sort_order, sort_direction, pageNumber)
+    if (keywords == nil)
+      return nil
+    end
+    begin
+      results = eventful.call 'events/search',
+        :location => city,
+        :keywords => keywords,
+        :date => date,
+        :category => 'music',
+        :sort_order => sort_order,
+        :sort_direction => sort_direction,
+        :page_size => @@PAGE_SIZE,
+        :page_number => pageNumber
+      return results
+    rescue
+      return nil
+    end
+  end
+
+  
 
   def create_results_for_user ( results, user )
 
@@ -811,6 +827,27 @@ module UsersHelper
     rescue
       return nil
     end
+  end
+  
+  def getEchoNestKeyword(band)
+    # example call
+    # http://developer.echonest.com/api/v4/artist/
+    # terms?api_key=N6E4NIOVYMTHNDM8J&name=radiohead&format=json 
+    tmp = band.gsub(' ', '+').lstrip.rstrip
+    
+    begin
+      url = @@ECHONEST_START + 'artist/terms?api_key=' + @@ECHONEST_KEY + 
+            '&name=' + tmp + '&sort=frequency' '&format=xml'
+     	doc = Nokogiri::XML(open(url))
+      node = doc.xpath('//response/terms/name')
+      # pull the keyword with the highest frequency
+      keyword = node[0].text
+      return keyword
+    rescue
+      return nil
+    end
+    
+    
   end
   
   module_function :getTrackInfo
