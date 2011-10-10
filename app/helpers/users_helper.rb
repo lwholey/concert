@@ -159,7 +159,7 @@ module UsersHelper
           }
 
           if (event['performers'] == nil)
-            user.results.build( result_attr.merge( :band => event['title'] ) ).save
+            save_results(user, result_attr, event['title'])
             next
           elsif (event['performers']['performer'].class == Hash)
             perfArray = [ event['performers']['performer'] ]
@@ -168,7 +168,7 @@ module UsersHelper
           end
 
           perfArray.each do |performer|
-            user.results.build( result_attr.merge( :band => performer['name'] ) ).save
+            save_results(user, result_attr, performer['name'])
           end
         else
           case event[0]
@@ -192,7 +192,7 @@ module UsersHelper
           :venue => venueTmp,           
           :details_url => detailsTmp   
         }
-        user.results.build( result_attr.merge( :band => eventTmp ) ).save
+        save_results(user, result_attr, eventTmp)
       end
       
 
@@ -201,6 +201,22 @@ module UsersHelper
       puts $1
     end
 
+  end
+
+  def save_results(user, result_attr, band)
+    begin
+      for i in (0...user.results.length)
+        if ( (user.results[i].band == band) &&
+             (user.results[i].venue == result_attr[:venue]) )
+          user.results[i].date_string += ', ' + result_attr[:date_string]
+          return nil
+        end
+      end
+        
+      user.results.build( result_attr.merge( :band => band ) ).save
+    rescue
+      return nil
+    end
   end
 
   def massageTime(time)
