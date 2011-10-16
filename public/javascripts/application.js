@@ -9,7 +9,11 @@ $(function (){
 });
 
 $(function (){  
-  $('#user_end_date').datepicker();   
+  $('#user_end_date').datepicker();  
+});
+
+$(function (){  
+  $('#user_city').geo_autocomplete();   
 });
 
 $(document).ready(function (){  
