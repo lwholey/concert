@@ -101,10 +101,13 @@ module UsersHelper
         
       end
 
-      create_results_for_user( results, user )
-      #update_results_with_spotify_tracks( user )
-      update_results_with_you_tube_url( user )
-
+      tmp = create_results_for_user( results, user )
+      if (tmp == 1)
+        #update_results_with_spotify_tracks( user )
+        update_results_with_you_tube_url( user )
+      else
+        flash[:error] = "No concerts found"
+      end
 
     rescue
       flash[:error] = "No concerts found"
@@ -133,7 +136,7 @@ module UsersHelper
   end
 
   
-
+  #returns 1 on success, otherwise returns nil
   def create_results_for_user ( results, user )
 
     begin
@@ -195,11 +198,13 @@ module UsersHelper
         save_results(user, result_attr, eventTmp)
       end
       
-
     rescue
       puts "Rescue called in create_results_for_user ... "
       puts $1
+      return nil
     end
+
+    return 1
 
   end
 
