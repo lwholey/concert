@@ -1,7 +1,4 @@
 <div class = "results span-18 round">
-  <% flash.each do |key, value| %>
-    <div class="round flash <%= key %>"><%= value %></div>
-  <% end %>
 
   <% unless @results.empty? %>
     <table class="results" summary="Results of Search">
@@ -32,6 +29,9 @@
 		    </tr>	
 		  <% end %>
 		<% end %>
+	<% else %>
+	  <center> No concerts found, please consider broadening your search </center>
+	
   <% end %>
 
 </div>
@@ -58,7 +58,7 @@
   </div>
 <% end %>
 
-<% if (client_browser_name == "notMobile") %>
+<% if ( (client_browser_name == "notMobile") && (@results.empty? == false) ) %>
 <div id="sidebar" class = "spotify-results span-4 last border round">
 <button id="clickForSpotify">Create Spotify Playlist</button>
 <%= text_area_tag 'spotify-results', valueStr %>

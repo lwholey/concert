@@ -105,12 +105,9 @@ module UsersHelper
       if (tmp == 1)
         #update_results_with_spotify_tracks( user )
         update_results_with_you_tube_url( user )
-      else
-        flash[:error] = "No concerts found"
       end
 
     rescue
-      flash[:error] = "No concerts found"
       puts $!
     end
   end
