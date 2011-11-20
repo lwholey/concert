@@ -61,6 +61,7 @@
 <% if ( (client_browser_name == "notMobile") && (@results.empty? == false) ) %>
 <div id="sidebar" class = "spotify-results span-4 last border round">
 <button id="clickForSpotify">Create Spotify Playlist</button>
+<div id="spotify-intro"> Copy-paste to Spotify Play Queue </div>
 <%= text_area_tag 'spotify-results', valueStr %>
 </div>
 <% end %>

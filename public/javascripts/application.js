@@ -16,7 +16,8 @@ $(function (){
   $('#user_city').geo_autocomplete();   
 });
 
-$(document).ready(function (){  
+$(document).ready(function (){
+  $('#spotify-intro').hide();
   $('#spotify-results').hide();
   $('#clickForSpotify').click(function (){
     $.get($(this).attr('action'), null, null, "script");

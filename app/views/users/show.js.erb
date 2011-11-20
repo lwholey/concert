@@ -1,3 +1,4 @@
-$("#spotify-results").html("Copy-paste to Spotify Play Queue: <%= getSpotifyTracks(@user.results) %>");
+$("#spotify-intro").show();
+$("#spotify-results").html("<%= getSpotifyTracks(@user.results) %>");
 $('#spotify-results').show();
 $("#clickForSpotify").hide();
