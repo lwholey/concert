@@ -1,0 +1,22 @@
+%nav.round
+  %ul
+    %li= link_to "Home", root_path
+    %li= link_to "About", about_path
+    %li= link_to "Comment", comments_path
+    %li= link_to "Add Event", "http://eventful.com/events/new", :target => '_blank'
+  %br
+  .span-5.external-links
+    %a{ :href => 'http://the.echonest.com/', :target => '_blank'}
+      %img{ :src => '/images/echonest.gif', :alt => 'Echonest'}
+  .span-4.external-links
+    .eventful-badge.eventful-medium
+      %img{ :src => '/images/eventful_88x31.gif', :alt => 'Local Events, Concerts, Tickets'}
+    %p.small
+      %a{ :href => 'http://eventful.com/', :target => '_blank'} Events 
+      by Eventful
+  .span-4.external-links
+    %a{ :href => 'http://www.youTube.com', :target=> '_blank'}
+      %img{ :src => '/images/yt_powered_by_black.png', :alt => 'YouTube', :WIDTH => '90', :HEIGHT => '57'}
+  .span-4.last.external-links
+    %a{ :href => 'http://www.spotify.com', :target=> '_blank'}
+      %img{ :src => '/images/spotify-logo-100x75.jpg', :alt => 'Spotify'}

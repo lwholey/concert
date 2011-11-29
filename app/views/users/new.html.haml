@@ -1,0 +1,51 @@
+.span-17.prepend-1.last.round.new-search
+  %font{:size => '5'} lennylonglegs - create concert calendar and playlist
+  %br
+  %br
+  = form_for(@user) do |f|
+    = render 'shared/error_messages'
+    .field
+      - str = 'City'
+      = f.label str
+      %br
+      = f.text_field :city
+    .field
+      - str = 'Start Date'
+      = f.label str
+      %br
+      = f.text_field :start_date
+    .field
+      - str = 'End Date'
+      = f.label str
+      %br
+      = f.text_field :end_date
+    .field
+      - str = 'Venue, Band or Genre'
+      = f.label str
+      %i.quiet.medium (The Fillmore, Rubblebucket, Jazz, ... )
+      %br
+      = f.text_field :keywords
+    .field
+      - str = 'Sort by'
+      = f.label str
+      <p>
+      = f.radio_button :sort_by, 'popularity', :checked => true
+      %i.quiet.medium Popularity
+      = f.radio_button :sort_by, 'date'
+      %i.quiet.medium Date
+    .field
+      = f.hidden_field :pageNumber,  :value => nil
+    .actions
+      = f.submit "Create"
+  %p
+  #fb-root
+  :javascript
+    (function(d, s, id) {	
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {return;}
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";	
+    fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+  / Couldn't get haml to work, so used standard html
+  <div class="fb-like" data-href="lennylonglegs.com" data-send="true" / data-layout="button_count" data-width="450" data-show-faces="false"></div>

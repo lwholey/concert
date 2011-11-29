@@ -1,0 +1,39 @@
+.results.span-18.round
+  - unless @results.empty?
+    %table.results{:summary => 'Results of Search'}
+      %tr
+        %b
+          %td Event
+          %td Performer
+          %td Date/Time
+          %td Venue
+          %td Details
+      = render @results
+    = will_paginate @results
+    - if ((@user.pageNumber != nil) && (defined? @user.max_pages) && (@user.pageNumber < @user.max_pages))
+      = form_for(@user) do |f|
+        .field
+          = f.hidden_field :city, :value => @user.city
+          = f.hidden_field :start_date, :value => @user.start_date
+          = f.hidden_field :end_date, :value => @user.end_date
+          = f.hidden_field :keywords, :value => @user.keywords
+          = f.hidden_field :pageNumber, :value => (@user.pageNumber + 1)
+          = f.hidden_field :sort_by,  :value => @user.sort_by
+        %tr
+          %td.mid.actions
+            = f.submit "More Concerts"
+  - else
+    %center No concerts found, please consider broadening your search
+
+- if ( (client_browser_name == "notMobile") && (@results.empty? == false) )
+  .spotify-results.span-4.last.border.round#sidebar
+    %button#clickForSpotify Create Spotify Playlist
+    #spotify-intro Copy-paste to Spotify Play Queue
+    = text_area_tag 'spotify-results', ""
+
+/ Show the first available youTube video
+- unless @results.empty?
+  - @results.each do |result|
+    - unless result.you_tube_url.nil?
+      #youTubeID
+        = showYouTubeVideo(result.you_tube_url, result.band, result.name)
