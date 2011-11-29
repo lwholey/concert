@@ -27,9 +27,10 @@
 
 - if ( (client_browser_name == "notMobile") && (@results.empty? == false) )
   .spotify-results.span-4.last.border.round#sidebar
-    %button#clickForSpotify Create Spotify Playlist
-    #spotify-intro Copy-paste to Spotify Play Queue
-    = text_area_tag 'spotify-results', ""
+    %center
+      %button#clickForSpotify Create Spotify Playlist
+      #spotify-intro Copy-paste to Spotify Play Queue
+      = text_area_tag 'spotify-results', ""
 
 / Show the first available youTube video
 - unless @results.empty?
