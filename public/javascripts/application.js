@@ -17,6 +17,9 @@ $(function (){
 });
 
 $(document).ready(function (){
+  $("form").submit(function() {
+    $(":submit", this).attr("disabled", "disabled"); 
+  });
   $('#spotify-intro').hide();
   $('#spotify-results').hide();
   $('#clickForSpotify').click(function (){
