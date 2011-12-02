@@ -22,7 +22,6 @@
     .field
       - str = 'Venue, Band or Genre'
       = f.label str
-      %i.quiet.medium (The Fillmore, Rubblebucket, Jazz, ... )
       %br
       = f.text_field :keywords
     .field
@@ -48,4 +47,4 @@
     fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
   / Couldn't get haml to work, so used standard html
-  <div class="fb-like" data-href="lennylonglegs.com" data-send="true" / data-layout="button_count" data-width="450" data-show-faces="false"></div>
+  <div class="fb-like" data-href="lennylonglegs.com" data-send="false" / data-layout="button_count" data-width="850" data-show-faces="false"></div>
