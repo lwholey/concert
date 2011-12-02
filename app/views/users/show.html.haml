@@ -2,14 +2,24 @@
   - unless @results.empty?
     %table.results{:summary => 'Results of Search'}
       %tr
-        %b
-          %td Event
-          %td Performer
-          %td Date/Time
-          %td Venue
-          %td Details
+        %td
+          %b
+            Event
+        %td 
+          %b
+            Performer
+        %td 
+          %b
+            Date/Time
+        %td 
+          %b
+            Venue
+        %td 
+          %b
+          Details
       = render @results
-    = will_paginate @results
+    %center
+      = will_paginate @results
     - if ((@user.pageNumber != nil) && (defined? @user.max_pages) && (@user.pageNumber < @user.max_pages))
       = form_for(@user) do |f|
         .field
@@ -21,15 +31,18 @@
           = f.hidden_field :sort_by,  :value => @user.sort_by
         %tr
           %td.mid.actions
-            = f.submit "More Concerts"
+            %center
+              = f.submit "More Concerts"
   - else
     %center No concerts found, please consider broadening your search
 
 - if ( (client_browser_name == "notMobile") && (@results.empty? == false) )
-  .spotify-results.span-4.last.border.round#sidebar
+  .spotify-results.span-18.round#sidebar
     %center
       %button#clickForSpotify Create Spotify Playlist
-      #spotify-intro Copy-paste to Spotify Play Queue
+      #spotify-intro
+        %font{:color => '#FFFFFF'}
+          Copy-paste to Spotify Play Queue
       = text_area_tag 'spotify-results', ""
 
 / Show the first available youTube video

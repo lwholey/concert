@@ -14,10 +14,9 @@ div.new-search {
 }
 
 div.spotify-results {
-  background: #fff;
+  background: #003;
   margin-top: 1em;
   font-size: 120%;
-  padding: 5px;
 }
 
 div.youTube-results {
