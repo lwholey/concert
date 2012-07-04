@@ -99,7 +99,6 @@ module UsersHelper
 
       tmp = create_results_for_user( results, user )
       if (tmp == 1)
-        #update_results_with_spotify_tracks( user )
         update_results_with_you_tube_url( user )
       end
 
@@ -284,35 +283,6 @@ module UsersHelper
     return tmp
   end
 
-  class SpotifyResult
-    attr_accessor :band, :trackCode, :trackName
-    def initialize(attributes = {})
-      @band = attributes[:band]
-      @trackCode = attributes[:trackCode]
-      @trackName = attributes[:trackName]
-    end
-  end
-
-
-  # Update the eventful results with spotify track data.
-  #
-  # If no spotify data is found using the event's band 
-  # name we try and split up the band name and if the 
-  # new names produce spotify data we will create new
-  # results.
-  def update_results_with_spotify_tracks( user )
-
-    @cache = []
-
-    user.results.each do |result|
-      spotifyData = findSpotifyTrack(result.band ) 
-      if ( spotifyData != nil )
-        updateResultAndCache( result, spotifyData )
-      end
-    end
-
-  end
-
   def update_results_with_you_tube_url( user )
     cache = []
     
@@ -389,32 +359,6 @@ module UsersHelper
     end
     result.update_attributes(:you_tube_url => videoUrl)
     
-  end
-
-  def updateResultAndCache( result, spotifyData )
-    if (spotifyData.nil?)
-      return
-    end
-
-    result.update_attributes(
-      :track_spotify => spotifyData.trackCode,
-      :track_name => spotifyData.trackName
-    )
-    @cache << spotifyData
-  end
-
-  def appendStrings(tracksString, str1)
-
-    if (str1 != nil)
-      if (tracksString == "")
-        tracksString = str1
-      else
-        tracksString += " " + str1
-      end
-    end
-
-    return (tracksString)
-
   end
 
   #returns Spotify's coded value for artist
@@ -619,8 +563,6 @@ module UsersHelper
     end
 
     trackCode = nil
-    trackName = nil
-    artistName = nil
 
     begin
       maxTracks = 100
@@ -644,10 +586,7 @@ module UsersHelper
           maxPopularity = popularity
           trackCode = betweenTwoStrings(str1,"spotify:track:","\"")
           trackCode = "spotify:track:#{trackCode}"
-          trackName = betweenTwoStrings(str1,"<name>","</name>")
           tmp = betweenTwoStrings(str1,"<artist","</artist>")
-          artistName = betweenTwoStrings(tmp,"<name>","</name>")
-          artistName.gsub!("&amp;","and")
         end
         k += 1
       end
@@ -656,7 +595,7 @@ module UsersHelper
 
     end
 
-    return([trackCode,trackName,artistName])
+    return trackCode
   end
 
   def remove_accents(str)
@@ -726,35 +665,11 @@ module UsersHelper
     return(val)
   end
 
-  def findSpotifyTrack( bandName )
-    trackCode = nil
-    trackName = nil
-    artistName = nil
-
-    #don't find a spotify track twice
-    @cache.each do |spotifyResult|
-      if (spotifyResult.band == bandName)
-        return nil
-      end
-    end
-
-    spotifyResult = SpotifyResult.new
-    trackCode, trackName, artistName = getTrackInfo(bandName)
-
-    if (trackCode != nil)
-      attr = {:band => bandName, :trackCode => trackCode, :trackName => trackName}
-      return SpotifyResult.new( attr )
-    else
-      return nil
-    end
-  end
-
   def getTrackInfo(bandName)
     url = createArtistUrl(bandName)
     artist = searchArtist(url)
     album = lookupArtist(artist)
-    trackCode, trackName, artistName = lookupAlbum(album)
-    return([trackCode,trackName,artistName])
+    trackCode = lookupAlbum(album)
   end
   
   # using str1, return what's between str2 and str3
@@ -933,7 +848,7 @@ def getSpotifyTracks(results)
     end
     cache << result.band
     
-    trackCode, trackName, artistName = getTrackInfo(result.band)
+    trackCode = getTrackInfo(result.band)
     if (trackCode != nil)
       tracks << " #{trackCode}"
     end
