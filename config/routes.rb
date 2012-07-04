@@ -15,7 +15,6 @@ SampleApp::Application.routes.draw do
   root :to => "users#new"
   
   match '/about', :to   => 'pages#about'
-  match '/comments', :to => 'comments#comments'
   match '/performers', :to => 'performers#performers'
 
   # The priority is based upon order of creation:

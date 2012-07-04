@@ -10,48 +10,41 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111009130927) do
-
-  create_table "comments", :force => true do |t|
-    t.text     "body"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "email"
-  end
+ActiveRecord::Schema.define(:version => 20120704002411) do
 
   create_table "performers", :force => true do |t|
-    t.string   "performer"
-    t.string   "you_tube_url"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string    "performer"
+    t.string    "you_tube_url"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "results", :force => true do |t|
-    t.string   "name"
-    t.string   "date_string"
-    t.string   "venue"
-    t.string   "band"
-    t.string   "track_name"
-    t.string   "track_spotify"
-    t.string   "details_url"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "user_id"
-    t.string   "you_tube_url"
+    t.string    "name"
+    t.string    "date_string"
+    t.string    "venue"
+    t.string    "band"
+    t.string    "track_name"
+    t.string    "track_spotify"
+    t.string    "details_url"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.integer   "user_id"
+    t.string    "you_tube_url"
   end
 
   add_index "results", ["user_id"], :name => "index_results_on_user_id"
 
   create_table "users", :force => true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "city"
-    t.string   "keywords"
-    t.integer  "pageNumber"
-    t.integer  "max_pages"
-    t.string   "start_date"
-    t.string   "end_date"
-    t.string   "sort_by"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string    "city"
+    t.string    "keywords"
+    t.integer   "pageNumber"
+    t.integer   "max_pages"
+    t.string    "start_date"
+    t.string    "end_date"
+    t.string    "sort_by"
   end
 
 end
