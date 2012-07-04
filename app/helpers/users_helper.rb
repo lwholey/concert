@@ -36,7 +36,6 @@ module UsersHelper
         "venue_name" => "me &amp; thee coffeehouse",
         "url" => "http://eventful.com/marblehead/events/pierce-pettis-connor-garvey-/E0-001-041702648-3?utm_source=apis&utm_medium=apim&utm_campaign=apic"
       }
-      puts "event: " + event.to_s
       results["events"]["event"] << event
     end
     return results
@@ -50,7 +49,6 @@ module UsersHelper
         # if there are more than 30 results we'll paginate
         results = get_fake_results(10)
       else
-        puts "Starting EVENTFUL session"
 
         if user.city.blank? then 
           city = "usa" 
@@ -86,13 +84,11 @@ module UsersHelper
           sort_direction = 'ascending'
         end
 
-        results = call_eventful(eventful, city, keywords, date, sort_order, sort_direction, user.pageNumber)
-        #puts("results = #{results}")                       
+        results = call_eventful(eventful, city, keywords, date, sort_order, sort_direction, user.pageNumber)                      
 
         if (results['events'] == nil)
           # no concerts so replace keywords with something intelligent from Echonest
           keywords = getEchoNestKeyword(keywords)
-          puts("Echonest keywords = #{keywords}")
           results = call_eventful(eventful, city, keywords, date, sort_order, sort_direction, user.pageNumber)
         end
         
@@ -108,7 +104,6 @@ module UsersHelper
       end
 
     rescue
-      puts $!
     end
   end
 
@@ -145,11 +140,6 @@ module UsersHelper
           date = massageTime(event['start_time'])
           venue = event['venue_name']
           details = event['url']
-
-          puts "Name: " + name.to_s
-          puts "Date " + date.to_s
-          puts "Venue " + venue.to_s
-          puts "Details " + details.to_s
 
           result_attr = {
             :name => name,
@@ -196,8 +186,6 @@ module UsersHelper
       end
       
     rescue
-      puts "Rescue called in create_results_for_user ... "
-      puts $1
       return nil
     end
 
@@ -252,8 +240,6 @@ module UsersHelper
 
       return dateAndTime  
     rescue
-      puts ("Rescue called")
-      puts( $! ); # print the exception
       return time
     end
 
@@ -388,11 +374,9 @@ module UsersHelper
     url = nil
     
     @performer = Performer.where("performer = ?", band.downcase)
-    puts("band = #{band}")
     #if more than one performer, just use the first
     @performer.each do |tmp|
       url = "https://www.youtube.com/v/"+tmp.you_tube_url+"?version=3"
-      puts("url = #{url}")
       break
     end
     return url
@@ -647,7 +631,6 @@ module UsersHelper
       doc = Nokogiri::XML(open(url))
       elements = doc.xpath('//xmlns:track')
       titles = elements.map {|e| e.to_s}
-      #puts(titles)
       k=0
       maxPopularity = 0.0
       titles.each do |str1|
@@ -673,7 +656,6 @@ module UsersHelper
 
     end
 
-    puts("trackCode = #{trackCode}")
     return([trackCode,trackName,artistName])
   end
 
@@ -837,7 +819,6 @@ module UsersHelper
      	#just pull the first returned video (should be the most popular of MAX_RESULTS)
      	if (ids != nil)
        	str = "https://www.youtube.com/v/"+ids[0].text+"?version=3"
-       	#puts("str = #{str}")
        	return str
      	else
      	  return nil
