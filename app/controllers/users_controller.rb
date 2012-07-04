@@ -13,7 +13,7 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     
     if @user.save
-      get_results @user
+      @user.get_results
       redirect_to @user
     else
       @title = "Home"
