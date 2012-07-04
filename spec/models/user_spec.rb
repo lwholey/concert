@@ -55,13 +55,5 @@ describe User do
     end
     
   end
- 
-  it "should set default search criteria" do
-    u = User.new(@attr.merge(:start_date => nil, :end_date => nil, :city => nil, :keywords => nil))
-    u.city.should == "usa"
-    u.start_date.should == "11/4/2011"
-    u.end_date.should == "11/6/2011" 
-    u.keywords.should == "concert"
-  end
 
 end

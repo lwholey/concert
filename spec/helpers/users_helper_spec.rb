@@ -33,19 +33,5 @@ describe UsersHelper do
 
     end
 
-    it "creates an object from an event" do
-
-      helper.generateResults( @results, @user )
-      Result.count.should == 2
-
-    end
-
-    it "add spotify track data to results" do
-      @user.results.build( :name => "test event", :band => "test band" ).save
-      helper.createSpotifyPlaylist( @user )
-      puts @user.results
-      @user.results[0][:track_spotify].should == 'spotify:track:test-track-code'
-    end
-
   end
 end
