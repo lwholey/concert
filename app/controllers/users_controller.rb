@@ -1,6 +1,5 @@
-
 class UsersController < ApplicationController
-  include UsersHelper
+  include ApplicationHelper
   EVENTS_PER_PAGE = 5
   EVENTS_PER_PAGE_SMARTPHONE = 1
 

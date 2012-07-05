@@ -1,16 +1,5 @@
 module UsersHelper
 
-  def client_browser_name
-    user_agent = request.env['HTTP_USER_AGENT'].downcase 
-    if user_agent =~ /mobile/i 
-      "mobile" 
-    elsif user_agent =~ /android/i
-      "mobile"
-    else
-      "notMobile" 
-    end 
-  end
-
   def showYouTubeVideo(youTubeUrl, bandName, eventName)
     if (client_browser_name == "notMobile")
       if (eventName == bandName)
