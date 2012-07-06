@@ -149,7 +149,7 @@ class User < ActiveRecord::Base
       results = f.call(keywords)
       if (results['events'] == nil)
         # no concerts so replace keywords with something intelligent from Echonest
-        self.keywords = getEchoNestKeyword(keywords)
+        self.keywords = get_echo_nest_keyword(keywords)
         results = f.call(keywords)
       end
       return results
@@ -274,24 +274,26 @@ class User < ActiveRecord::Base
         next
       end
       cache << band
-      searchWithQuotes = 1
-      url = setYouTubeUrl(band, searchWithQuotes)
-      videoUrl = getVideoUrl(url)
+      searchWithQuotes = true
+      url = set_you_tube_url(band, searchWithQuotes)
+      videoUrl = get_video_url(url)
       if videoUrl == nil
-        searchWithQuotes = 0
-        url = setYouTubeUrl(band, searchWithQuotes)
-        videoUrl = getVideoUrl(url) 
+        searchWithQuotes = false
+        url = set_you_tube_url(band, searchWithQuotes)
+        videoUrl = get_video_url(url) 
         if videoUrl == nil
           # take only the text after 'featuring'
           band = find_text_after(band, 'featuring')
           if (band != nil)
-            searchWithQuotes = 1
-            url = setYouTubeUrl(band, searchWithQuotes)
-            videoUrl = getVideoUrl(url)
+            searchWithQuotes = true
+            url = set_you_tube_url(band, searchWithQuotes)
+            videoUrl = get_video_url(url)
           end
         end
       end
-      updateResultForYoutube( result, videoUrl)
+      if videoUrl
+        result.update_attributes(:you_tube_url => videoUrl)
+      end
     end
   end
 
@@ -302,21 +304,14 @@ class User < ActiveRecord::Base
     if (i != nil)
       tmp = i + str2.length
       if tmp < str1.length
-        str = str1[tmp...str1.length]
+        str = str1[tmp...str1.length].strip
       end
     end
     return str
   end
 
-  def updateResultForYoutube( result, videoUrl)
-    if (videoUrl.nil?)
-      return
-    end
-    result.update_attributes(:you_tube_url => videoUrl)
-  end
-
   # url to send to YouTube API requesting info
-  def setYouTubeUrl(keywords, searchWithQuotes)
+  def set_you_tube_url(keywords, searchWithQuotes)
     keywordsM = massage_keywords(keywords, searchWithQuotes)
     url = "https://gdata.youtube.com/feeds/api/videos?category=" <<
           "#{CATEGORIES}&q=#{keywordsM}#{MORE_KEYWORDS}&v=#{VERSION}" <<
@@ -336,20 +331,20 @@ class User < ActiveRecord::Base
       str2 = str2.lstrip.rstrip
       #change to lower case
       str2 = str2.downcase
-      if (searchWithQuotes == 1)
+      if (searchWithQuotes)
         str2.gsub!(" ", "+")
         str2 = "%22" + str2 + "%22"
       else
         #replace whitespace with %2C
         str2.gsub!(" ", "%2C")
-     end
+      end
    end
    str2
   end
 
   # get URL for youTube video, should be able to copy paste
   # str into a browser and see the video
-  def getVideoUrl(url)
+  def get_video_url(url)
     begin
       doc = Nokogiri::XML(open(url))
       node=doc.xpath('//xmlns:entry')
@@ -367,7 +362,7 @@ class User < ActiveRecord::Base
     end
   end
   
-  def getEchoNestKeyword(band)
+  def get_echo_nest_keyword(band)
     # example call
     # http://developer.echonest.com/api/v4/artist/
     # terms?api_key=N6E4NIOVYMTHNDM8J&name=radiohead&format=json 

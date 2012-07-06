@@ -15,7 +15,7 @@
 #
 
 require 'spec_helper'
-
+require 'pry'
 describe User do
   
   before(:each) do
@@ -53,6 +53,10 @@ describe User do
         Result.find_by_id(result.id).should be_nil
       end
     end
+    
+  end
+
+  describe "#get_results" do
     
   end
 
@@ -144,8 +148,10 @@ describe User do
     
   end
   
-  describe "#message_time" do
-    
+  describe "#massage_time" do
+    @user = User.create(@attr)
+    r = @user.massage_time("2012-07-30 19:00:00")
+    r.should == "Mon 7/30 7:00 PM"
   end
   
   describe "#update_results_with_you_tube_url" do
@@ -153,9 +159,34 @@ describe User do
   end
   
   describe "#find_text_after" do
+    @user = User.create(@attr)
+    r = @user.find_text_after('featuring the jay hawks', 'featuring')
+    r.should == 'the jay hawks'
+  end
+
+  describe "#set_you_tube_url" do
+    @user = User.create(@attr)
+    r = @user.set_you_tube_url('featuring the jay hawks', false)
+    r.should == 'https://gdata.youtube.com/feeds/api/videos?category=Music&q=featuring%2Cthe%2Cjay%2Chawks%2Clive%2Cband&v=2&key=AI39si7SV5n5UyDjSu4HZ92aHlfO-TJ_afBaUyFwSFhIWt46aFBD6KqS7TfGuDZR_a9OUL3A4HtxGMOpAf56WNCAAQz_ptBCbw&alt=atom&orderby=relevance&max-results=10'
+  end
+  
+  describe "#massage_keywords" do
+    @user = User.create(@attr)
+    r = @user.massage_keywords('  Rock concert   boston', false)
+    r.should == 'rock%2Cconcert%2Cboston'
+    r = @user.massage_keywords('  Rock concert   boston', true)
+    r.should == '%22rock+concert+boston%22'
+  end
+
+  describe "#get_video_url" do
     
   end
 
-  #many other functions to test
+  describe "#User.remove_accents" do
+    # doesn't change a string without accents
+    r = User.remove_accents("Bela Fleck")
+    r.should == 'Bela Fleck'
+    # add testing for a string with an accent
+  end
 
 end

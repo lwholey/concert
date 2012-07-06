@@ -1,6 +1,6 @@
 module UsersHelper
 
-  def showYouTubeVideo(youTubeUrl, bandName, eventName)
+  def show_you_tube_video(youTubeUrl, bandName, eventName)
     if (client_browser_name == "notMobile")
       if (eventName == bandName)
         description = "#{eventName}"
@@ -24,7 +24,7 @@ module UsersHelper
       EOF
       html.html_safe
     else
-      videoId = between_two_strings(youTubeUrl,'v/','\?')
+      videoId = UsersHelper.between_two_strings(youTubeUrl,'v/','\?')
       html = <<-EOF
       <!-- 1. The <div> tag will contain the <iframe> (and video player) -->
       <div id="player"></div>
@@ -54,21 +54,21 @@ module UsersHelper
     end
   end
 
-  def getSpotifyTracks(results)
+  def get_spotify_tracks(results)
     cache = [] 
     tracks = ""
     results.each do |result|
-      bandFound = 0
+      bandFound = false
       cache.each do |searchedBand|
         if (result.band == searchedBand)
-          bandFound = 1
+          bandFound = true
         end
       end
-      if (bandFound == 1)
+      if (bandFound == true)
         next
       end
       cache << result.band
-      trackCode = getTrackInfo(result.band)
+      trackCode = get_track_info(result.band)
       if (trackCode != nil)
         tracks << " #{trackCode}"
       end
@@ -76,15 +76,15 @@ module UsersHelper
     tracks
   end
 
-  def getTrackInfo(bandName)
-    url = createArtistUrl(bandName)
-    artist = searchArtist(url)
-    album = lookupArtist(artist)
-    trackCode = lookupAlbum(album)
+  def get_track_info(bandName)
+    url = create_artist_url(bandName)
+    artist = search_artist(url)
+    album = lookup_artist(artist)
+    trackCode = lookup_album(album)
   end
 
   #create the url in Spotify format for the band name 
-  def createArtistUrl(str1)
+  def create_artist_url(str1)
     val = nil
     if (str1 != nil)
       #remove leading and trailing whitespace
@@ -111,7 +111,7 @@ module UsersHelper
 
   #returns Spotify's coded value for artist
   #TODO : Handle case where more than one artist is returned
-  def searchArtist(url)
+  def search_artist(url)
     if url == nil
       return nil
     end
@@ -145,7 +145,7 @@ module UsersHelper
 
   #returns Spotify's coded value for the first
   #album that is available in the US (look for US or worldwide)
-  def lookupArtist(artist)
+  def lookup_artist(artist)
     if artist == nil
       return nil
     end
@@ -175,8 +175,8 @@ module UsersHelper
           return(val)
         end
         j = j + i - 1
-        logic1 = availableInUS(str1)
-        if (logic1 == 1)
+        logic1 = UsersHelper.available_in_US(str1)
+        if (logic1 == true)
           val = str1[i..j]
           break
         end
@@ -190,15 +190,12 @@ module UsersHelper
   #returns Spotify's coded value for the first
   #track that is available
   #assume min track popularity is 0
-  def lookupAlbum(album)
+  def lookup_album(album)
     if album == nil
       return nil
     end
     url = "http://ws.spotify.com/lookup/1/?uri=spotify:album:" + \
       "#{album}" + "&extras=trackdetail"
-    if Rails.env.test?
-      return (["test-track-code", "test-track-name", "test-artist"])
-    end
     trackCode = nil
     begin
       maxTracks = 100
@@ -214,13 +211,13 @@ module UsersHelper
         if (k >= maxTracks)
           break
         end
-        logic1 = availableTrack(str1)
-        popularity = trackPopularity(str1)
-        if ((logic1 == 1) && (popularity >= maxPopularity))
+        logic1 = UsersHelper.available_track(str1)
+        popularity = UsersHelper.track_popularity(str1)
+        if ((logic1 == true) && (popularity >= maxPopularity))
           maxPopularity = popularity
-          trackCode = between_two_strings(str1,"spotify:track:","\"")
+          trackCode = UsersHelper.between_two_strings(str1,"spotify:track:","\"")
           trackCode = "spotify:track:#{trackCode}"
-          tmp = between_two_strings(str1,"<artist","</artist>")
+          tmp = UsersHelper.between_two_strings(str1,"<artist","</artist>")
         end
         k += 1
       end
@@ -233,8 +230,8 @@ module UsersHelper
   #<availability>
   #        <territories>AT AU BE CH CN CZ DK EE ES FI FR GB HK HR HU IE IL IN IT LT LV MY NL NO NZ PL PT RU SE SG SK TH TR TW UA ZA</territories>
   #      </availability>
-  #and returns 1 if US or worldwide otherwise returns nil
-  def availableInUS(str1)
+  #and returns true if US or worldwide otherwise returns nil
+  def self.available_in_US(str1)
     val = nil
     tmp = '<territories>'
     regx1 = /#{tmp}/
@@ -252,7 +249,7 @@ module UsersHelper
     str2 = str1[i..j]
     a.each do |aStr|
       if (aStr =~ str2)
-        val = 1
+        val = true
         break
       end
     end
@@ -261,7 +258,7 @@ module UsersHelper
 
   #looks at a string like <popularity>0.131271839142</popularity>
   #and returns the number
-  def trackPopularity(str1)
+  def self.track_popularity(str1)
     val = nil
     tmp = '<popularity>'
     regx1 = /#{tmp}/
@@ -282,7 +279,7 @@ module UsersHelper
 
   #looks at a string like <available>true</available>
   #and returns true if true (nil otherwise)
-  def availableTrack(str1)
+  def self.available_track(str1)
     val = nil
     tmp = '<available>'
     regx1 = /#{tmp}/
@@ -300,13 +297,13 @@ module UsersHelper
     j = j + i - 1
     str2 = str1[i..j]
     if (a =~ str2)
-      val = 1
+      val = true
     end
     return(val)
   end
 
   # using str1, return what's between str2 and str3
-  def between_two_strings(str1, str2, str3)
+  def self.between_two_strings(str1, str2, str3)
     val = nil
     i = /#{str2}/ =~ str1
     if (i == nil)
