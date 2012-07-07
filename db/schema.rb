@@ -10,20 +10,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120705004128) do
+ActiveRecord::Schema.define(:version => 20120707191249) do
 
   create_table "results", :force => true do |t|
-    t.string    "name"
-    t.string    "date_string"
-    t.string    "venue"
-    t.string    "band"
-    t.string    "track_name"
-    t.string    "track_spotify"
-    t.string    "details_url"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.integer   "user_id"
-    t.string    "you_tube_url"
+    t.string   "name"
+    t.string   "date_string"
+    t.string   "venue"
+    t.string   "band"
+    t.string   "details_url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "user_id"
+    t.string   "you_tube_url"
   end
 
   add_index "results", ["user_id"], :name => "index_results_on_user_id"

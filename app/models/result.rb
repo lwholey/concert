@@ -7,8 +7,6 @@
 #  date_string   :string(255)
 #  venue         :string(255)
 #  band          :string(255)
-#  track_name    :string(255)
-#  track_spotify :string(255)
 #  details_url   :string(255)
 #  created_at    :timestamp
 #  updated_at    :timestamp

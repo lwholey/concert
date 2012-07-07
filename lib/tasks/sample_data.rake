@@ -25,8 +25,6 @@ namespace :db do
           :date_type => "",
           :venue => "Paramount Theater",
           :band => "Lenny and the Long Legs",
-          :track_name => "Sweet Home Pennyslyania",
-          :track_spotify => "5qtkWmheqR1COnUvA9UP7r",
           :details_url => "www.lennylonglegs.com"
         )
       end
