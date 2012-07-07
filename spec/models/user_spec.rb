@@ -35,16 +35,12 @@ describe User do
 
     before(:each) do
       @user = User.create(@attr)
-      @r1 = Factory(:result, :user => @user, :track_spotify => "something")
-      @r2 = Factory(:result, :user => @user, :track_spotify => "")
+      @r1 = Factory(:result, :user => @user)
+      @r2 = Factory(:result, :user => @user)
     end
 
     it "should have a results attribute" do
       @user.should respond_to(:results)
-    end
-
-    it "should have the right results in the right order" do
-      @user.results.should == [@r1, @r2]
     end
 
     it "should destroy associated results" do

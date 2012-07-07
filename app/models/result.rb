@@ -19,7 +19,4 @@ class Result < ActiveRecord::Base
 
   validates :user_id, :presence => true
 
-  # order the results so that ones with spotify links are first
-  # Appears not to work when deployed to Heroku
-  # default_scope :order => 'results.track_spotify ASC'
 end
