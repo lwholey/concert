@@ -1,5 +1,160 @@
 module UsersHelper
 
+  def get_spotify_tracks(results)
+    cache = [] 
+    tracks = ""
+    results.each do |result|
+      bandFound = false
+      cache.each do |searchedBand|
+        if (result.band == searchedBand)
+          bandFound = true
+        end
+      end
+      if (bandFound == true)
+        next
+      end
+      cache << result.band
+      trackCode = get_track_info(result.band)
+      if (trackCode != nil)
+        tracks << " #{trackCode}"
+      end
+    end
+    tracks
+  end
+
+  def get_track_info(bandName)
+    url = create_artist_url(bandName)
+    artist = get_artist(url)
+    album = get_album(artist)
+    trackCode = get_track_code(album)
+  end
+
+  #create the url in Spotify format for the band name 
+  def create_artist_url(str)
+    val = nil
+    if str
+      val = str.clone
+      #remove leading and trailing whitespace
+      val.strip!
+      val = User.remove_accents(val)
+      #keep only whitespace, alphanumeric characters, comma, ampersand, and period
+      i = /[^(\w|\s|,|&|.)]/ =~ val
+      if (i != nil)
+        val = val[0...i]
+      end
+      #strip again
+      val.strip!
+      val.gsub!(" ", "%20")
+      val.gsub!("&", "%26")
+      val = "http://ws.spotify.com/search/1/artist?q=" + val
+    end
+    val
+  end
+
+  #returns Spotify's coded value for artist
+  #TODO : Handle case where more than one artist is returned
+  def get_artist(url)
+    if url == nil
+      return nil
+    end
+    val = nil
+    begin
+      doc = Nokogiri::XML(open(url))
+      val = doc.xpath('//xmlns:artist')[0].attributes['href'].value
+    rescue
+    end
+    val
+  end
+
+  #returns Spotify's coded value for the first
+  #album that is available in the US (look for US or worldwide)
+  def get_album(artist)
+    if artist == nil
+      return nil
+    end
+    url = "http://ws.spotify.com/lookup/1/?uri=" + \
+      "#{artist}" + "&extras=album"
+    maxAlbums = 100
+    val = nil
+    begin
+      doc = Nokogiri::XML(open(url))
+      elements = doc.xpath('//xmlns:album')
+      elements.each_with_index do |e , i|
+        if UsersHelper.available_in_US?(e)
+          val = e.attributes['href'].value
+          break
+        elsif i > maxAlbums
+          break
+        end
+      end
+    rescue
+    end
+    val
+  end
+
+  #returns Spotify's coded value for the most popular, 
+  #available track on the album
+  def get_track_code(album)
+    if album == nil
+      return nil
+    end
+    url = "http://ws.spotify.com/lookup/1/?uri=" + \
+      "#{album}" + "&extras=trackdetail"
+    maxTracks = 100
+    maxPopularity = 0.0
+    val = nil
+    begin
+      doc = Nokogiri::XML(open(url))
+      elements = doc.xpath('//xmlns:track')
+      elements.each_with_index do |e , i|
+        if UsersHelper.track_available?(e)
+          popularity = elements[0].children[15].children.to_s.to_f
+          if popularity > maxPopularity
+            maxPopularity = popularity
+            val = e.attributes['href'].value
+          end
+        elsif i > maxTracks
+          break
+        end
+      end
+    rescue
+    end
+    val
+  end
+
+  # looks for US or true (case insensitive)
+  def self.available_in_US?(elements)
+    val = nil
+    begin
+      elements.children.each do |e|
+        if e.name.include?('availability')
+          if e.children.children.to_s.include?('US')
+            val = true
+            break
+          end
+        end
+      end
+    rescue
+    end
+    val
+  end
+
+  def self.track_available?(elements)
+    val = nil
+    begin
+      elements.children.each do |e|
+        if e.name.include?('available')
+          if e.children.to_s.include?('true')
+            val = true
+            break
+          end
+        end
+      end
+    rescue
+    end
+    val    
+  end
+
   def show_you_tube_video(youTubeUrl, bandName, eventName)
     if (client_browser_name == "notMobile")
       if (eventName == bandName)
@@ -52,254 +207,6 @@ module UsersHelper
       EOF
       html.html_safe
     end
-  end
-
-  def get_spotify_tracks(results)
-    cache = [] 
-    tracks = ""
-    results.each do |result|
-      bandFound = false
-      cache.each do |searchedBand|
-        if (result.band == searchedBand)
-          bandFound = true
-        end
-      end
-      if (bandFound == true)
-        next
-      end
-      cache << result.band
-      trackCode = get_track_info(result.band)
-      if (trackCode != nil)
-        tracks << " #{trackCode}"
-      end
-    end
-    tracks
-  end
-
-  def get_track_info(bandName)
-    url = create_artist_url(bandName)
-    artist = search_artist(url)
-    album = lookup_artist(artist)
-    trackCode = lookup_album(album)
-  end
-
-  #create the url in Spotify format for the band name 
-  def create_artist_url(str1)
-    val = nil
-    if (str1 != nil)
-      #remove leading and trailing whitespace
-      str2 = str1.lstrip.rstrip
-      str2 = User.remove_accents(str2)
-      #remove quintet, quartet, trio (makes it easier for Spotify to search)
-      str2.gsub!(/quintet/i,"")
-      str2.gsub!(/quartet/i,"")
-      str2.gsub!(/trio/i,"")
-      #remove tribute (may want to include actual bands who are playing the tribute as well)
-      str2.gsub!(/tribute/i,"")
-      #keep only whitespace, alphanumeric characters, comma, ampersand, and period
-      i = /[^(\w|\s|,|&|.)]/ =~ str2
-      if (i != nil)
-        str2 = str2[0...i]
-      end
-      str2 = str2.lstrip.rstrip
-      str2.gsub!(" ", "%20")
-      str2.gsub!("&", "%26")
-      val = "http://ws.spotify.com/search/1/artist?q=" + str2
-    end
-    val
-  end
-
-  #returns Spotify's coded value for artist
-  #TODO : Handle case where more than one artist is returned
-  def search_artist(url)
-    if url == nil
-      return nil
-    end
-    if Rails.env.test?
-      return "test artist"
-    end
-    val = nil
-    begin
-      tmp = "spotify:artist:"
-      regx1 = /#{tmp}/
-      regx2 = /\W/
-      doc = Nokogiri::XML(open(url))
-      elements = doc.xpath('//xmlns:artist')
-      titles = elements.map {|e| e.to_s}
-      str1 = titles[0].to_s
-      i = regx1 =~ str1
-      if (i == nil)
-        return(val)
-      end
-      i = i+tmp.length
-      j = regx2 =~ str1[i..-1]
-      if (j == nil)
-        return(val)
-      end
-      j = j + i - 1
-      val = str1[i..j]
-    rescue
-    end
-    return (val)
-  end
-
-  #returns Spotify's coded value for the first
-  #album that is available in the US (look for US or worldwide)
-  def lookup_artist(artist)
-    if artist == nil
-      return nil
-    end
-    url = "http://ws.spotify.com/lookup/1/?uri=spotify:artist:" + \
-      "#{artist}" + "&extras=album"
-    if Rails.env.test?
-      return "test artist"
-    end
-    val = nil
-    begin
-      maxAlbums = 100
-      tmp = 'spotify:album:'
-      regx1 = /#{tmp}/
-      regx2 = /\W/
-      doc = Nokogiri::XML(open(url))
-      elements = doc.xpath('//xmlns:album')
-      titles = elements.map {|e| e.to_s}
-      k=0
-      titles.each do |str1|
-        i = regx1 =~ str1
-        if ((i == nil) || (k >= maxAlbums))
-          break
-        end
-        i = i+tmp.length
-        j = regx2 =~ str1[i..-1]
-        if (j == nil)
-          return(val)
-        end
-        j = j + i - 1
-        logic1 = UsersHelper.available_in_US(str1)
-        if (logic1 == true)
-          val = str1[i..j]
-          break
-        end
-        k = k + 1
-      end
-    rescue
-    end
-    return(val)
-  end
-
-  #returns Spotify's coded value for the first
-  #track that is available
-  #assume min track popularity is 0
-  def lookup_album(album)
-    if album == nil
-      return nil
-    end
-    url = "http://ws.spotify.com/lookup/1/?uri=spotify:album:" + \
-      "#{album}" + "&extras=trackdetail"
-    trackCode = nil
-    begin
-      maxTracks = 100
-      tmp = 'spotify:track:'
-      regx1 = /#{tmp}/
-      regx2 = /\W/
-      doc = Nokogiri::XML(open(url))
-      elements = doc.xpath('//xmlns:track')
-      titles = elements.map {|e| e.to_s}
-      k=0
-      maxPopularity = 0.0
-      titles.each do |str1|
-        if (k >= maxTracks)
-          break
-        end
-        logic1 = UsersHelper.available_track(str1)
-        popularity = UsersHelper.track_popularity(str1)
-        if ((logic1 == true) && (popularity >= maxPopularity))
-          maxPopularity = popularity
-          trackCode = UsersHelper.between_two_strings(str1,"spotify:track:","\"")
-          trackCode = "spotify:track:#{trackCode}"
-          tmp = UsersHelper.between_two_strings(str1,"<artist","</artist>")
-        end
-        k += 1
-      end
-    rescue
-    end
-    return trackCode
-  end
-
-  #Looks at a string like ...
-  #<availability>
-  #        <territories>AT AU BE CH CN CZ DK EE ES FI FR GB HK HR HU IE IL IN IT LT LV MY NL NO NZ PL PT RU SE SG SK TH TR TW UA ZA</territories>
-  #      </availability>
-  #and returns true if US or worldwide otherwise returns nil
-  def self.available_in_US(str1)
-    val = nil
-    tmp = '<territories>'
-    regx1 = /#{tmp}/
-    regx2 = /</
-    a = Array.new
-    a[0] = /US/
-    a[1] = /worldwide/
-    i = regx1 =~ str1
-    if (i == nil)
-      return(val)
-    end
-    i = i+tmp.length
-    j = regx2 =~ str1[i..-1]
-    j = j + i - 1
-    str2 = str1[i..j]
-    a.each do |aStr|
-      if (aStr =~ str2)
-        val = true
-        break
-      end
-    end
-    return(val)
-  end
-
-  #looks at a string like <popularity>0.131271839142</popularity>
-  #and returns the number
-  def self.track_popularity(str1)
-    val = nil
-    tmp = '<popularity>'
-    regx1 = /#{tmp}/
-    regx2 = /</
-    i = regx1 =~ str1
-    if (i == nil)
-      return(val)
-    end
-    i = i+tmp.length
-    j = regx2 =~ str1[i..-1]
-    if (j == nil)
-      return(val)
-    end
-    j = j + i - 1
-    val = str1[i..j].to_f
-    return(val)
-  end
-
-  #looks at a string like <available>true</available>
-  #and returns true if true (nil otherwise)
-  def self.available_track(str1)
-    val = nil
-    tmp = '<available>'
-    regx1 = /#{tmp}/
-    regx2 = /</
-    a = /true/
-    i = regx1 =~ str1
-    if (i == nil)
-      return(val)
-    end
-    i = i+tmp.length
-    j = regx2 =~ str1[i..-1]
-    if (j == nil)
-      return(val)
-    end
-    j = j + i - 1
-    str2 = str1[i..j]
-    if (a =~ str2)
-      val = true
-    end
-    return(val)
   end
 
   # using str1, return what's between str2 and str3
