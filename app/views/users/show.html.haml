@@ -50,4 +50,4 @@
   - @results.each do |result|
     - unless result.you_tube_url.nil?
       #youTubeID
-        = show_you_tube_video(result.you_tube_url, result.band, result.name)
+        = UsersHelper.show_you_tube_video(result.you_tube_url, result.band, result.name)

@@ -1,4 +1,4 @@
 $("#spotify-intro").show();
-$("#spotify-results").html("<%= get_spotify_tracks(@user.results) %>");
+$("#spotify-results").html("<%= UsersHelper.get_spotify_tracks(@user.results) %>");
 $('#spotify-results').show();
 $("#clickForSpotify").hide();

@@ -1,6 +1,6 @@
 module UsersHelper
 
-  def get_spotify_tracks(results)
+  def self.get_spotify_tracks(results)
     cache = [] 
     tracks = ""
     results.each do |result|
@@ -14,7 +14,7 @@ module UsersHelper
         next
       end
       cache << result.band
-      trackCode = get_track_info(result.band)
+      trackCode = UsersHelper.get_track_info(result.band)
       if (trackCode != nil)
         tracks << " #{trackCode}"
       end
@@ -22,15 +22,15 @@ module UsersHelper
     tracks
   end
 
-  def get_track_info(bandName)
-    url = create_artist_url(bandName)
-    artist = get_artist(url)
-    album = get_album(artist)
-    trackCode = get_track_code(album)
+  def self.get_track_info(bandName)
+    url = UsersHelper.create_artist_url(bandName)
+    artist = UsersHelper.get_artist(url)
+    album = UsersHelper.get_album(artist)
+    trackCode = UsersHelper.get_track_code(album)
   end
 
   #create the url in Spotify format for the band name 
-  def create_artist_url(str)
+  def self.create_artist_url(str)
     val = nil
     if str
       val = str.clone
@@ -53,7 +53,7 @@ module UsersHelper
 
   #returns Spotify's coded value for artist
   #TODO : Handle case where more than one artist is returned
-  def get_artist(url)
+  def self.get_artist(url)
     if url == nil
       return nil
     end
@@ -68,7 +68,7 @@ module UsersHelper
 
   #returns Spotify's coded value for the first
   #album that is available in the US (look for US or worldwide)
-  def get_album(artist)
+  def self.get_album(artist)
     if artist == nil
       return nil
     end
@@ -94,7 +94,7 @@ module UsersHelper
 
   #returns Spotify's coded value for the most popular, 
   #available track on the album
-  def get_track_code(album)
+  def self.get_track_code(album)
     if album == nil
       return nil
     end
@@ -155,7 +155,7 @@ module UsersHelper
     val    
   end
 
-  def show_you_tube_video(youTubeUrl, bandName, eventName)
+  def self.show_you_tube_video(youTubeUrl, bandName, eventName)
     if (client_browser_name == "notMobile")
       if (eventName == bandName)
         description = "#{eventName}"
