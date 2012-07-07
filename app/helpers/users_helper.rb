@@ -15,7 +15,7 @@ module UsersHelper
       end
       cache << result.band
       trackCode = UsersHelper.get_track_info(result.band)
-      unless trackCode
+      if trackCode
         tracks << " #{trackCode}"
       end
     end
