@@ -1,25 +1,29 @@
 module UsersHelper
 
   def self.get_spotify_tracks(results)
-    cache = [] 
-    tracks = ""
-    results.each do |result|
-      bandFound = false
-      cache.each do |searchedBand|
-        if result.band == searchedBand
-          bandFound = true
+    begin
+      cache = [] 
+      tracks = ""
+      results.each do |result|
+        bandFound = false
+        cache.each do |searchedBand|
+          if result.band == searchedBand
+            bandFound = true
+          end
+        end
+        if bandFound == true
+          next
+        end
+        cache << result.band
+        trackCode = UsersHelper.get_track_info(result.band)
+        if trackCode
+          tracks << " #{trackCode}"
         end
       end
-      if bandFound == true
-        next
-      end
-      cache << result.band
-      trackCode = UsersHelper.get_track_info(result.band)
-      if trackCode
-        tracks << " #{trackCode}"
-      end
+      tracks.strip
+    rescue
+      ""
     end
-    tracks
   end
 
   def self.get_track_info(bandName)

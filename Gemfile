@@ -27,4 +27,6 @@ group :test do
   gem 'redgreen'
   gem 'faker', '0.3.1'
   gem 'test-unit'
+  gem 'vcr'
+  gem 'webmock'
 end
