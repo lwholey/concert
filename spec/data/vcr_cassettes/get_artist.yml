@@ -1,0 +1,80 @@
+--- 
+http_interactions: 
+- request: 
+    method: get
+    uri: http://ws.spotify.com/search/1/artist?q=the%20allman%20brothers
+    body: 
+      encoding: US-ASCII
+      string: ""
+    headers: 
+      Accept: 
+      - "*/*"
+      User-Agent: 
+      - Ruby
+  response: 
+    status: 
+      code: 200
+      message: OK
+    headers: 
+      Date: 
+      - Sat, 07 Jul 2012 18:32:59 GMT
+      Server: 
+      - lighttpd/1.4.19 smisk/1.1.6
+      Content-Location: 
+      - /search/1/artist.xml?q=the%20allman%20brothers
+      Vary: 
+      - Accept-Charset,Accept
+      Expires: 
+      - Sun, 08 Jul 2012 18:32:59 GMT
+      Last-Modified: 
+      - Fri, 06 Jul 2012 17:04:40 GMT
+      Content-Type: 
+      - application/xml; charset=utf-8
+      Content-Length: 
+      - "1368"
+      X-Varnish: 
+      - "1926597926"
+      Age: 
+      - "0"
+      Via: 
+      - 1.1 varnish
+      Access-Control-Allow-Origin: 
+      - "*"
+    body: 
+      encoding: US-ASCII
+      string: |
+        <?xml version="1.0" encoding="utf-8"?>
+        <artists xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns="http://www.spotify.com/ns/music/1">
+          <opensearch:Query role="request" startPage="1" searchTerms="the allman brothers"/>
+          <opensearch:totalResults>6</opensearch:totalResults>
+          <opensearch:startIndex>0</opensearch:startIndex>
+          <opensearch:itemsPerPage>100</opensearch:itemsPerPage>
+          <artist href="spotify:artist:4wQ3PyMz3WwJGI5uEqHUVR">
+            <name>The Allman Brothers Band</name>
+            <popularity>0.48925</popularity>
+          </artist>
+          <artist href="spotify:artist:4OuvT0ZYJJqhwwxNC1Z2Pl">
+            <name>Endless Highway: The Music Of The Band/Allman Brothers Band</name>
+            <popularity>0.00000</popularity>
+          </artist>
+          <artist href="spotify:artist:6Lq2BD9pEw8QS50auoWd9e">
+            <name>The Allman Brothers</name>
+            <popularity>0.00003</popularity>
+          </artist>
+          <artist href="spotify:artist:0rcYyq4z9mooOcrijplpjH">
+            <name>Karaoke - The Allman Brothers Band</name>
+            <popularity>0.00002</popularity>
+          </artist>
+          <artist href="spotify:artist:2r0J8gBp6Ifs5fZ7GU53dp">
+            <name>The Allman Brothers Band With Sheryl Crow</name>
+            <popularity>0.00046</popularity>
+          </artist>
+          <artist href="spotify:artist:05QeUnid5rtHdC1uGKElzV">
+            <name>Michael Andersen &amp; The Allman Brothers Band</name>
+            <popularity>0.00001</popularity>
+          </artist>
+        </artists>
+
+    http_version: 
+  recorded_at: Sat, 07 Jul 2012 18:32:59 GMT
+recorded_with: VCR 2.2.2

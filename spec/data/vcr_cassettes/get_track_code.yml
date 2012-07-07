@@ -1,0 +1,183 @@
+--- 
+http_interactions: 
+- request: 
+    method: get
+    uri: http://ws.spotify.com/lookup/1/?extras=trackdetail&uri=spotify:album:6c7Tr0ltE8TX2x3loUeFgW
+    body: 
+      encoding: US-ASCII
+      string: ""
+    headers: 
+      Accept: 
+      - "*/*"
+      User-Agent: 
+      - Ruby
+  response: 
+    status: 
+      code: 200
+      message: OK
+    headers: 
+      Date: 
+      - Sat, 07 Jul 2012 18:47:25 GMT
+      Server: 
+      - lighttpd/1.4.19 smisk/1.1.6
+      Content-Location: 
+      - /lookup/1/.xml?uri=spotify:album:6c7Tr0ltE8TX2x3loUeFgW&extras=trackdetail
+      Vary: 
+      - Accept-Charset,Accept
+      Expires: 
+      - Sun, 08 Jul 2012 18:41:18 GMT
+      Last-Modified: 
+      - Fri, 06 Jul 2012 17:04:40 GMT
+      Content-Type: 
+      - application/xml; charset=utf-8
+      Content-Length: 
+      - "5531"
+      X-Varnish: 
+      - 1926652079 1926628268
+      Age: 
+      - "367"
+      Via: 
+      - 1.1 varnish
+      Access-Control-Allow-Origin: 
+      - "*"
+    body: 
+      encoding: US-ASCII
+      string: |
+        <?xml version="1.0" encoding="utf-8"?>
+        <album xmlns="http://www.spotify.com/ns/music/1">
+          <name>Brothers Of The Road</name>
+          <artist href="spotify:artist:4wQ3PyMz3WwJGI5uEqHUVR">
+            <name>The Allman Brothers Band</name>
+          </artist>
+          <released>2009</released>
+          <id type="upc">888880675576</id>
+          <tracks>
+            <track href="spotify:track:54QvsT7OAOhnG2P2pzjx9x">
+              <name>Brothers Of The Road</name>
+              <artist href="spotify:artist:4wQ3PyMz3WwJGI5uEqHUVR">
+                <name>The Allman Brothers Band</name>
+              </artist>
+              <available>true</available>
+              <id type="isrc">USAR18100123</id>
+              <disc-number>1</disc-number>
+              <track-number>1</track-number>
+              <length>240.160000</length>
+              <popularity>0.32398</popularity>
+            </track>
+            <track href="spotify:track:0P5BJ0C4G3H7ir5pspYerH">
+              <name>Leavin'</name>
+              <artist href="spotify:artist:4wQ3PyMz3WwJGI5uEqHUVR">
+                <name>The Allman Brothers Band</name>
+              </artist>
+              <available>true</available>
+              <id type="isrc">USAR18100124</id>
+              <disc-number>1</disc-number>
+              <track-number>2</track-number>
+              <length>231.440000</length>
+              <popularity>0.29345</popularity>
+            </track>
+            <track href="spotify:track:2CTXzkxa6KnziErTeFnXa6">
+              <name>Straight From The Heart</name>
+              <artist href="spotify:artist:4wQ3PyMz3WwJGI5uEqHUVR">
+                <name>The Allman Brothers Band</name>
+              </artist>
+              <available>true</available>
+              <id type="isrc">USAR18100125</id>
+              <disc-number>1</disc-number>
+              <track-number>3</track-number>
+              <length>225.853000</length>
+              <popularity>0.29035</popularity>
+            </track>
+            <track href="spotify:track:3eHWtz9B69cL3ddEwU1oFx">
+              <name>The Heat Is On</name>
+              <artist href="spotify:artist:4wQ3PyMz3WwJGI5uEqHUVR">
+                <name>The Allman Brothers Band</name>
+              </artist>
+              <available>true</available>
+              <id type="isrc">USAR10401016</id>
+              <disc-number>1</disc-number>
+              <track-number>4</track-number>
+              <length>251.880000</length>
+              <popularity>0.27330</popularity>
+            </track>
+            <track href="spotify:track:4dRPCnlxai0s0nNnV0kysy">
+              <name>Maybe We Can Go Back To Yesterday</name>
+              <artist href="spotify:artist:4wQ3PyMz3WwJGI5uEqHUVR">
+                <name>The Allman Brothers Band</name>
+              </artist>
+              <available>true</available>
+              <id type="isrc">USAR10401017</id>
+              <disc-number>1</disc-number>
+              <track-number>5</track-number>
+              <length>281.133000</length>
+              <popularity>0.26024</popularity>
+            </track>
+            <track href="spotify:track:0UrVvHjvejJZ8MVMZ9H7Gr">
+              <name>The Judgment</name>
+              <artist href="spotify:artist:4wQ3PyMz3WwJGI5uEqHUVR">
+                <name>The Allman Brothers Band</name>
+              </artist>
+              <available>true</available>
+              <id type="isrc">USAR10000806</id>
+              <disc-number>1</disc-number>
+              <track-number>6</track-number>
+              <length>219.613000</length>
+              <popularity>0.24629</popularity>
+            </track>
+            <track href="spotify:track:6pDGhZY9U1OUc19j26EstH">
+              <name>Two Rights</name>
+              <artist href="spotify:artist:4wQ3PyMz3WwJGI5uEqHUVR">
+                <name>The Allman Brothers Band</name>
+              </artist>
+              <available>true</available>
+              <id type="isrc">USAR18100127</id>
+              <disc-number>1</disc-number>
+              <track-number>7</track-number>
+              <length>212.066000</length>
+              <popularity>0.25758</popularity>
+            </track>
+            <track href="spotify:track:3Uk5jxGoh1kFD5SVC1Ttqg">
+              <name>Never Knew How Much (I Needed You)</name>
+              <artist href="spotify:artist:4wQ3PyMz3WwJGI5uEqHUVR">
+                <name>The Allman Brothers Band</name>
+              </artist>
+              <available>true</available>
+              <id type="isrc">USAR18000007</id>
+              <disc-number>1</disc-number>
+              <track-number>8</track-number>
+              <length>266.533000</length>
+              <popularity>0.25034</popularity>
+            </track>
+            <track href="spotify:track:0tVOvzOEkV2qX6AfWZ9r8b">
+              <name>Things You Used To Do</name>
+              <artist href="spotify:artist:4wQ3PyMz3WwJGI5uEqHUVR">
+                <name>The Allman Brothers Band</name>
+              </artist>
+              <available>true</available>
+              <id type="isrc">USAR18100126</id>
+              <disc-number>1</disc-number>
+              <track-number>9</track-number>
+              <length>224.960000</length>
+              <popularity>0.24814</popularity>
+            </track>
+            <track href="spotify:track:3Fy1ntZ9d7BgkOnVYseJDo">
+              <name>I Beg Of You</name>
+              <artist href="spotify:artist:4wQ3PyMz3WwJGI5uEqHUVR">
+                <name>The Allman Brothers Band</name>
+              </artist>
+              <available>true</available>
+              <id type="isrc">USAR18100122</id>
+              <disc-number>1</disc-number>
+              <track-number>10</track-number>
+              <length>206.906000</length>
+              <popularity>0.23179</popularity>
+            </track>
+          </tracks>
+          <availability>
+            <territories>AD AE AF AG AI AL AM AN AO AQ AR AT AZ BA BB BD BE BF BG BH BI BJ BM BN BO BR BS BT BW BY BZ CD CF CG CH CI CK CL CM CO CR CU CV CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GH GI GL GM GN GP GQ GR GT GU GW GY HN HR HT HU IE IL IO IQ IR IS IT JM JO KE KG KH KI KM KN KP KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MZ NA NC NE NG NI NL NO NP NR NU OM PA PE PF PG PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW SA SB SC SD SE SH SI SK SL SM SN SO SR ST SV SY SZ TC TD TF TG TJ TK TL TM TN TO TR TT TV TZ UA UG US UY UZ VA VC VE VG VN VU WF WS YE YT ZA ZM ZW ZZ</territories>
+          </availability>
+        </album>
+
+    http_version: 
+  recorded_at: Sat, 07 Jul 2012 18:47:25 GMT
+recorded_with: VCR 2.2.2
