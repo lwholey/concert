@@ -6,16 +6,16 @@ module UsersHelper
     results.each do |result|
       bandFound = false
       cache.each do |searchedBand|
-        if (result.band == searchedBand)
+        if result.band == searchedBand
           bandFound = true
         end
       end
-      if (bandFound == true)
+      if bandFound == true
         next
       end
       cache << result.band
       trackCode = UsersHelper.get_track_info(result.band)
-      if (trackCode != nil)
+      unless trackCode
         tracks << " #{trackCode}"
       end
     end
