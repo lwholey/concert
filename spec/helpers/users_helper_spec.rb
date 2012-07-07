@@ -2,12 +2,6 @@ require 'spec_helper'
 require 'pry'
 require 'vcr'
 
-
-VCR.configure do |c|
-  c.cassette_library_dir = 'spec/data/vcr_cassettes'
-  c.hook_into :webmock # or :fakeweb
-end
-
 def allman_brothers
   'the allman brothers'
 end

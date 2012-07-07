@@ -129,15 +129,33 @@ describe User do
   end
 
   describe "#call_eventful" do
-    
+    @user = User.new
+    @user.set_eventful_inputs
+    VCR.use_cassette('call_eventful') do
+      r = @user.call_eventful
+      r['events']['event'].count.should == 10
+    end
   end
   
-  describe "#getEchoNestKeyword" do
-    
+  describe "#get_echo_nest_keyword" do
+    @user = User.create(@attr)
+    VCR.use_cassette('get_echo_nest_keyword') do
+      r = @user.get_echo_nest_keyword('allman brothers')
+      r.should == "blues"
+    end
   end
   
   describe "#create_results_for_user" do
-    
+    @user = User.create(@attr)
+    @user.set_eventful_inputs
+    VCR.use_cassette('create_results_for_user') do
+      results = @user.call_eventful
+      r = @user.create_results_for_user(results)
+      r.should == true
+      @user.results.count.should == 8
+      @user.results[1].band == 'Rick Springfield Concert'
+      @user.results[1].venue == 'Main Sreet'
+    end
   end
   
   describe "#save_results" do

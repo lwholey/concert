@@ -158,7 +158,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  #returns true on success, otherwise returns nil
   def create_results_for_user(results)
     begin
       eventTmp = bandsTmp = dateTmp = venueTmp = detailsTmp = nil  
@@ -200,7 +199,7 @@ class User < ActiveRecord::Base
           end
         end
       end
-      if (eventTmp != nil)
+      if eventTmp
         result_attr = {
           :name => eventTmp,
           :date_string => dateTmp,
@@ -212,21 +211,22 @@ class User < ActiveRecord::Base
     rescue
       return nil
     end
-    return true
+    true
   end
 
   def save_results( result_attr, band)
     begin
-      for i in (0...self.results.length)
-        if ( (self.results[i].band == band) &&
-             (self.results[i].venue == result_attr[:venue]) )
-          self.results[i].date_string += ', ' + result_attr[:date_string]
-          return nil
+      # handle case where band might be playing more than one show
+      self.results.each do |r|
+        if ( (r.band == band) &&
+             (r.venue == result_attr[:venue]) )
+          r.date_string += ', ' + result_attr[:date_string]
+          return
         end
       end
       self.results.build( result_attr.merge( :band => band ) ).save
     rescue
-      return nil
+      nil
     end
   end
 
@@ -264,13 +264,13 @@ class User < ActiveRecord::Base
     cache = []
     self.results.each do |result|
       band = User.remove_accents(result.band)
-      bandFound = 0
+      bandFound = false
       cache.each do |searchedBand|
-        if (band == searchedBand)
-          bandFound = 1
+        if band == searchedBand
+          bandFound = true
         end
       end
-      if (bandFound == 1)
+      if bandFound == true
         next
       end
       cache << band
@@ -327,8 +327,8 @@ class User < ActiveRecord::Base
       str2 = str2.gsub(/\W/," ")
       #replace more than one consecutive white spaces with one white space
       str2.squeeze!(" ")
-      #remove leading and trailing whitespace
-      str2 = str2.lstrip.rstrip
+      #remove whitespace
+      str2 = str2.strip
       #change to lower case
       str2 = str2.downcase
       if (searchWithQuotes)
@@ -366,7 +366,7 @@ class User < ActiveRecord::Base
     # example call
     # http://developer.echonest.com/api/v4/artist/
     # terms?api_key=N6E4NIOVYMTHNDM8J&name=radiohead&format=json 
-    tmp = band.gsub(' ', '+').lstrip.rstrip
+    tmp = band.gsub(' ', '+').strip
     begin
       url = ECHONEST_START + 'artist/terms?api_key=' + ECHONEST_KEY + 
             '&name=' + tmp + '&sort=frequency' '&format=xml'

@@ -1,0 +1,54 @@
+--- 
+http_interactions: 
+- request: 
+    method: get
+    uri: http://developer.echonest.com/api/v4/artist/terms?api_key=PZWDKUDNKSN4AV3N1&format=xml&name=allman%20brothers&sort=frequency
+    body: 
+      encoding: US-ASCII
+      string: ""
+    headers: 
+      Accept: 
+      - "*/*"
+      User-Agent: 
+      - Ruby
+  response: 
+    status: 
+      code: 200
+      message: OK
+    headers: 
+      Date: 
+      - Sat, 07 Jul 2012 19:27:36 GMT
+      Content-Type: 
+      - text/xml; charset=utf-8
+      Connection: 
+      - keep-alive
+      Vary: 
+      - Accept-Encoding
+      X-Request-Id: 
+      - tOgELJ2hSH6BRuWEoe5xJg
+      Etag: 
+      - "\"76bd495c870a9a22898c0bc58f65febfa17a60a2\""
+      X-Worker-Node: 
+      - 4dfa3:25190
+      Content-Length: 
+      - "2587"
+      X-Ratelimit-Remaining: 
+      - "87"
+      Server: 
+      - TornadoServer/2.1.1
+      X-Ratelimit-Limit: 
+      - "88"
+      Cache-Control: 
+      - max-age=86400
+      Access-Control-Allow-Origin: 
+      - "*"
+      X-Ratelimit-Used: 
+      - "1"
+    body: 
+      encoding: US-ASCII
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <response><status><version>4.2</version><code>0</code><message>Success</message></status><start>0</start><terms><frequency>1.0</frequency><name>blues</name><weight>0.907811239508</weight></terms><terms><frequency>0.946007644101</frequency><name>blues-rock</name><weight>1.0</weight></terms><terms><frequency>0.946007644101</frequency><name>hard rock</name><weight>0.859499258381</weight></terms><terms><frequency>0.946007644101</frequency><name>rock</name><weight>0.7577696028</weight></terms><terms><frequency>0.946007644101</frequency><name>southern rock</name><weight>0.99077986372</weight></terms><terms><frequency>0.466702159742</frequency><name>oldies</name><weight>0.530515748933</weight></terms><terms><frequency>0.456077923862</frequency><name>album rock</name><weight>0.624495824273</weight></terms><terms><frequency>0.44429330737</frequency><name>rockabilly</name><weight>0.557033242799</weight></terms><terms><frequency>0.435507158288</frequency><name>instrumental</name><weight>0.450621038324</weight></terms><terms><frequency>0.426586412611</frequency><name>guitar</name><weight>0.497972676706</weight></terms><terms><frequency>0.412709803843</frequency><name>classic rock</name><weight>0.466191755235</weight></terms><terms><frequency>0.401862054168</frequency><name>classic</name><weight>0.510640551588</weight></terms><terms><frequency>0.39081852483</frequency><name>acoustic</name><weight>0.440304772985</weight></terms><terms><frequency>0.381514802389</frequency><name>pop</name><weight>0.357298346136</weight></terms><terms><frequency>0.374206836976</frequency><name>punk</name><weight>0.370984475843</weight></terms><terms><frequency>0.363987684814</frequency><name>boogie rock</name><weight>0.553913722642</weight></terms><terms><frequency>0.301545283024</frequency><name>slide guitar blues</name><weight>0.50605505711</weight></terms><terms><frequency>0.291143921414</frequency><name>soul</name><weight>0.356547153532</weight></terms><terms><frequency>0.233351079871</frequency><name>piano</name><weight>0.357273215321</weight></terms><terms><frequency>0.171151718853</frequency><name>guitarist</name><weight>0.406115564135</weight></terms><terms><frequency>0.0</frequency><name>jam</name><weight>0.274937188018</weight></terms><terms><frequency>0.0</frequency><name>psychedelia</name><weight>0.274937188018</weight></terms><terms><frequency>0.0</frequency><name>slide guitar</name><weight>0.274937188018</weight></terms><terms><frequency>0.0</frequency><name>southern</name><weight>0.274937188018</weight></terms></response>
+    http_version: 
+  recorded_at: Sat, 07 Jul 2012 19:27:35 GMT
+recorded_with: VCR 2.2.2

@@ -25,3 +25,8 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
 end
+
+VCR.configure do |c|
+  c.cassette_library_dir = 'spec/data/vcr_cassettes'
+  c.hook_into :webmock # or :fakeweb
+end
