@@ -1,6 +1,8 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.2.11'
+gem 'pg'
+gem 'activerecord-postgresql-adapter'
 gem 'will_paginate'
 gem 'sqlite3'
 gem 'eventfulapi'

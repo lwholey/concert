@@ -23,6 +23,8 @@ GEM
       activesupport (= 3.2.11)
       arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
+    activerecord-postgresql-adapter (0.0.1)
+      pg
     activeresource (3.2.11)
       activemodel (= 3.2.11)
       activesupport (= 3.2.11)
@@ -63,6 +65,7 @@ GEM
     mime-types (1.19)
     multi_json (1.5.0)
     nokogiri (1.5.6)
+    pg (0.14.1)
     polyglot (0.3.3)
     prototype-rails (3.2.1)
       rails (~> 3.2)
@@ -137,6 +140,7 @@ PLATFORMS
 
 DEPENDENCIES
   ZenTest (= 4.8.3)
+  activerecord-postgresql-adapter
   annotate
   autotest
   autotest-rails-pure
@@ -145,6 +149,7 @@ DEPENDENCIES
   faker
   haml
   nokogiri
+  pg
   prototype-rails
   pry
   rails (= 3.2.11)
